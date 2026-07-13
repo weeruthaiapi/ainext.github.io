@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI NEXT — Check-in</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  :root{
+    --white:#FFFFFF; --black:#000000;
+    --maroon:#5A0006; --red-dark:#920004; --red:#D92000; --orange-red:#F3500A; --orange:#F37100;
+    --grad: linear-gradient(90deg, var(--maroon), var(--red-dark), var(--red), var(--orange-red), var(--orange));
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; min-height:100vh; color:var(--white);
+    font-family:'Prompt', sans-serif;
+    background: radial-gradient(circle at 50% -10%, #2a0002 0%, var(--black) 55%);
+    background-attachment: fixed;
+  }
+  .header{
+    background:var(--grad); padding:18px 20px; text-align:center;
+    box-shadow:0 4px 25px rgba(217,32,0,.35);
+  }
+  .header h1{
+    font-family:'Orbitron', sans-serif; margin:0; font-size:22px; letter-spacing:1px;
+  }
+  .header .sub{ font-size:12px; opacity:.9; margin-top:4px;}
+  .wrap{ max-width:480px; margin:0 auto; padding:24px 18px 60px; }
+  .card{
+    background:linear-gradient(160deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+    border:1px solid rgba(243,113,0,.35);
+    border-radius:18px; padding:24px 20px; margin-bottom:16px;
+    box-shadow:0 0 30px rgba(243,80,10,.08);
+  }
+  .card h2{ font-family:'Orbitron',sans-serif; font-size:16px; color:var(--orange); margin-top:0;}
+  label{ display:block; font-size:13px; opacity:.85; margin-bottom:6px;}
+  input[type=text], textarea{
+    width:100%; padding:12px 14px; border-radius:10px; border:1px solid rgba(255,255,255,.2);
+    background:rgba(0,0,0,.35); color:var(--white); font-family:'Prompt',sans-serif; font-size:15px;
+    margin-bottom:14px;
+  }
+  textarea{ min-height:90px; resize:vertical;}
+  button, .btn{
+    display:inline-block; width:100%; text-align:center; cursor:pointer;
+    background:var(--grad); color:var(--white); border:none; border-radius:12px;
+    padding:14px; font-family:'Prompt',sans-serif; font-weight:600; font-size:15px;
+    letter-spacing:.3px;
+  }
+  button:disabled{ opacity:.5; cursor:not-allowed;}
+  .btn-ghost{
+    background:transparent; border:1px solid rgba(255,255,255,.3); color:var(--white); font-weight:400;
+  }
+  .error{ color:#ff8a7a; background:rgba(146,0,4,.3); border:1px solid var(--red); padding:10px 12px; border-radius:10px; font-size:13px; margin-bottom:14px;}
+  .hint{ font-size:12px; opacity:.7; margin-top:8px; text-align:center;}
+  .stepper{ display:flex; justify-content:space-between; margin-bottom:20px; gap:6px;}
+  .step{ flex:1; text-align:center; }
+  .step .dot{
+    width:30px; height:30px; border-radius:50%; margin:0 auto 6px; display:flex; align-items:center; justify-content:center;
+    font-size:13px; font-weight:700; border:2px solid rgba(255,255,255,.25); font-family:'Orbitron',sans-serif;
+  }
+  .step.done .dot{ background:var(--grad); border-color:transparent;}
+  .step.active .dot{ border-color:var(--orange); box-shadow:0 0 12px rgba(243,113,0,.8); }
+  .step span{ font-size:10px; opacity:.75;}
+  .spinner{
+    width:44px; height:44px; border-radius:50%; margin:14px auto;
+    border:4px solid rgba(255,255,255,.15); border-top-color:var(--orange);
+    animation:spin 1s linear infinite;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg);} }
+  .center{ text-align:center; }
+  .team-name{ color:var(--orange); font-weight:700;}
+  .cert{
+    background:var(--white); color:var(--black); border-radius:16px; padding:28px 20px;
+    text-align:center; border:6px solid var(--orange-red);
+  }
+  .cert .brand{ font-family:'Orbitron',sans-serif; color:var(--red-dark); letter-spacing:2px; font-size:13px;}
+  .cert h2{ color:var(--black); font-size:22px; margin:10px 0 4px;}
+  .cert .name{ font-size:26px; font-weight:700; margin:14px 0; font-family:'Orbitron',sans-serif; color:var(--red);}
+  .cert .meta{ font-size:12px; opacity:.7; margin-top:16px;}
+  .thumb{ width:100%; border-radius:12px; margin-bottom:12px; display:none;}
+  .toplink{ text-align:center; font-size:12px; margin-bottom:14px;}
+  a{ color:var(--orange); }
+  .footer-links{ display:flex; justify-content:center; gap:16px; margin-top:10px; font-size:13px;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🤖 AI NEXT</h1>
+  <div class="sub">Registration · Check-in · Certificate</div>
+</div>
+
+<div class="wrap" id="app"></div>
+
+<script>
+/* ================= CONFIG ================= */
+const DEMO_MODE = true; // set false once Code.gs is deployed
+const API_BASE_URL = ""; // paste Apps Script Web App URL here
+
+/* ================= DEMO MOCK BACKEND =================
+   Mirrors the real Apps Script API using localStorage so the site
+   is testable before deployment. Shared across index/admin/gallery
+   as long as they're served from the same origin. */
+const LS_PARTICIPANTS = 'ainext_participants';
+const LS_CONFIG = 'ainext_config';
+const LS_GALLERY = 'ainext_gallery';
+
+function seedDemo(){
+  if(!localStorage.getItem(LS_PARTICIPANTS)){
+    localStorage.setItem(LS_PARTICIPANTS, JSON.stringify([
+      {AttendeeID:'A001', FirstName:'สมชาย', LastName:'ใจดี', Team:'Team Rocket AI', Confirmed:true, Stage1_Time:null, Stage2_Time:null, Stage2_Answer:'', Stage3_Time:null, Stage3_PhotoURL:'', Stage3_Note:'', CertIssued:false},
+      {AttendeeID:'A002', FirstName:'Jane', LastName:'Doe', Team:'Neural Ninjas', Confirmed:true, Stage1_Time:null, Stage2_Time:null, Stage2_Answer:'', Stage3_Time:null, Stage3_PhotoURL:'', Stage3_Note:'', CertIssued:false},
+      {AttendeeID:'A003', FirstName:'ไม่', LastName:'ยืนยัน', Team:'', Confirmed:false, Stage1_Time:null, Stage2_Time:null, Stage2_Answer:'', Stage3_Time:null, Stage3_PhotoURL:'', Stage3_Note:'', CertIssued:false}
+    ]));
+  }
+  if(!localStorage.getItem(LS_CONFIG)){
+    localStorage.setItem(LS_CONFIG, JSON.stringify({
+      stage1_open:true, stage2_open:false, stage3_open:false, cert_open:false,
+      question_text:'AI เปลี่ยนวิธีทำงานของคุณอย่างไรบ้าง? (ตอบสั้นๆ 1-2 ประโยค)',
+      admin_password:'ainext2026', event_name:'AI NEXT',
+      cooldown_msg_1:'รอทีมงานเปิดกิจกรรมช่วงบ่าย...',
+      cooldown_msg_2:'รอทีมงานเปิดกิจกรรม AI NEXT Challenge...',
+      cooldown_msg_3:'รอทีมงานประกาศผล และปล่อย Certificate...'
+    }));
+  }
+  if(!localStorage.getItem(LS_GALLERY)){
+    localStorage.setItem(LS_GALLERY, JSON.stringify([]));
+  }
+}
+function readLS(k){ return JSON.parse(localStorage.getItem(k) || 'null'); }
+function writeLS(k,v){ localStorage.setItem(k, JSON.stringify(v)); }
+
+function participantStage(p){
+  if(p.CertIssued) return 4;
+  if(p.Stage3_Time) return 3;
+  if(p.Stage2_Time) return 2;
+  if(p.Stage1_Time) return 1;
+  return 0;
+}
+function normalizeName(s){ return String(s||'').trim().toLowerCase().replace(/\s+/g,' '); }
+
+function mockApi(action, params){
+  seedDemo();
+  return new Promise(resolve=>{
+    setTimeout(()=>{
+      const cfg = readLS(LS_CONFIG);
+      let parts = readLS(LS_PARTICIPANTS);
+      if(action==='checkin'){
+        const name = normalizeName(params.name);
+        if(!name) return resolve({success:false, reason:'empty_name'});
+        const idx = parts.findIndex(p=>normalizeName(p.FirstName+' '+p.LastName)===name);
+        if(idx<0) return resolve({success:false, reason:'not_found'});
+        if(!parts[idx].Confirmed) return resolve({success:false, reason:'not_confirmed'});
+        if(!parts[idx].Stage1_Time) parts[idx].Stage1_Time = new Date().toISOString();
+        writeLS(LS_PARTICIPANTS, parts);
+        return resolve({success:true, attendeeId:parts[idx].AttendeeID, firstName:parts[idx].FirstName,
+          lastName:parts[idx].LastName, team:parts[idx].Team, stage:participantStage(parts[idx]),
+          stage1_open:!!cfg.stage1_open, stage2_open:!!cfg.stage2_open, stage3_open:!!cfg.stage3_open, cert_open:!!cfg.cert_open});
+      }
+      if(action==='getStatus'){
+        const resp = {success:true, event_name:cfg.event_name, question_text:cfg.question_text,
+          cooldown_msg_1:cfg.cooldown_msg_1, cooldown_msg_2:cfg.cooldown_msg_2, cooldown_msg_3:cfg.cooldown_msg_3,
+          stage1_open:!!cfg.stage1_open, stage2_open:!!cfg.stage2_open, stage3_open:!!cfg.stage3_open, cert_open:!!cfg.cert_open};
+        if(params.attendeeId){
+          const p = parts.find(p=>p.AttendeeID===params.attendeeId);
+          if(p){ resp.stage = participantStage(p); resp.team = p.Team; resp.certIssued = !!p.CertIssued; }
+        }
+        return resolve(resp);
+      }
+      if(action==='submitAnswer'){
+        if(!cfg.stage2_open) return resolve({success:false, reason:'stage2_closed'});
+        const idx = parts.findIndex(p=>p.AttendeeID===params.attendeeId);
+        if(idx<0) return resolve({success:false, reason:'not_found'});
+        if(!parts[idx].Stage2_Time) parts[idx].Stage2_Time = new Date().toISOString();
+        parts[idx].Stage2_Answer = params.answer||'';
+        writeLS(LS_PARTICIPANTS, parts);
+        return resolve({success:true});
+      }
+      if(action==='submitSelfie'){
+        if(!cfg.stage3_open) return resolve({success:false, reason:'stage3_closed'});
+        const idx = parts.findIndex(p=>p.AttendeeID===params.attendeeId);
+        if(idx<0) return resolve({success:false, reason:'not_found'});
+        const photoUrl = params.imageBase64 ? ('data:'+(params.mimeType||'image/jpeg')+';base64,'+params.imageBase64) : '';
+        if(!parts[idx].Stage3_Time) parts[idx].Stage3_Time = new Date().toISOString();
+        parts[idx].Stage3_PhotoURL = photoUrl;
+        parts[idx].Stage3_Note = params.note||'';
+        writeLS(LS_PARTICIPANTS, parts);
+        const gal = readLS(LS_GALLERY);
+        gal.push({timestamp:new Date().toISOString(), team:params.team||parts[idx].Team, photoUrl, note:params.note||''});
+        writeLS(LS_GALLERY, gal);
+        return resolve({success:true, photoUrl});
+      }
+      if(action==='getGallery'){
+        const gal = readLS(LS_GALLERY).slice(-200).reverse();
+        return resolve({success:true, items:gal});
+      }
+      if(action==='adminLogin'){
+        return resolve({success: String(params.password)===String(cfg.admin_password)});
+      }
+      if(action==='adminUnlock'){
+        if(String(params.password)!==String(cfg.admin_password)) return resolve({success:false, reason:'bad_password'});
+        const map = {1:'stage1_open',2:'stage2_open',3:'stage3_open',4:'cert_open'};
+        const key = map[params.stage];
+        if(!key) return resolve({success:false, reason:'bad_stage'});
+        cfg[key] = !!params.open;
+        if(params.stage==4 && params.open){
+          parts = parts.map(p=> (p.Stage3_Time && !p.CertIssued) ? {...p, CertIssued:true} : p);
+          writeLS(LS_PARTICIPANTS, parts);
+        }
+        writeLS(LS_CONFIG, cfg);
+        return resolve({success:true});
+      }
+      if(action==='adminStats'){
+        if(String(params.password)!==String(cfg.admin_password)) return resolve({success:false, reason:'bad_password'});
+        const stats = {total:parts.length, confirmed:0, stage1:0, stage2:0, stage3:0, cert:0,
+          stage1_open:!!cfg.stage1_open, stage2_open:!!cfg.stage2_open, stage3_open:!!cfg.stage3_open, cert_open:!!cfg.cert_open};
+        parts.forEach(p=>{
+          if(p.Confirmed) stats.confirmed++;
+          if(p.Stage1_Time) stats.stage1++;
+          if(p.Stage2_Time) stats.stage2++;
+          if(p.Stage3_Time) stats.stage3++;
+          if(p.CertIssued) stats.cert++;
+        });
+        return resolve({success:true, stats});
+      }
+      resolve({success:false, error:'unknown_action'});
+    }, 220);
+  });
+}
+
+async function callApi(action, params={}){
+  if(DEMO_MODE) return mockApi(action, params);
+  const res = await fetch(API_BASE_URL, {
+    method:'POST',
+    headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify({action, ...params})
+  });
+  return res.json();
+}
+
+/* ================= APP STATE / ROUTER ================= */
+const app = document.getElementById('app');
+const PROFILE_KEY = 'ainext_profile';
+let pollTimer = null;
+
+function getProfile(){ return readLS(PROFILE_KEY); }
+function setProfile(p){ writeLS(PROFILE_KEY, p); }
+function clearProfile(){ localStorage.removeItem(PROFILE_KEY); }
+
+function stopPoll(){ if(pollTimer){ clearInterval(pollTimer); pollTimer=null; } }
+
+function stepperHtml(activeCompletedStage){
+  const labels=['Register','Question','Selfie','Cert'];
+  let html = '<div class="stepper">';
+  for(let i=1;i<=4;i++){
+    let cls = i<=activeCompletedStage ? 'done' : (i===activeCompletedStage+1 ? 'active':'');
+    html += `<div class="step ${cls}"><div class="dot">${i<=activeCompletedStage?'✓':i}</div><span>${labels[i-1]}</span></div>`;
+  }
+  return html+'</div>';
+}
+
+function render(html){ app.innerHTML = html; }
+
+/* ---- Screen: name entry ---- */
+function screenLogin(errorMsg=''){
+  stopPoll();
+  render(`
+    <div class="card">
+      <h2>ลงทะเบียนเข้าร่วมงาน</h2>
+      <p style="font-size:14px; opacity:.85;">กรอกชื่อ-นามสกุลให้ตรงกับที่ลงทะเบียนไว้ เพื่อเช็คอินเข้าร่วมงาน</p>
+      ${errorMsg? `<div class="error">${errorMsg}</div>`:''}
+      <label>ชื่อ-นามสกุล / Full name</label>
+      <input type="text" id="nameInput" placeholder="เช่น สมชาย ใจดี">
+      <button id="checkinBtn">เช็คชื่อเข้าร่วม</button>
+    </div>
+    <div class="toplink"><a href="gallery.html" target="_blank">📷 ดู Gallery Wall</a></div>
+  `);
+  document.getElementById('checkinBtn').onclick = doCheckin;
+  document.getElementById('nameInput').addEventListener('keydown', e=>{ if(e.key==='Enter') doCheckin(); });
+}
+
+async function doCheckin(){
+  const val = document.getElementById('nameInput').value.trim();
+  const btn = document.getElementById('checkinBtn');
+  btn.disabled = true; btn.textContent = 'กำลังตรวจสอบ...';
+  const res = await callApi('checkin', {name: val});
+  if(!res.success){
+    const msgs = { empty_name:'กรุณากรอกชื่อ-นามสกุล', not_found:'ไม่พบชื่อนี้ในระบบ กรุณาตรวจสอบการสะกดอีกครั้ง',
+      not_confirmed:'ขออภัย ไม่พบการยืนยันเข้าร่วมงานของท่าน กรุณาติดต่อทีมงานหน้างาน' };
+    screenLogin(msgs[res.reason] || 'เกิดข้อผิดพลาด กรุณาลองใหม่');
+    return;
+  }
+  setProfile({attendeeId:res.attendeeId, firstName:res.firstName, lastName:res.lastName, team:res.team});
+  routeParticipant();
+}
+
+/* ---- Router: decide which screen based on completed stage + global open flags ---- */
+async function routeParticipant(){
+  const profile = getProfile();
+  if(!profile){ screenLogin(); return; }
+  const status = await callApi('getStatus', {attendeeId: profile.attendeeId});
+  const completed = status.stage ?? 0;
+
+  if(completed>=4 || status.certIssued){ screenCertificate(profile); return; }
+  if(completed===3){ if(status.cert_open) screenCertificate(profile); else screenCooldown(3, status, completed); return; }
+  if(completed===2){ if(status.stage3_open) screenSelfie(profile, status); else screenCooldown(2, status, completed); return; }
+  if(completed===1){ if(status.stage2_open) screenQuestion(profile, status); else screenCooldown(1, status, completed); return; }
+  screenLogin();
+}
+
+/* ---- Screen: cooldown ---- */
+function screenCooldown(stageJustDone, status, completed){
+  stopPoll();
+  const profile = getProfile();
+  const msgKey = 'cooldown_msg_'+stageJustDone;
+  const msg = status[msgKey] || 'รอทีมงานเปิดกิจกรรมถัดไป กรุณารอสักครู่...';
+  render(`
+    <div class="toplink"><a href="#" id="switchUser">ไม่ใช่คุณ ${profile.firstName}? เปลี่ยนชื่อ</a></div>
+    ${stepperHtml(completed)}
+    <div class="card center">
+      <h2>⏳ Cooldown</h2>
+      <div class="spinner"></div>
+      <p>${msg}</p>
+      <p class="hint">หน้านี้จะเปลี่ยนอัตโนมัติเมื่อทีมงานเปิดด่านถัดไป</p>
+    </div>
+  `);
+  document.getElementById('switchUser').onclick = (e)=>{ e.preventDefault(); clearProfile(); screenLogin(); };
+  pollTimer = setInterval(routeParticipant, 4000);
+}
+
+/* ---- Screen: after-lunch question (stage 2) ---- */
+function screenQuestion(profile, status){
+  stopPoll();
+  render(`
+    <div class="toplink"><a href="#" id="switchUser">ไม่ใช่คุณ ${profile.firstName}? เปลี่ยนชื่อ</a></div>
+    ${stepperHtml(1)}
+    <div class="card">
+      <h2>📝 คำถามช่วงบ่าย</h2>
+      <p>${status.question_text || 'กรุณารอคำถามจากทีมงาน'}</p>
+      <textarea id="answerInput" placeholder="พิมพ์คำตอบของคุณที่นี่..."></textarea>
+      <div id="qErr"></div>
+      <button id="submitAnswerBtn">ส่งคำตอบ</button>
+    </div>
+  `);
+  document.getElementById('switchUser').onclick = (e)=>{ e.preventDefault(); clearProfile(); screenLogin(); };
+  document.getElementById('submitAnswerBtn').onclick = async ()=>{
+    const answer = document.getElementById('answerInput').value.trim();
+    if(!answer){ document.getElementById('qErr').innerHTML = '<div class="error">กรุณาตอบคำถามก่อนส่ง</div>'; return; }
+    const btn = document.getElementById('submitAnswerBtn');
+    btn.disabled=true; btn.textContent='กำลังส่ง...';
+    const res = await callApi('submitAnswer', {attendeeId: profile.attendeeId, answer});
+    if(!res.success){ document.getElementById('qErr').innerHTML = '<div class="error">ส่งไม่สำเร็จ ลองใหม่อีกครั้ง</div>'; btn.disabled=false; btn.textContent='ส่งคำตอบ'; return; }
+    routeParticipant();
+  };
+}
+
+/* ---- Screen: selfie upload (stage 3) ---- */
+function screenSelfie(profile, status){
+  stopPoll();
+  render(`
+    <div class="toplink"><a href="#" id="switchUser">ไม่ใช่คุณ ${profile.firstName}? เปลี่ยนชื่อ</a></div>
+    ${stepperHtml(2)}
+    <div class="card">
+      <h2>🏆 AI NEXT Challenge — Team Selfie</h2>
+      <p style="font-size:13px; opacity:.85;">ถ่ายรูปกับทีมของคุณ พร้อมข้อความสั้นๆ แล้วอัปโหลดที่นี่</p>
+      <label>ชื่อทีม</label>
+      <input type="text" id="teamInput" value="${profile.team||''}">
+      <label>รูปถ่าย Selfie</label>
+      <input type="file" id="photoInput" accept="image/*" capture="environment">
+      <img id="preview" class="thumb">
+      <label>โน้ตสั้นๆ (จะแสดงบน Gallery Wall)</label>
+      <textarea id="noteInput" placeholder="เช่น ทีมเราคิดโปรเจกต์ AI สุดครีเอทีฟ!"></textarea>
+      <div id="sErr"></div>
+      <button id="submitSelfieBtn">อัปโหลด</button>
+    </div>
+  `);
+  document.getElementById('switchUser').onclick = (e)=>{ e.preventDefault(); clearProfile(); screenLogin(); };
+
+  let resizedBase64 = null, mimeType = 'image/jpeg';
+  document.getElementById('photoInput').addEventListener('change', (e)=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev)=>{
+      const img = new Image();
+      img.onload = ()=>{
+        const maxW = 900;
+        const scale = Math.min(1, maxW/img.width);
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width*scale; canvas.height = img.height*scale;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img,0,0,canvas.width,canvas.height);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.72);
+        resizedBase64 = dataUrl.split(',')[1];
+        const prev = document.getElementById('preview');
+        prev.src = dataUrl; prev.style.display='block';
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById('submitSelfieBtn').onclick = async ()=>{
+    if(!resizedBase64){ document.getElementById('sErr').innerHTML = '<div class="error">กรุณาแนบรูปถ่ายก่อน</div>'; return; }
+    const btn = document.getElementById('submitSelfieBtn');
+    btn.disabled=true; btn.textContent='กำลังอัปโหลด...';
+    const team = document.getElementById('teamInput').value.trim();
+    const note = document.getElementById('noteInput').value.trim();
+    const res = await callApi('submitSelfie', {attendeeId: profile.attendeeId, team, note, imageBase64: resizedBase64, mimeType});
+    if(!res.success){ document.getElementById('sErr').innerHTML = '<div class="error">อัปโหลดไม่สำเร็จ ลองใหม่อีกครั้ง</div>'; btn.disabled=false; btn.textContent='อัปโหลด'; return; }
+    if(team) { profile.team = team; setProfile(profile); }
+    routeParticipant();
+  };
+}
+
+/* ---- Screen: certificate ---- */
+function screenCertificate(profile){
+  stopPoll();
+  const today = new Date().toLocaleDateString('th-TH', {year:'numeric', month:'long', day:'numeric'});
+  render(`
+    ${stepperHtml(4)}
+    <div class="card cert" id="certCard">
+      <div class="brand">AI NEXT · CERTIFICATE OF PARTICIPATION</div>
+      <h2>ใบประกาศนียบัตร</h2>
+      <p style="font-size:13px;">This certifies that</p>
+      <div class="name">${profile.firstName} ${profile.lastName}</div>
+      <p style="font-size:13px;">has successfully participated in the AI NEXT event, completing all sessions.</p>
+      ${profile.team? `<p style="font-size:13px;">Team: <b>${profile.team}</b></p>`:''}
+      <div class="meta">Issued ${today}</div>
+    </div>
+    <button id="downloadBtn">ดาวน์โหลด Certificate (PNG)</button>
+    <div class="toplink" style="margin-top:14px;"><a href="gallery.html" target="_blank">📷 ดู Gallery Wall</a></div>
+  `);
+  document.getElementById('downloadBtn').onclick = ()=>{
+    html2canvas(document.getElementById('certCard'), {backgroundColor:'#ffffff', scale:2}).then(canvas=>{
+      const link = document.createElement('a');
+      link.download = 'AI-NEXT-Certificate-'+profile.firstName+'.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    });
+  };
+}
+
+/* ================= INIT ================= */
+(function init(){
+  seedDemo();
+  const profile = getProfile();
+  if(profile) routeParticipant(); else screenLogin();
+})();
+</script>
+</body>
+</html>
