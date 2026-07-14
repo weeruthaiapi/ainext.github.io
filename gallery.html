@@ -2,84 +2,11 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="refresh" content="0; url=index.html#gallery">
 <title>AI NEXT — Gallery Wall</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --white:#FFFFFF; --black:#000000;
-    --maroon:#5A0006; --red-dark:#920004; --red:#D92000; --orange-red:#F3500A; --orange:#F37100;
-    --grad: linear-gradient(90deg, var(--maroon), var(--red-dark), var(--red), var(--orange-red), var(--orange));
-  }
-  *{box-sizing:border-box;}
-  body{ margin:0; min-height:100vh; color:var(--white); font-family:'Prompt',sans-serif;
-    background: radial-gradient(circle at 50% -10%, #2a0002 0%, var(--black) 55%); }
-  .header{ background:var(--grad); padding:20px; text-align:center; }
-  .header h1{ font-family:'Orbitron',sans-serif; margin:0; font-size:22px; }
-  .header .sub{ font-size:12px; opacity:.9; margin-top:4px; }
-  .wrap{ max-width:1000px; margin:0 auto; padding:24px 18px 60px; }
-  .grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:16px; }
-  .item{ background:linear-gradient(160deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-    border:1px solid rgba(243,113,0,.3); border-radius:14px; overflow:hidden; }
-  .item img{ width:100%; height:220px; object-fit:cover; display:block; background:#111; }
-  .item .body{ padding:12px 14px; }
-  .item .team{ font-weight:700; color:var(--orange); font-size:13px; margin-bottom:4px; }
-  .item .note{ font-size:13px; opacity:.9; }
-  .item .time{ font-size:10px; opacity:.5; margin-top:8px; }
-  .empty{ text-align:center; opacity:.7; padding:60px 20px; }
-  .refresh-hint{ text-align:center; font-size:11px; opacity:.6; margin-top:18px; }
-</style>
+<script>location.replace('index.html#gallery');</script>
 </head>
-<body>
-<div class="header">
-  <h1>📷 AI NEXT — Gallery Wall</h1>
-  <div class="sub">รูปทีมจากกิจกรรม AI NEXT Challenge</div>
-</div>
-<div class="wrap" id="app"><div class="empty">กำลังโหลด...</div></div>
-
-<script>
-const DEMO_MODE = false;
-const API_BASE_URL = "https://script.google.com/macros/s/AKfycbxlGc6JxljLQgNQlaWhFTuUI4mXj8b-XTYrtpkX9DpYAA2Df7U734Uyqn7F6yc1S3jY/exec";
-const LS_GALLERY='ainext_gallery';
-
-function mockApi(action, params){
-  return new Promise(resolve=>{
-    setTimeout(()=>{
-      if(action==='getGallery'){
-        const gal = JSON.parse(localStorage.getItem(LS_GALLERY)||'[]').slice(-200).reverse();
-        return resolve({success:true, items:gal});
-      }
-      resolve({success:false});
-    }, 150);
-  });
-}
-async function callApi(action, params={}){
-  if(DEMO_MODE) return mockApi(action, params);
-  const res = await fetch(API_BASE_URL, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({action, ...params})});
-  return res.json();
-}
-
-async function load(){
-  const res = await callApi('getGallery', {});
-  const app = document.getElementById('app');
-  if(!res.success || !res.items || !res.items.length){
-    app.innerHTML = '<div class="empty">ยังไม่มีรูปในแกลเลอรี่ — รอทีมส่ง Selfie ช่วง AI NEXT Challenge!</div>';
-    return;
-  }
-  app.innerHTML = `<div class="grid">${res.items.map(it=>`
-    <div class="item">
-      ${it.photoUrl? `<img src="${it.photoUrl}" alt="${it.team||''}">` : ''}
-      <div class="body">
-        <div class="team">${it.team||'—'}</div>
-        ${it.note? `<div class="note">${it.note}</div>`:''}
-        <div class="time">${it.timestamp? new Date(it.timestamp).toLocaleString('th-TH') : ''}</div>
-      </div>
-    </div>`).join('')}</div>
-    <div class="refresh-hint">อัปเดตอัตโนมัติทุก 8 วินาที</div>`;
-}
-load();
-setInterval(load, 8000);
-</script>
+<body style="background:#000; color:#fff; font-family:sans-serif; text-align:center; padding-top:40px;">
+  <p>Gallery ย้ายไปอยู่ในแท็บของหน้าเดียวกันแล้ว กำลังพาไป... <a href="index.html#gallery" style="color:#F37100;">คลิกที่นี่</a> ถ้าไม่เปลี่ยนหน้าอัตโนมัติ</p>
 </body>
 </html>
