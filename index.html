@@ -20,15 +20,21 @@
     background: radial-gradient(circle at 50% -10%, #2a0002 0%, var(--black) 55%);
     background-attachment: fixed;
   }
-  .header{
-    background:var(--grad); padding:18px 20px; text-align:center;
-    box-shadow:0 4px 25px rgba(217,32,0,.35);
+  .header{ background:var(--grad); padding:16px 20px 0; text-align:center; box-shadow:0 4px 25px rgba(217,32,0,.35); }
+  .header h1{ font-family:'Orbitron', sans-serif; margin:0; font-size:22px; letter-spacing:1px; }
+  .header .sub{ font-size:12px; opacity:.9; margin-top:4px; padding-bottom:10px;}
+  .tabs{ display:flex; }
+  .tab-btn{
+    flex:1; background:rgba(0,0,0,.25); border:none; color:var(--white); padding:12px 8px;
+    font-family:'Prompt',sans-serif; font-weight:600; font-size:14px; cursor:pointer; opacity:.65;
+    border-bottom:3px solid transparent;
   }
-  .header h1{
-    font-family:'Orbitron', sans-serif; margin:0; font-size:22px; letter-spacing:1px;
-  }
-  .header .sub{ font-size:12px; opacity:.9; margin-top:4px;}
+  .tab-btn.active{ opacity:1; border-bottom:3px solid var(--white); background:rgba(0,0,0,.1); }
   .wrap{ max-width:480px; margin:0 auto; padding:24px 18px 60px; }
+  .wrap.gallery-wrap{ max-width:720px; }
+  .tabpanel{ display:none; }
+  .tabpanel.active{ display:block; }
+
   .card{
     background:linear-gradient(160deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
     border:1px solid rgba(243,113,0,.35);
@@ -37,7 +43,7 @@
   }
   .card h2{ font-family:'Orbitron',sans-serif; font-size:16px; color:var(--orange); margin-top:0;}
   label{ display:block; font-size:13px; opacity:.85; margin-bottom:6px;}
-  input[type=text], textarea{
+  input[type=text], input[type=password], textarea{
     width:100%; padding:12px 14px; border-radius:10px; border:1px solid rgba(255,255,255,.2);
     background:rgba(0,0,0,.35); color:var(--white); font-family:'Prompt',sans-serif; font-size:15px;
     margin-bottom:14px;
@@ -50,9 +56,6 @@
     letter-spacing:.3px;
   }
   button:disabled{ opacity:.5; cursor:not-allowed;}
-  .btn-ghost{
-    background:transparent; border:1px solid rgba(255,255,255,.3); color:var(--white); font-weight:400;
-  }
   .error{ color:#ff8a7a; background:rgba(146,0,4,.3); border:1px solid var(--red); padding:10px 12px; border-radius:10px; font-size:13px; margin-bottom:14px;}
   .hint{ font-size:12px; opacity:.7; margin-top:8px; text-align:center;}
   .stepper{ display:flex; justify-content:space-between; margin-bottom:20px; gap:6px;}
@@ -71,7 +74,6 @@
   }
   @keyframes spin{ to{ transform:rotate(360deg);} }
   .center{ text-align:center; }
-  .team-name{ color:var(--orange); font-weight:700;}
   .cert{
     background:var(--white); color:var(--black); border-radius:16px; padding:28px 20px;
     text-align:center; border:6px solid var(--orange-red);
@@ -83,7 +85,57 @@
   .thumb{ width:100%; border-radius:12px; margin-bottom:12px; display:none;}
   .toplink{ text-align:center; font-size:12px; margin-bottom:14px;}
   a{ color:var(--orange); }
-  .footer-links{ display:flex; justify-content:center; gap:16px; margin-top:10px; font-size:13px;}
+
+  /* ===== Gallery tab — floating, bubbly, dreamy ===== */
+  .gallery-sky{
+    position:relative; min-height:60vh; border-radius:24px; overflow:hidden;
+    background:
+      radial-gradient(ellipse at 20% 10%, rgba(243,113,0,.18), transparent 55%),
+      radial-gradient(ellipse at 80% 30%, rgba(217,32,0,.18), transparent 55%),
+      linear-gradient(180deg, #120000, #000000 70%);
+    border:1px solid rgba(243,113,0,.25);
+    padding:20px 14px 90px;
+  }
+  .stars{ position:absolute; inset:0; pointer-events:none; }
+  .star{ position:absolute; width:3px; height:3px; background:rgba(255,255,255,.8); border-radius:50%;
+    animation: twinkle 3.5s ease-in-out infinite; }
+  @keyframes twinkle{ 0%,100%{ opacity:.15;} 50%{ opacity:.9;} }
+  .bubble-grid{ position:relative; display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:22px; z-index:1;}
+  .bubble{
+    background:linear-gradient(160deg, rgba(255,255,255,.10), rgba(255,255,255,.02));
+    backdrop-filter: blur(6px);
+    border:1px solid rgba(243,113,0,.4);
+    border-radius:26px; overflow:hidden; cursor:pointer;
+    box-shadow:0 8px 30px rgba(0,0,0,.4), 0 0 18px rgba(243,113,0,.12);
+    animation: floaty 5s ease-in-out infinite;
+  }
+  @keyframes floaty{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-10px);} }
+  .bubble img{ width:100%; height:140px; object-fit:cover; display:block; }
+  .bubble .body{ padding:10px 12px; }
+  .bubble .name{ font-weight:700; font-size:12px; color:var(--orange); }
+  .bubble .note{ font-size:11px; opacity:.85; margin-top:2px; max-height:32px; overflow:hidden; }
+  .bubble .meta{ display:flex; justify-content:space-between; font-size:11px; opacity:.8; margin-top:8px; }
+  .bubble .like-btn{ background:none; border:none; color:var(--white); width:auto; padding:0; font-size:12px; }
+  .bubble .like-btn.liked{ color:var(--orange); }
+  .fab{
+    position:fixed; right:22px; bottom:26px; width:auto; border-radius:30px; padding:14px 22px;
+    box-shadow:0 6px 24px rgba(217,32,0,.5); z-index:20; font-size:14px;
+  }
+  .empty-gal{ text-align:center; opacity:.7; padding:50px 14px; position:relative; z-index:1;}
+  .modal-backdrop{
+    position:fixed; inset:0; background:rgba(0,0,0,.75); backdrop-filter:blur(3px);
+    display:flex; align-items:flex-end; justify-content:center; z-index:50;
+  }
+  .modal-sheet{
+    background:#140002; width:100%; max-width:480px; border-radius:22px 22px 0 0;
+    padding:20px 20px 26px; max-height:88vh; overflow-y:auto; border-top:1px solid rgba(243,113,0,.4);
+  }
+  .modal-sheet img.full{ width:100%; border-radius:14px; margin-bottom:10px; }
+  .close-x{ text-align:right; }
+  .close-x span{ cursor:pointer; font-size:20px; opacity:.7; }
+  .comment-item{ padding:8px 0; border-bottom:1px solid rgba(255,255,255,.08); font-size:13px; }
+  .comment-item b{ color:var(--orange); }
+  .login-nudge{ text-align:center; padding:16px; font-size:13px; opacity:.85; background:rgba(243,113,0,.12); border-radius:12px; margin-bottom:16px; }
 </style>
 </head>
 <body>
@@ -91,22 +143,23 @@
 <div class="header">
   <h1>🤖 AI NEXT</h1>
   <div class="sub">Registration · Check-in · Certificate</div>
+  <div class="tabs">
+    <button class="tab-btn" id="tabBtnTasks">🎯 Tasks</button>
+    <button class="tab-btn" id="tabBtnGallery">✨ Gallery</button>
+  </div>
 </div>
 
-<div class="wrap" id="app"></div>
+<div class="wrap tabpanel" id="tasksPanel"></div>
+<div class="wrap gallery-wrap tabpanel" id="galleryPanel"></div>
 
 <script>
 /* ================= CONFIG ================= */
 const DEMO_MODE = false; // set false once Code.gs is deployed
-const API_BASE_URL = "https://script.google.com/macros/s/AKfycbxlGc6JxljLQgNQlaWhFTuUI4mXj8b-XTYrtpkX9DpYAA2Df7U734Uyqn7F6yc1S3jY/exec"; // paste Apps Script Web App URL here
+const API_BASE_URL = "https://script.google.com/macros/s/AKfycbxlGc6JxljLQgNQlaWhFTuUI4mXj8b-XTYrtpkX9DpYAA2Df7U734Uyqn7F6yc1S3jY/exec";
 
-/* ================= DEMO MOCK BACKEND =================
-   Mirrors the real Apps Script API using localStorage so the site
-   is testable before deployment. Shared across index/admin/gallery
-   as long as they're served from the same origin. */
-const LS_PARTICIPANTS = 'ainext_participants';
-const LS_CONFIG = 'ainext_config';
-const LS_GALLERY = 'ainext_gallery';
+/* ================= DEMO MOCK BACKEND ================= */
+const LS_PARTICIPANTS='ainext_participants', LS_CONFIG='ainext_config', LS_GALLERY='ainext_gallery',
+      LS_LIKES='ainext_likes', LS_COMMENTS='ainext_comments', LS_QUESTIONS='ainext_questions';
 
 function seedDemo(){
   if(!localStorage.getItem(LS_PARTICIPANTS)){
@@ -119,20 +172,20 @@ function seedDemo(){
   if(!localStorage.getItem(LS_CONFIG)){
     localStorage.setItem(LS_CONFIG, JSON.stringify({
       stage1_open:true, stage2_open:false, stage3_open:false, cert_open:false,
-      question_text:'AI เปลี่ยนวิธีทำงานของคุณอย่างไรบ้าง? (ตอบสั้นๆ 1-2 ประโยค)',
       admin_password:'ainext2026', event_name:'AI NEXT',
       cooldown_msg_1:'รอทีมงานเปิดกิจกรรมช่วงบ่าย...',
       cooldown_msg_2:'รอทีมงานเปิดกิจกรรม AI NEXT Challenge...',
       cooldown_msg_3:'รอทีมงานประกาศผล และปล่อย Certificate...'
     }));
   }
-  if(!localStorage.getItem(LS_GALLERY)){
-    localStorage.setItem(LS_GALLERY, JSON.stringify([]));
-  }
+  if(!localStorage.getItem(LS_GALLERY)) localStorage.setItem(LS_GALLERY, JSON.stringify([]));
+  if(!localStorage.getItem(LS_LIKES)) localStorage.setItem(LS_LIKES, JSON.stringify([]));
+  if(!localStorage.getItem(LS_COMMENTS)) localStorage.setItem(LS_COMMENTS, JSON.stringify([]));
+  if(!localStorage.getItem(LS_QUESTIONS)) localStorage.setItem(LS_QUESTIONS, JSON.stringify([]));
 }
 function readLS(k){ return JSON.parse(localStorage.getItem(k) || 'null'); }
 function writeLS(k,v){ localStorage.setItem(k, JSON.stringify(v)); }
-
+function genId(){ return Math.random().toString(36).slice(2,10); }
 function participantStage(p){
   if(p.CertIssued) return 4;
   if(p.Stage3_Time) return 3;
@@ -148,6 +201,11 @@ function mockApi(action, params){
     setTimeout(()=>{
       const cfg = readLS(LS_CONFIG);
       let parts = readLS(LS_PARTICIPANTS);
+      let gallery = readLS(LS_GALLERY);
+      let likes = readLS(LS_LIKES);
+      let comments = readLS(LS_COMMENTS);
+      let questions = readLS(LS_QUESTIONS);
+
       if(action==='checkin'){
         const name = normalizeName(params.name);
         if(!name) return resolve({success:false, reason:'empty_name'});
@@ -161,7 +219,9 @@ function mockApi(action, params){
           stage1_open:!!cfg.stage1_open, stage2_open:!!cfg.stage2_open, stage3_open:!!cfg.stage3_open, cert_open:!!cfg.cert_open});
       }
       if(action==='getStatus'){
-        const resp = {success:true, event_name:cfg.event_name, question_text:cfg.question_text,
+        const activeQ = questions.find(q=>q.active);
+        const resp = {success:true, event_name:cfg.event_name,
+          question_text: activeQ? activeQ.text : '', question_id: activeQ? activeQ.id : '',
           cooldown_msg_1:cfg.cooldown_msg_1, cooldown_msg_2:cfg.cooldown_msg_2, cooldown_msg_3:cfg.cooldown_msg_3,
           stage1_open:!!cfg.stage1_open, stage2_open:!!cfg.stage2_open, stage3_open:!!cfg.stage3_open, cert_open:!!cfg.cert_open};
         if(params.attendeeId){
@@ -179,32 +239,58 @@ function mockApi(action, params){
         writeLS(LS_PARTICIPANTS, parts);
         return resolve({success:true});
       }
-      if(action==='submitSelfie'){
-        if(!cfg.stage3_open) return resolve({success:false, reason:'stage3_closed'});
+      if(action==='submitSelfie' || action==='uploadGalleryPost'){
+        if(action==='submitSelfie' && !cfg.stage3_open) return resolve({success:false, reason:'stage3_closed'});
         const idx = parts.findIndex(p=>p.AttendeeID===params.attendeeId);
         if(idx<0) return resolve({success:false, reason:'not_found'});
         const photoUrl = params.imageBase64 ? ('data:'+(params.mimeType||'image/jpeg')+';base64,'+params.imageBase64) : '';
-        if(!parts[idx].Stage3_Time) parts[idx].Stage3_Time = new Date().toISOString();
-        parts[idx].Stage3_PhotoURL = photoUrl;
-        parts[idx].Stage3_Note = params.note||'';
-        writeLS(LS_PARTICIPANTS, parts);
-        const gal = readLS(LS_GALLERY);
-        gal.push({timestamp:new Date().toISOString(), team:params.team||parts[idx].Team, photoUrl, note:params.note||''});
-        writeLS(LS_GALLERY, gal);
-        return resolve({success:true, photoUrl});
+        if(action==='submitSelfie' && !parts[idx].Stage3_Time){
+          parts[idx].Stage3_Time = new Date().toISOString();
+          parts[idx].Stage3_PhotoURL = photoUrl;
+          parts[idx].Stage3_Note = params.note||'';
+          writeLS(LS_PARTICIPANTS, parts);
+        }
+        const postId = genId();
+        gallery.push({postId, timestamp:new Date().toISOString(), attendeeId:params.attendeeId,
+          name:(parts[idx].FirstName+' '+parts[idx].LastName).trim(), team:params.team||parts[idx].Team,
+          photoUrl, note:params.note||'', likes:0});
+        writeLS(LS_GALLERY, gallery);
+        return resolve({success:true, photoUrl, postId});
       }
       if(action==='getGallery'){
-        const gal = readLS(LS_GALLERY).slice(-200).reverse();
-        return resolve({success:true, items:gal});
+        const list = gallery.slice(-300).reverse().map(g=>{
+          const likedByMe = params.attendeeId ? likes.some(l=>l.postId===g.postId && l.attendeeId===params.attendeeId) : false;
+          const commentCount = comments.filter(c=>c.postId===g.postId).length;
+          return {...g, likedByMe, commentCount};
+        });
+        return resolve({success:true, items:list});
       }
-      if(action==='adminLogin'){
-        return resolve({success: String(params.password)===String(cfg.admin_password)});
+      if(action==='likePost'){
+        const gIdx = gallery.findIndex(g=>g.postId===params.postId);
+        if(gIdx<0) return resolve({success:false, reason:'not_found'});
+        const likeIdx = likes.findIndex(l=>l.postId===params.postId && l.attendeeId===params.attendeeId);
+        let liked;
+        if(likeIdx>=0){ likes.splice(likeIdx,1); gallery[gIdx].likes = Math.max(0,(gallery[gIdx].likes||0)-1); liked=false; }
+        else{ likes.push({postId:params.postId, attendeeId:params.attendeeId}); gallery[gIdx].likes = (gallery[gIdx].likes||0)+1; liked=true; }
+        writeLS(LS_LIKES, likes); writeLS(LS_GALLERY, gallery);
+        return resolve({success:true, liked, likes:gallery[gIdx].likes});
       }
+      if(action==='getComments'){
+        return resolve({success:true, items: comments.filter(c=>c.postId===params.postId)});
+      }
+      if(action==='addComment'){
+        const p = parts.find(p=>p.AttendeeID===params.attendeeId);
+        if(!p) return resolve({success:false, reason:'not_found'});
+        const name = (p.FirstName+' '+p.LastName).trim();
+        const c = {postId:params.postId, name, comment:params.comment, timestamp:new Date().toISOString()};
+        comments.push(c); writeLS(LS_COMMENTS, comments);
+        return resolve({success:true, comment:c});
+      }
+      if(action==='adminLogin') return resolve({success: String(params.password)===String(cfg.admin_password)});
       if(action==='adminUnlock'){
         if(String(params.password)!==String(cfg.admin_password)) return resolve({success:false, reason:'bad_password'});
         const map = {1:'stage1_open',2:'stage2_open',3:'stage3_open',4:'cert_open'};
-        const key = map[params.stage];
-        if(!key) return resolve({success:false, reason:'bad_stage'});
+        const key = map[params.stage]; if(!key) return resolve({success:false, reason:'bad_stage'});
         cfg[key] = !!params.open;
         if(params.stage==4 && params.open){
           parts = parts.map(p=> (p.Stage3_Time && !p.CertIssued) ? {...p, CertIssued:true} : p);
@@ -216,18 +302,53 @@ function mockApi(action, params){
       if(action==='adminStats'){
         if(String(params.password)!==String(cfg.admin_password)) return resolve({success:false, reason:'bad_password'});
         const stats = {total:parts.length, confirmed:0, stage1:0, stage2:0, stage3:0, cert:0,
-          stage1_open:!!cfg.stage1_open, stage2_open:!!cfg.stage2_open, stage3_open:!!cfg.stage3_open, cert_open:!!cfg.cert_open};
-        parts.forEach(p=>{
-          if(p.Confirmed) stats.confirmed++;
-          if(p.Stage1_Time) stats.stage1++;
-          if(p.Stage2_Time) stats.stage2++;
-          if(p.Stage3_Time) stats.stage3++;
-          if(p.CertIssued) stats.cert++;
-        });
+          stage1_open:!!cfg.stage1_open, stage2_open:!!cfg.stage2_open, stage3_open:!!cfg.stage3_open, cert_open:!!cfg.cert_open,
+          galleryPosts: gallery.length};
+        parts.forEach(p=>{ if(p.Confirmed) stats.confirmed++; if(p.Stage1_Time) stats.stage1++; if(p.Stage2_Time) stats.stage2++; if(p.Stage3_Time) stats.stage3++; if(p.CertIssued) stats.cert++; });
         return resolve({success:true, stats});
       }
+      if(action==='adminListQuestions'){
+        if(String(params.password)!==String(cfg.admin_password)) return resolve({success:false, reason:'bad_password'});
+        return resolve({success:true, items:questions});
+      }
+      if(action==='adminAddQuestion'){
+        if(String(params.password)!==String(cfg.admin_password)) return resolve({success:false, reason:'bad_password'});
+        const id = genId();
+        questions.push({id, text:params.text, active:false});
+        writeLS(LS_QUESTIONS, questions);
+        return resolve({success:true, id});
+      }
+      if(action==='adminSetActiveQuestion'){
+        if(String(params.password)!==String(cfg.admin_password)) return resolve({success:false, reason:'bad_password'});
+        questions = questions.map(q=>({...q, active: q.id===params.questionId}));
+        writeLS(LS_QUESTIONS, questions);
+        return resolve({success:true});
+      }
+      if(action==='adminSearchParticipants'){
+        if(String(params.password)!==String(cfg.admin_password)) return resolve({success:false, reason:'bad_password'});
+        const q = normalizeName(params.query||'');
+        let rows = parts;
+        if(q) rows = rows.filter(p=>normalizeName(p.AttendeeID+' '+p.FirstName+' '+p.LastName+' '+p.Team).includes(q));
+        const items = rows.slice(0,40).map(p=>({attendeeId:p.AttendeeID, firstName:p.FirstName, lastName:p.LastName,
+          team:p.Team, confirmed:!!p.Confirmed, stage1:!!p.Stage1_Time, stage2:!!p.Stage2_Time, stage3:!!p.Stage3_Time, certIssued:!!p.CertIssued}));
+        return resolve({success:true, items});
+      }
+      if(action==='adminUpdateParticipant'){
+        if(String(params.password)!==String(cfg.admin_password)) return resolve({success:false, reason:'bad_password'});
+        const idx = parts.findIndex(p=>p.AttendeeID===params.attendeeId);
+        if(idx<0) return resolve({success:false, reason:'not_found'});
+        const patch = params.patch||{};
+        if(typeof patch.confirmed==='boolean') parts[idx].Confirmed = patch.confirmed;
+        if(typeof patch.team==='string') parts[idx].Team = patch.team;
+        if(typeof patch.stage1==='boolean') parts[idx].Stage1_Time = patch.stage1 ? (parts[idx].Stage1_Time||new Date().toISOString()) : null;
+        if(typeof patch.stage2==='boolean') parts[idx].Stage2_Time = patch.stage2 ? (parts[idx].Stage2_Time||new Date().toISOString()) : null;
+        if(typeof patch.stage3==='boolean') parts[idx].Stage3_Time = patch.stage3 ? (parts[idx].Stage3_Time||new Date().toISOString()) : null;
+        if(typeof patch.certIssued==='boolean') parts[idx].CertIssued = patch.certIssued;
+        writeLS(LS_PARTICIPANTS, parts);
+        return resolve({success:true});
+      }
       resolve({success:false, error:'unknown_action'});
-    }, 220);
+    }, 180);
   });
 }
 
@@ -241,16 +362,34 @@ async function callApi(action, params={}){
   return res.json();
 }
 
-/* ================= APP STATE / ROUTER ================= */
-const app = document.getElementById('app');
+/* ================= SHARED PROFILE ================= */
 const PROFILE_KEY = 'ainext_profile';
-let pollTimer = null;
-
+const LAST_Q_KEY = 'ainext_last_answered_qid';
 function getProfile(){ return readLS(PROFILE_KEY); }
 function setProfile(p){ writeLS(PROFILE_KEY, p); }
 function clearProfile(){ localStorage.removeItem(PROFILE_KEY); }
 
+/* ================= TAB SWITCHING ================= */
+let currentTab = 'tasks';
+function showTab(tab){
+  currentTab = tab;
+  document.getElementById('tasksPanel').classList.toggle('active', tab==='tasks');
+  document.getElementById('galleryPanel').classList.toggle('active', tab==='gallery');
+  document.getElementById('tabBtnTasks').classList.toggle('active', tab==='tasks');
+  document.getElementById('tabBtnGallery').classList.toggle('active', tab==='gallery');
+  if(tab==='tasks'){ stopGalleryPoll(); routeParticipant(); }
+  if(tab==='gallery'){ stopPoll(); loadGallery(); startGalleryPoll(); }
+}
+document.getElementById('tabBtnTasks').onclick = ()=>showTab('tasks');
+document.getElementById('tabBtnGallery').onclick = ()=>showTab('gallery');
+
+/* ============================================================
+   TASKS TAB
+   ============================================================ */
+const tasksApp = document.getElementById('tasksPanel');
+let pollTimer = null;
 function stopPoll(){ if(pollTimer){ clearInterval(pollTimer); pollTimer=null; } }
+function renderTasks(html){ tasksApp.innerHTML = html; }
 
 function stepperHtml(activeCompletedStage){
   const labels=['Register','Question','Selfie','Cert'];
@@ -262,12 +401,9 @@ function stepperHtml(activeCompletedStage){
   return html+'</div>';
 }
 
-function render(html){ app.innerHTML = html; }
-
-/* ---- Screen: name entry ---- */
 function screenLogin(errorMsg=''){
   stopPoll();
-  render(`
+  renderTasks(`
     <div class="card">
       <h2>ลงทะเบียนเข้าร่วมงาน</h2>
       <p style="font-size:14px; opacity:.85;">กรอกชื่อ-นามสกุลให้ตรงกับที่ลงทะเบียนไว้ เพื่อเช็คอินเข้าร่วมงาน</p>
@@ -276,7 +412,6 @@ function screenLogin(errorMsg=''){
       <input type="text" id="nameInput" placeholder="เช่น สมชาย ใจดี">
       <button id="checkinBtn">เช็คชื่อเข้าร่วม</button>
     </div>
-    <div class="toplink"><a href="gallery.html" target="_blank">📷 ดู Gallery Wall</a></div>
   `);
   document.getElementById('checkinBtn').onclick = doCheckin;
   document.getElementById('nameInput').addEventListener('keydown', e=>{ if(e.key==='Enter') doCheckin(); });
@@ -297,8 +432,8 @@ async function doCheckin(){
   routeParticipant();
 }
 
-/* ---- Router: decide which screen based on completed stage + global open flags ---- */
 async function routeParticipant(){
+  if(currentTab!=='tasks') return;
   const profile = getProfile();
   if(!profile){ screenLogin(); return; }
   const status = await callApi('getStatus', {attendeeId: profile.attendeeId});
@@ -306,18 +441,51 @@ async function routeParticipant(){
 
   if(completed>=4 || status.certIssued){ screenCertificate(profile); return; }
   if(completed===3){ if(status.cert_open) screenCertificate(profile); else screenCooldown(3, status, completed); return; }
-  if(completed===2){ if(status.stage3_open) screenSelfie(profile, status); else screenCooldown(2, status, completed); return; }
-  if(completed===1){ if(status.stage2_open) screenQuestion(profile, status); else screenCooldown(1, status, completed); return; }
+  if(completed===1 || completed===2){ screenQuestionFlow(profile, status, completed); return; }
   screenLogin();
 }
 
-/* ---- Screen: cooldown ---- */
+/* ---- Stage 1->2: rotating question flow + waiting screen ---- */
+function getLastAnsweredQId(){ return localStorage.getItem(LAST_Q_KEY) || ''; }
+function setLastAnsweredQId(id){ localStorage.setItem(LAST_Q_KEY, id || ''); }
+
+function screenQuestionFlow(profile, status, completed){
+  // Already checked in (or already answered once). Decide: proceed to stage3, show a fresh
+  // question, or show a waiting screen.
+  if(completed===2 && status.stage3_open){ routeParticipant(); return; } // will re-fetch and hit stage3 branch
+  if(!status.stage2_open){ screenCooldown(1, status, completed); return; }
+
+  const hasNewQuestion = status.question_id && status.question_id !== getLastAnsweredQId();
+  if(hasNewQuestion){ screenQuestion(profile, status, completed); return; }
+
+  screenWaiting(profile, status, completed);
+}
+
+function screenWaiting(profile, status, completed){
+  stopPoll();
+  const msg = completed===1
+    ? (status.question_id ? 'รอทีมงานเปิดคำถาม...' : (status.cooldown_msg_1 || 'รอคำถามจากทีมงาน...'))
+    : (status.cooldown_msg_2 || 'รอคำถามข้อถัดไป หรือ กิจกรรมถัดไป...');
+  renderTasks(`
+    <div class="toplink"><a href="#" id="switchUser">ไม่ใช่คุณ ${profile.firstName}? เปลี่ยนชื่อ</a></div>
+    ${stepperHtml(completed)}
+    <div class="card center">
+      <h2>⏳ Cooldown</h2>
+      <div class="spinner"></div>
+      <p>${msg}</p>
+      <p class="hint">หน้านี้จะเปลี่ยนอัตโนมัติเมื่อทีมงานเปิดคำถาม/กิจกรรมถัดไป</p>
+    </div>
+  `);
+  document.getElementById('switchUser').onclick = (e)=>{ e.preventDefault(); clearProfile(); setLastAnsweredQId(''); screenLogin(); };
+  pollTimer = setInterval(routeParticipant, 4000);
+}
+
 function screenCooldown(stageJustDone, status, completed){
   stopPoll();
   const profile = getProfile();
   const msgKey = 'cooldown_msg_'+stageJustDone;
   const msg = status[msgKey] || 'รอทีมงานเปิดกิจกรรมถัดไป กรุณารอสักครู่...';
-  render(`
+  renderTasks(`
     <div class="toplink"><a href="#" id="switchUser">ไม่ใช่คุณ ${profile.firstName}? เปลี่ยนชื่อ</a></div>
     ${stepperHtml(completed)}
     <div class="card center">
@@ -331,12 +499,11 @@ function screenCooldown(stageJustDone, status, completed){
   pollTimer = setInterval(routeParticipant, 4000);
 }
 
-/* ---- Screen: after-lunch question (stage 2) ---- */
-function screenQuestion(profile, status){
+function screenQuestion(profile, status, completed){
   stopPoll();
-  render(`
+  renderTasks(`
     <div class="toplink"><a href="#" id="switchUser">ไม่ใช่คุณ ${profile.firstName}? เปลี่ยนชื่อ</a></div>
-    ${stepperHtml(1)}
+    ${stepperHtml(completed)}
     <div class="card">
       <h2>📝 คำถามช่วงบ่าย</h2>
       <p>${status.question_text || 'กรุณารอคำถามจากทีมงาน'}</p>
@@ -345,22 +512,22 @@ function screenQuestion(profile, status){
       <button id="submitAnswerBtn">ส่งคำตอบ</button>
     </div>
   `);
-  document.getElementById('switchUser').onclick = (e)=>{ e.preventDefault(); clearProfile(); screenLogin(); };
+  document.getElementById('switchUser').onclick = (e)=>{ e.preventDefault(); clearProfile(); setLastAnsweredQId(''); screenLogin(); };
   document.getElementById('submitAnswerBtn').onclick = async ()=>{
     const answer = document.getElementById('answerInput').value.trim();
     if(!answer){ document.getElementById('qErr').innerHTML = '<div class="error">กรุณาตอบคำถามก่อนส่ง</div>'; return; }
     const btn = document.getElementById('submitAnswerBtn');
     btn.disabled=true; btn.textContent='กำลังส่ง...';
-    const res = await callApi('submitAnswer', {attendeeId: profile.attendeeId, answer});
+    const res = await callApi('submitAnswer', {attendeeId: profile.attendeeId, questionId: status.question_id, answer});
     if(!res.success){ document.getElementById('qErr').innerHTML = '<div class="error">ส่งไม่สำเร็จ ลองใหม่อีกครั้ง</div>'; btn.disabled=false; btn.textContent='ส่งคำตอบ'; return; }
+    setLastAnsweredQId(status.question_id);
     routeParticipant();
   };
 }
 
-/* ---- Screen: selfie upload (stage 3) ---- */
 function screenSelfie(profile, status){
   stopPoll();
-  render(`
+  renderTasks(`
     <div class="toplink"><a href="#" id="switchUser">ไม่ใช่คุณ ${profile.firstName}? เปลี่ยนชื่อ</a></div>
     ${stepperHtml(2)}
     <div class="card">
@@ -371,7 +538,7 @@ function screenSelfie(profile, status){
       <label>รูปถ่าย Selfie</label>
       <input type="file" id="photoInput" accept="image/*" capture="environment">
       <img id="preview" class="thumb">
-      <label>โน้ตสั้นๆ (จะแสดงบน Gallery Wall)</label>
+      <label>โน้ตสั้นๆ (จะแสดงบน Gallery ด้วย)</label>
       <textarea id="noteInput" placeholder="เช่น ทีมเราคิดโปรเจกต์ AI สุดครีเอทีฟ!"></textarea>
       <div id="sErr"></div>
       <button id="submitSelfieBtn">อัปโหลด</button>
@@ -416,11 +583,10 @@ function screenSelfie(profile, status){
   };
 }
 
-/* ---- Screen: certificate ---- */
 function screenCertificate(profile){
   stopPoll();
   const today = new Date().toLocaleDateString('th-TH', {year:'numeric', month:'long', day:'numeric'});
-  render(`
+  renderTasks(`
     ${stepperHtml(4)}
     <div class="card cert" id="certCard">
       <div class="brand">AI NEXT · CERTIFICATE OF PARTICIPATION</div>
@@ -432,7 +598,6 @@ function screenCertificate(profile){
       <div class="meta">Issued ${today}</div>
     </div>
     <button id="downloadBtn">ดาวน์โหลด Certificate (PNG)</button>
-    <div class="toplink" style="margin-top:14px;"><a href="gallery.html" target="_blank">📷 ดู Gallery Wall</a></div>
   `);
   document.getElementById('downloadBtn').onclick = ()=>{
     html2canvas(document.getElementById('certCard'), {backgroundColor:'#ffffff', scale:2}).then(canvas=>{
@@ -444,11 +609,226 @@ function screenCertificate(profile){
   };
 }
 
+// patch routeParticipant to also handle stage3 screen when needed
+const _origRouteParticipant = routeParticipant;
+async function routeParticipantFull(){
+  if(currentTab!=='tasks') return;
+  const profile = getProfile();
+  if(!profile){ screenLogin(); return; }
+  const status = await callApi('getStatus', {attendeeId: profile.attendeeId});
+  const completed = status.stage ?? 0;
+
+  if(completed>=4 || status.certIssued){ screenCertificate(profile); return; }
+  if(completed===3){ if(status.cert_open) screenCertificate(profile); else screenCooldown(3, status, completed); return; }
+  if(completed===2 && status.stage3_open){ screenSelfie(profile, status); return; }
+  if(completed===1 || completed===2){ screenQuestionFlow(profile, status, completed); return; }
+  screenLogin();
+}
+routeParticipant = routeParticipantFull;
+
+/* ============================================================
+   GALLERY TAB
+   ============================================================ */
+const galApp = document.getElementById('galleryPanel');
+let galleryPollTimer = null;
+function startGalleryPoll(){ stopGalleryPoll(); galleryPollTimer = setInterval(loadGallery, 8000); }
+function stopGalleryPoll(){ if(galleryPollTimer){ clearInterval(galleryPollTimer); galleryPollTimer=null; } }
+
+function starsHtml(n){
+  let s='';
+  for(let i=0;i<n;i++){
+    const top = Math.random()*100, left = Math.random()*100, delay=(Math.random()*3).toFixed(2);
+    s += `<div class="star" style="top:${top}%; left:${left}%; animation-delay:${delay}s;"></div>`;
+  }
+  return s;
+}
+
+let galleryItemsCache = [];
+async function loadGallery(){
+  const profile = getProfile();
+  const res = await callApi('getGallery', {attendeeId: profile? profile.attendeeId : ''});
+  if(!res.success) return;
+  galleryItemsCache = res.items || [];
+  renderGallery();
+}
+
+function renderGallery(){
+  const profile = getProfile();
+  const nudge = !profile ? `<div class="login-nudge">เช็คชื่อในแท็บ 🎯 Tasks ก่อน เพื่อโพสต์รูป / กดถูกใจ / คอมเมนต์ได้</div>` : '';
+  let body;
+  if(!galleryItemsCache.length){
+    body = `<div class="gallery-sky"><div class="stars">${starsHtml(30)}</div><div class="empty-gal">ยังไม่มีรูปในแกลเลอรี่ — เป็นคนแรกที่โพสต์เลย! ✨</div></div>`;
+  } else {
+    body = `<div class="gallery-sky"><div class="stars">${starsHtml(30)}</div>
+      <div class="bubble-grid">
+      ${galleryItemsCache.map((it,i)=>`
+        <div class="bubble" style="animation-delay:${(i%5)*0.4}s" data-postid="${it.postId}">
+          ${it.photoUrl? `<img src="${it.photoUrl}" alt="">`:''}
+          <div class="body">
+            <div class="name">${it.name||it.team||'—'}</div>
+            ${it.note? `<div class="note">${it.note}</div>`:''}
+            <div class="meta">
+              <button class="like-btn ${it.likedByMe?'liked':''}" data-like="${it.postId}">❤ ${it.likes||0}</button>
+              <span>💬 ${it.commentCount||0}</span>
+            </div>
+          </div>
+        </div>
+      `).join('')}
+      </div>
+    </div>`;
+  }
+  galApp.innerHTML = `
+    ${nudge}
+    ${body}
+    <button class="fab" id="fabUpload">＋ โพสต์รูปใหม่</button>
+  `;
+  document.querySelectorAll('[data-like]').forEach(btn=>{
+    btn.onclick = async (e)=>{
+      e.stopPropagation();
+      if(!profile){ alert('กรุณาเช็คชื่อในแท็บ Tasks ก่อน'); return; }
+      const postId = btn.dataset.like;
+      const res = await callApi('likePost', {attendeeId: profile.attendeeId, postId});
+      if(res.success){
+        const item = galleryItemsCache.find(g=>g.postId===postId);
+        if(item){ item.likes = res.likes; item.likedByMe = res.liked; }
+        renderGallery();
+      }
+    };
+  });
+  document.querySelectorAll('.bubble').forEach(el=>{
+    el.onclick = ()=> openPostModal(el.dataset.postid);
+  });
+  document.getElementById('fabUpload').onclick = openUploadModal;
+}
+
+function closeModal(){
+  const m = document.querySelector('.modal-backdrop');
+  if(m) m.remove();
+}
+
+function openUploadModal(){
+  const profile = getProfile();
+  if(!profile){ alert('กรุณาเช็คชื่อในแท็บ 🎯 Tasks ก่อน เพื่อโพสต์รูป'); return; }
+  const div = document.createElement('div');
+  div.className = 'modal-backdrop';
+  div.innerHTML = `
+    <div class="modal-sheet">
+      <div class="close-x"><span id="closeUpload">✕</span></div>
+      <h2 style="font-family:'Orbitron',sans-serif; color:var(--orange); font-size:16px;">✨ โพสต์รูปใหม่</h2>
+      <label>รูปถ่าย</label>
+      <input type="file" id="galPhotoInput" accept="image/*" capture="environment">
+      <img id="galPreview" class="thumb">
+      <label>โน้ตสั้นๆ</label>
+      <textarea id="galNoteInput" placeholder="แชร์โมเมนต์ของคุณ..."></textarea>
+      <div id="galErr"></div>
+      <button id="galSubmitBtn">โพสต์</button>
+    </div>
+  `;
+  document.body.appendChild(div);
+  document.getElementById('closeUpload').onclick = closeModal;
+  div.addEventListener('click', (e)=>{ if(e.target===div) closeModal(); });
+
+  let resizedBase64 = null;
+  document.getElementById('galPhotoInput').addEventListener('change', (e)=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev)=>{
+      const img = new Image();
+      img.onload = ()=>{
+        const maxW = 900;
+        const scale = Math.min(1, maxW/img.width);
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width*scale; canvas.height = img.height*scale;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img,0,0,canvas.width,canvas.height);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.72);
+        resizedBase64 = dataUrl.split(',')[1];
+        const prev = document.getElementById('galPreview');
+        prev.src = dataUrl; prev.style.display='block';
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById('galSubmitBtn').onclick = async ()=>{
+    if(!resizedBase64){ document.getElementById('galErr').innerHTML = '<div class="error">กรุณาแนบรูปก่อน</div>'; return; }
+    const btn = document.getElementById('galSubmitBtn');
+    btn.disabled = true; btn.textContent = 'กำลังโพสต์...';
+    const note = document.getElementById('galNoteInput').value.trim();
+    const res = await callApi('uploadGalleryPost', {attendeeId: profile.attendeeId, team: profile.team, note, imageBase64: resizedBase64, mimeType:'image/jpeg'});
+    if(!res.success){ document.getElementById('galErr').innerHTML = '<div class="error">โพสต์ไม่สำเร็จ ลองใหม่อีกครั้ง</div>'; btn.disabled=false; btn.textContent='โพสต์'; return; }
+    closeModal();
+    loadGallery();
+  };
+}
+
+async function openPostModal(postId){
+  const profile = getProfile();
+  const item = galleryItemsCache.find(g=>g.postId===postId);
+  if(!item) return;
+  const div = document.createElement('div');
+  div.className = 'modal-backdrop';
+  div.innerHTML = `
+    <div class="modal-sheet">
+      <div class="close-x"><span id="closePost">✕</span></div>
+      ${item.photoUrl? `<img class="full" src="${item.photoUrl}">`:''}
+      <div class="name">${item.name||item.team||'—'}</div>
+      ${item.note? `<p style="font-size:14px;">${item.note}</p>`:''}
+      <button class="like-btn ${item.likedByMe?'liked':''}" id="modalLikeBtn" style="width:auto; margin-bottom:14px;">❤ ${item.likes||0}</button>
+      <h2 style="font-size:14px;">ความคิดเห็น</h2>
+      <div id="commentsList"><div class="hint">กำลังโหลด...</div></div>
+      ${profile? `
+        <textarea id="commentInput" placeholder="แสดงความคิดเห็น..." style="min-height:50px; margin-top:10px;"></textarea>
+        <button id="commentSubmitBtn">ส่งคอมเมนต์</button>
+      ` : `<div class="login-nudge">เช็คชื่อในแท็บ Tasks ก่อน เพื่อคอมเมนต์</div>`}
+    </div>
+  `;
+  document.body.appendChild(div);
+  document.getElementById('closePost').onclick = closeModal;
+  div.addEventListener('click', (e)=>{ if(e.target===div) closeModal(); });
+
+  document.getElementById('modalLikeBtn').onclick = async ()=>{
+    if(!profile){ alert('กรุณาเช็คชื่อในแท็บ Tasks ก่อน'); return; }
+    const res = await callApi('likePost', {attendeeId: profile.attendeeId, postId});
+    if(res.success){
+      item.likes = res.likes; item.likedByMe = res.liked;
+      document.getElementById('modalLikeBtn').textContent = `❤ ${res.likes}`;
+      document.getElementById('modalLikeBtn').classList.toggle('liked', res.liked);
+    }
+  };
+
+  const commentsRes = await callApi('getComments', {postId});
+  const list = document.getElementById('commentsList');
+  if(commentsRes.success && commentsRes.items.length){
+    list.innerHTML = commentsRes.items.map(c=>`<div class="comment-item"><b>${c.name}</b>: ${c.comment}</div>`).join('');
+  } else {
+    list.innerHTML = '<div class="hint">ยังไม่มีความคิดเห็น</div>';
+  }
+
+  const submitBtn = document.getElementById('commentSubmitBtn');
+  if(submitBtn){
+    submitBtn.onclick = async ()=>{
+      const text = document.getElementById('commentInput').value.trim();
+      if(!text) return;
+      submitBtn.disabled = true; submitBtn.textContent = 'กำลังส่ง...';
+      const res = await callApi('addComment', {attendeeId: profile.attendeeId, postId, comment: text});
+      if(res.success){
+        item.commentCount = (item.commentCount||0)+1;
+        list.innerHTML += `<div class="comment-item"><b>${res.comment.name}</b>: ${res.comment.comment}</div>`;
+        document.getElementById('commentInput').value = '';
+      }
+      submitBtn.disabled = false; submitBtn.textContent = 'ส่งคอมเมนต์';
+    };
+  }
+}
+
 /* ================= INIT ================= */
 (function init(){
   seedDemo();
-  const profile = getProfile();
-  if(profile) routeParticipant(); else screenLogin();
+  if(location.hash === '#gallery'){ showTab('gallery'); }
+  else { showTab('tasks'); }
 })();
 </script>
 </body>
