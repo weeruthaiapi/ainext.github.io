@@ -5,62 +5,66 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI NEXT — Staff Admin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --white:#FFFFFF; --black:#000000;
-    --maroon:#5A0006; --red-dark:#920004; --red:#D92000; --orange-red:#F3500A; --orange:#F37100;
-    --grad: linear-gradient(90deg, var(--maroon), var(--red-dark), var(--red), var(--orange-red), var(--orange));
+    --accent:#fff; --accent-soft:rgba(255,255,255,.18); --glow:rgba(255,120,40,.55);
+    --surface:rgba(20,0,2,.30); --surface-brd:rgba(255,255,255,.32); --line:rgba(255,255,255,.26);
+    --muted:rgba(255,236,227,.85); --chip:rgba(0,0,0,.26); --bar:rgba(90,10,4,.35);
+    --text:#fff; --cta-bg:#fff; --cta-text:#b3160a;
   }
   *{box-sizing:border-box;}
-  body{ margin:0; min-height:100vh; color:var(--white); font-family:'Prompt',sans-serif;
-    background: radial-gradient(circle at 50% -10%, #2a0002 0%, var(--black) 55%); }
-  .header{ background:var(--grad); padding:18px 20px; text-align:center; }
-  .header h1{ font-family:'Orbitron',sans-serif; margin:0; font-size:20px; }
+  body{ margin:0; min-height:100vh; color:var(--text); font-family:'IBM Plex Sans Thai',sans-serif;
+    background: linear-gradient(158deg,#F37100 0%,#D92000 48%,#5A0006 100%); background-attachment:fixed; }
+  .header{ background:var(--bar); border-bottom:1px solid var(--surface-brd); padding:18px 20px; display:flex; align-items:center; justify-content:center; gap:10px; }
+  .header img{ height:24px; width:auto; display:block; }
+  .header h1{ font-family:'Chakra Petch',sans-serif; font-weight:700; margin:0; font-size:20px; }
+  .q-active-dot{ display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--accent); margin-right:7px; vertical-align:middle; }
   .wrap{ max-width:680px; margin:0 auto; padding:24px 18px 60px; }
-  .card{ background:linear-gradient(160deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-    border:1px solid rgba(243,113,0,.35); border-radius:16px; padding:22px 20px; margin-bottom:16px; }
-  h2{ font-family:'Orbitron',sans-serif; font-size:15px; color:var(--orange); margin-top:0; }
-  input[type=password], input[type=text]{ width:100%; padding:12px 14px; border-radius:10px; border:1px solid rgba(255,255,255,.2);
-    background:rgba(0,0,0,.35); color:var(--white); font-size:15px; margin-bottom:12px; }
-  button{ cursor:pointer; background:var(--grad); color:var(--white); border:none; border-radius:10px;
-    padding:12px 16px; font-family:'Prompt',sans-serif; font-weight:600; font-size:14px; }
+  .card{ background:var(--surface); border:1px solid var(--surface-brd); border-radius:16px; padding:22px 20px; margin-bottom:16px; }
+  h2{ font-family:'Chakra Petch',sans-serif; font-weight:600; font-size:15px; color:var(--accent); margin-top:0; }
+  input[type=password], input[type=text]{ width:100%; padding:12px 14px; border-radius:10px; border:1px solid var(--surface-brd);
+    background:var(--chip); color:var(--text); font-family:'IBM Plex Sans Thai'; font-size:15px; margin-bottom:12px; }
+  button{ cursor:pointer; background:var(--cta-bg); color:var(--cta-text); border:none; border-radius:10px;
+    padding:12px 16px; font-family:'Chakra Petch',sans-serif; font-weight:600; font-size:14px; }
   button.small{ padding:8px 12px; font-size:12px; }
   button:disabled{ opacity:.5; }
-  .error{ color:#ff8a7a; background:rgba(146,0,4,.3); border:1px solid var(--red); padding:10px 12px; border-radius:10px; font-size:13px; margin-bottom:12px;}
-  .stage-row{ display:flex; align-items:center; justify-content:space-between; padding:14px 0; border-bottom:1px solid rgba(255,255,255,.08); }
+  .error{ color:#fff; background:rgba(0,0,0,.3); border:1px solid var(--surface-brd); padding:10px 12px; border-radius:10px; font-size:13px; margin-bottom:12px;}
+  .stage-row{ display:flex; align-items:center; justify-content:space-between; padding:14px 0; border-bottom:1px solid var(--line); }
   .stage-row:last-child{ border-bottom:none; }
-  .stage-name{ font-weight:600; font-size:14px; }
-  .badge{ font-size:11px; padding:4px 10px; border-radius:20px; margin-left:8px; }
-  .badge.open{ background:rgba(243,113,0,.25); color:var(--orange); border:1px solid var(--orange); }
-  .badge.closed{ background:rgba(255,255,255,.08); color:rgba(255,255,255,.5); border:1px solid rgba(255,255,255,.2); }
+  .stage-name{ font-weight:600; font-size:14px; font-family:'Chakra Petch'; }
+  .badge{ font-size:11px; padding:4px 10px; border-radius:20px; margin-left:8px; font-family:'Chakra Petch'; }
+  .badge.open{ background:var(--cta-bg); color:var(--cta-text); }
+  .badge.closed{ background:rgba(255,255,255,.08); color:var(--muted); border:1px solid var(--surface-brd); }
   .toggle-btn{ min-width:100px; }
   .stats-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; text-align:center; }
-  .stat{ background:rgba(0,0,0,.3); border-radius:12px; padding:14px 6px; }
-  .stat .num{ font-family:'Orbitron',sans-serif; font-size:22px; color:var(--orange); }
-  .stat .lbl{ font-size:11px; opacity:.75; margin-top:4px;}
-  .refresh-hint{ text-align:center; font-size:11px; opacity:.6; margin-top:6px;}
-  .q-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.08); }
+  .stat{ background:var(--chip); border:1px solid var(--surface-brd); border-radius:12px; padding:14px 6px; }
+  .stat .num{ font-family:'Chakra Petch'; font-weight:700; font-size:22px; color:var(--accent); }
+  .stat .lbl{ font-size:11px; color:var(--muted); margin-top:4px;}
+  .refresh-hint{ text-align:center; font-size:11px; color:var(--muted); margin-top:6px;}
+  .q-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 0; border-bottom:1px solid var(--line); }
   .q-text{ font-size:13px; flex:1; }
   .q-add-row{ display:flex; gap:8px; }
   .q-add-row input{ margin-bottom:0; }
   .q-add-row button{ width:auto; white-space:nowrap; }
-  .p-row{ border:1px solid rgba(255,255,255,.1); border-radius:12px; padding:12px 14px; margin-bottom:10px; }
+  .p-row{ border:1px solid var(--surface-brd); border-radius:12px; padding:12px 14px; margin-bottom:10px; }
   .p-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
-  .p-name{ font-weight:600; font-size:14px; }
-  .p-id{ font-size:11px; opacity:.6; }
+  .p-name{ font-weight:600; font-size:14px; font-family:'Chakra Petch'; }
+  .p-id{ font-size:11px; color:var(--muted); }
   .p-flags{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:8px; }
-  .flag-btn{ width:auto; font-size:11px; padding:6px 10px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.2); }
-  .flag-btn.on{ background:var(--grad); border-color:transparent; }
+  .flag-btn{ width:auto; font-size:11px; padding:6px 10px; background:rgba(255,255,255,.08); border:1px solid var(--surface-brd); color:var(--text); }
+  .flag-btn.on{ background:var(--cta-bg); color:var(--cta-text); border-color:transparent; }
   .p-team-row{ display:flex; gap:8px; }
   .p-team-row input{ margin-bottom:0; }
   .search-row{ display:flex; gap:8px; }
   .search-row input{ margin-bottom:0; }
   .search-row button{ width:auto; white-space:nowrap; }
+  a.admin-back{ color:var(--muted); font-family:'Chakra Petch'; font-size:12px; display:inline-flex; align-items:center; gap:6px; }
+  a.admin-back svg{ flex-shrink:0; }
 </style>
 </head>
 <body>
-<div class="header"><h1>🛠 AI NEXT — Staff Admin</h1></div>
+<div class="header"><img src="ainext-logo.png" alt="AI NEXT"><h1>Staff Admin</h1></div>
 <div class="wrap" id="app"></div>
 
 <script>
@@ -188,6 +192,7 @@ function screenLogin(err=''){
       ${err? `<div class="error">${err}</div>`:''}
       <input type="password" id="pw" placeholder="Admin password">
       <button id="loginBtn">เข้าสู่ระบบ</button>
+      <p style="margin-top:14px;"><a class="admin-back" href="index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"></path></svg>กลับหน้าลงทะเบียน</a></p>
     </div>`;
   document.getElementById('loginBtn').onclick = doLogin;
   document.getElementById('pw').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
@@ -249,10 +254,10 @@ async function screenDashboard(){
       <div id="questionsList">
         ${questionsCache.length ? questionsCache.map(q=>`
           <div class="q-row">
-            <div class="q-text">${q.active? '🟢 ':''}${q.text}</div>
+            <div class="q-text">${q.active? '<span class="q-active-dot"></span>':''}${q.text}</div>
             ${q.active? '' : `<button class="small" data-setactive="${q.id}">ตั้งเป็นคำถามปัจจุบัน</button>`}
           </div>
-        `).join('') : '<p class="hint" style="text-align:left;">ยังไม่มีคำถาม เพิ่มด้านล่าง</p>'}
+        `).join('') : '<p class="refresh-hint" style="text-align:left;">ยังไม่มีคำถาม เพิ่มด้านล่าง</p>'}
       </div>
       <div class="q-add-row" style="margin-top:12px;">
         <input type="text" id="newQuestionInput" placeholder="พิมพ์คำถามใหม่...">
@@ -268,6 +273,8 @@ async function screenDashboard(){
       </div>
       <div id="searchResults"></div>
     </div>
+
+    <p style="text-align:center;"><a class="admin-back" href="index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"></path></svg>กลับหน้าลงทะเบียน</a></p>
   `;
 
   document.querySelectorAll('.toggle-btn').forEach(btn=>{
@@ -297,7 +304,6 @@ async function screenDashboard(){
   document.getElementById('searchBtn').onclick = doSearch;
   document.getElementById('searchInput').addEventListener('keydown', e=>{ if(e.key==='Enter') doSearch(); });
 
-  // restore previous search results after a background refresh, without forcing a re-query
   if(lastSearchQuery && searchResultsCache.length){ renderSearchResults(); }
 
   clearInterval(pollTimer);
@@ -316,7 +322,7 @@ async function doSearch(){
 function renderSearchResults(){
   const box = document.getElementById('searchResults');
   if(!box) return;
-  if(!searchResultsCache.length){ box.innerHTML = '<p class="hint" style="text-align:left;">ไม่พบผู้เข้าร่วม</p>'; return; }
+  if(!searchResultsCache.length){ box.innerHTML = '<p class="refresh-hint" style="text-align:left;">ไม่พบผู้เข้าร่วม</p>'; return; }
   box.innerHTML = searchResultsCache.map(p => `
     <div class="p-row" data-id="${p.attendeeId}">
       <div class="p-head">
