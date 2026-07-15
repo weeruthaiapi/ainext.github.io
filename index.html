@@ -3,158 +3,191 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI NEXT — Check-in</title>
+<title>AI NEXT — Registration</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
   :root{
-    --white:#FFFFFF; --black:#000000;
-    --maroon:#5A0006; --red-dark:#920004; --red:#D92000; --orange-red:#F3500A; --orange:#F37100;
-    --grad: linear-gradient(90deg, var(--maroon), var(--red-dark), var(--red), var(--orange-red), var(--orange));
+    --accent:#fff; --accent-soft:rgba(255,255,255,.18); --glow:rgba(255,120,40,.55);
+    --surface:rgba(20,0,2,.30); --surface-brd:rgba(255,255,255,.32); --line:rgba(255,255,255,.26);
+    --muted:rgba(255,236,227,.85); --chip:rgba(0,0,0,.26); --bar:rgba(90,10,4,.35); --grid:rgba(255,255,255,.06);
+    --dial:#8a1204; --text:#fff; --cta-bg:#fff; --cta-text:#b3160a;
+    --cert-bg:linear-gradient(150deg,#F37100,#8a1204); --cert-text:#fff; --cert-muted:rgba(255,236,227,.82); --cert-line:rgba(255,255,255,.35);
   }
   *{box-sizing:border-box;}
+  html,body{ height:100%; }
   body{
-    margin:0; min-height:100vh; color:var(--white);
-    font-family:'Prompt', sans-serif;
-    background: radial-gradient(circle at 50% -10%, #2a0002 0%, var(--black) 55%);
+    margin:0; min-height:100vh; color:var(--text); font-family:'IBM Plex Sans Thai',sans-serif;
+    background: linear-gradient(158deg,#F37100 0%,#D92000 48%,#5A0006 100%);
     background-attachment: fixed;
   }
-  .header{ background:var(--grad); padding:16px 20px 0; text-align:center; box-shadow:0 4px 25px rgba(217,32,0,.35); }
-  .header h1{ font-family:'Orbitron', sans-serif; margin:0; font-size:22px; letter-spacing:1px; }
-  .header .sub{ font-size:12px; opacity:.9; margin-top:4px; padding-bottom:10px;}
-  .tabs{ display:flex; }
-  .tab-btn{
-    flex:1; background:rgba(0,0,0,.25); border:none; color:var(--white); padding:12px 8px;
-    font-family:'Prompt',sans-serif; font-weight:600; font-size:14px; cursor:pointer; opacity:.65;
-    border-bottom:3px solid transparent;
-  }
-  .tab-btn.active{ opacity:1; border-bottom:3px solid var(--white); background:rgba(0,0,0,.1); }
-  .wrap{ max-width:480px; margin:0 auto; padding:24px 18px 60px; }
-  .wrap.gallery-wrap{ max-width:720px; }
-  .tabpanel{ display:none; }
-  .tabpanel.active{ display:block; }
+  .app{ position:relative; max-width:480px; margin:0 auto; min-height:100vh; overflow:hidden; }
+  .grid-overlay{ position:absolute; inset:0; pointer-events:none;
+    background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size:34px 34px; }
+  .blob-tr{ position:absolute; top:-90px; right:-70px; width:260px; height:260px; border-radius:50%;
+    background:radial-gradient(circle,var(--glow),transparent 68%); filter:blur(6px); pointer-events:none; }
+  .blob-bl{ position:absolute; bottom:-120px; left:-80px; width:300px; height:300px; border-radius:50%;
+    background:radial-gradient(circle,var(--glow),transparent 70%); opacity:.5; pointer-events:none; }
+  .content{ position:relative; z-index:2; min-height:100vh; display:flex; flex-direction:column; }
 
-  .card{
-    background:linear-gradient(160deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-    border:1px solid rgba(243,113,0,.35);
-    border-radius:18px; padding:24px 20px; margin-bottom:16px;
-    box-shadow:0 0 30px rgba(243,80,10,.08);
-  }
-  .card h2{ font-family:'Orbitron',sans-serif; font-size:16px; color:var(--orange); margin-top:0;}
-  label{ display:block; font-size:13px; opacity:.85; margin-bottom:6px;}
-  input[type=text], input[type=password], textarea{
-    width:100%; padding:12px 14px; border-radius:10px; border:1px solid rgba(255,255,255,.2);
-    background:rgba(0,0,0,.35); color:var(--white); font-family:'Prompt',sans-serif; font-size:15px;
-    margin-bottom:14px;
-  }
-  textarea{ min-height:90px; resize:vertical;}
-  button, .btn{
-    display:inline-block; width:100%; text-align:center; cursor:pointer;
-    background:var(--grad); color:var(--white); border:none; border-radius:12px;
-    padding:14px; font-family:'Prompt',sans-serif; font-weight:600; font-size:15px;
-    letter-spacing:.3px;
-  }
-  button:disabled{ opacity:.5; cursor:not-allowed;}
-  .error{ color:#ff8a7a; background:rgba(146,0,4,.3); border:1px solid var(--red); padding:10px 12px; border-radius:10px; font-size:13px; margin-bottom:14px;}
-  .hint{ font-size:12px; opacity:.7; margin-top:8px; text-align:center;}
-  .stepper{ display:flex; justify-content:space-between; margin-bottom:20px; gap:6px;}
-  .step{ flex:1; text-align:center; }
-  .step .dot{
-    width:30px; height:30px; border-radius:50%; margin:0 auto 6px; display:flex; align-items:center; justify-content:center;
-    font-size:13px; font-weight:700; border:2px solid rgba(255,255,255,.25); font-family:'Orbitron',sans-serif;
-  }
-  .step.done .dot{ background:var(--grad); border-color:transparent;}
-  .step.active .dot{ border-color:var(--orange); box-shadow:0 0 12px rgba(243,113,0,.8); }
-  .step span{ font-size:10px; opacity:.75;}
-  .spinner{
-    width:44px; height:44px; border-radius:50%; margin:14px auto;
-    border:4px solid rgba(255,255,255,.15); border-top-color:var(--orange);
-    animation:spin 1s linear infinite;
-  }
-  @keyframes spin{ to{ transform:rotate(360deg);} }
-  .center{ text-align:center; }
-  .cert{
-    background:var(--white); color:var(--black); border-radius:16px; padding:28px 20px;
-    text-align:center; border:6px solid var(--orange-red);
-  }
-  .cert .brand{ font-family:'Orbitron',sans-serif; color:var(--red-dark); letter-spacing:2px; font-size:13px;}
-  .cert h2{ color:var(--black); font-size:22px; margin:10px 0 4px;}
-  .cert .name{ font-size:26px; font-weight:700; margin:14px 0; font-family:'Orbitron',sans-serif; color:var(--red);}
-  .cert .meta{ font-size:12px; opacity:.7; margin-top:16px;}
-  .thumb{ width:100%; border-radius:12px; margin-bottom:12px; display:none;}
-  .toplink{ text-align:center; font-size:12px; margin-bottom:14px;}
-  a{ color:var(--orange); }
+  .appbar{ flex-shrink:0; display:none; align-items:center; justify-content:space-between; padding:16px 20px;
+    border-bottom:1px solid var(--surface-brd); background:var(--bar); }
+  .appbar.show{ display:flex; }
+  .appbar .brand{ font-family:'Chakra Petch'; font-weight:700; font-size:15px; letter-spacing:1px; display:flex; align-items:center; }
+  .appbar .brand img{ height:24px; width:auto; display:block; }
+  .appbar .cert-chip{ display:inline-flex; align-items:center; gap:7px; background:var(--chip); border:1px solid var(--surface-brd);
+    border-radius:999px; padding:6px 12px; cursor:pointer; color:var(--text); border-width:1px; font-family:'Chakra Petch'; font-weight:600; font-size:12px; letter-spacing:1px; }
 
-  /* ===== Gallery tab — floating, bubbly, dreamy ===== */
-  .gallery-sky{
-    position:relative; min-height:60vh; border-radius:24px; overflow:hidden;
-    background:
-      radial-gradient(ellipse at 20% 10%, rgba(243,113,0,.18), transparent 55%),
-      radial-gradient(ellipse at 80% 30%, rgba(217,32,0,.18), transparent 55%),
-      linear-gradient(180deg, #120000, #000000 70%);
-    border:1px solid rgba(243,113,0,.25);
-    padding:20px 14px 90px;
-  }
-  .stars{ position:absolute; inset:0; pointer-events:none; }
-  .star{ position:absolute; width:3px; height:3px; background:rgba(255,255,255,.8); border-radius:50%;
-    animation: twinkle 3.5s ease-in-out infinite; }
-  @keyframes twinkle{ 0%,100%{ opacity:.15;} 50%{ opacity:.9;} }
-  .bubble-grid{ position:relative; display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:22px; z-index:1;}
-  .bubble{
-    background:linear-gradient(160deg, rgba(255,255,255,.10), rgba(255,255,255,.02));
-    backdrop-filter: blur(6px);
-    border:1px solid rgba(243,113,0,.4);
-    border-radius:26px; overflow:hidden; cursor:pointer;
-    box-shadow:0 8px 30px rgba(0,0,0,.4), 0 0 18px rgba(243,113,0,.12);
-    animation: floaty 5s ease-in-out infinite;
-  }
-  @keyframes floaty{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-10px);} }
-  .bubble img{ width:100%; height:140px; object-fit:cover; display:block; }
-  .bubble .body{ padding:10px 12px; }
-  .bubble .name{ font-weight:700; font-size:12px; color:var(--orange); }
-  .bubble .note{ font-size:11px; opacity:.85; margin-top:2px; max-height:32px; overflow:hidden; }
-  .bubble .meta{ display:flex; justify-content:space-between; font-size:11px; opacity:.8; margin-top:8px; }
-  .bubble .like-btn{ background:none; border:none; color:var(--white); width:auto; padding:0; font-size:12px; }
-  .bubble .like-btn.liked{ color:var(--orange); }
-  .fab{
-    position:fixed; right:22px; bottom:26px; width:auto; border-radius:30px; padding:14px 22px;
-    box-shadow:0 6px 24px rgba(217,32,0,.5); z-index:20; font-size:14px;
-  }
-  .empty-gal{ text-align:center; opacity:.7; padding:50px 14px; position:relative; z-index:1;}
-  .modal-backdrop{
-    position:fixed; inset:0; background:rgba(0,0,0,.75); backdrop-filter:blur(3px);
-    display:flex; align-items:flex-end; justify-content:center; z-index:50;
-  }
-  .modal-sheet{
-    background:#140002; width:100%; max-width:480px; border-radius:22px 22px 0 0;
-    padding:20px 20px 26px; max-height:88vh; overflow-y:auto; border-top:1px solid rgba(243,113,0,.4);
-  }
-  .modal-sheet img.full{ width:100%; border-radius:14px; margin-bottom:10px; }
-  .close-x{ text-align:right; }
-  .close-x span{ cursor:pointer; font-size:20px; opacity:.7; }
-  .comment-item{ padding:8px 0; border-bottom:1px solid rgba(255,255,255,.08); font-size:13px; }
-  .comment-item b{ color:var(--orange); }
-  .login-nudge{ text-align:center; padding:16px; font-size:13px; opacity:.85; background:rgba(243,113,0,.12); border-radius:12px; margin-bottom:16px; }
+  .screen-wrap{ flex:1; overflow-y:auto; padding:26px 22px 30px; }
+  .screen{ min-height:100%; display:flex; flex-direction:column; animation:anx-rise .45s ease both; }
+  @keyframes anx-rise{ 0%{opacity:0; transform:translateY(16px);} 100%{opacity:1; transform:translateY(0);} }
+  @keyframes anx-float{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
+  @keyframes anx-spin{ to{transform:rotate(360deg);} }
+  @keyframes anx-blink{ 0%,100%{opacity:.25;} 50%{opacity:1;} }
+  @keyframes anx-shine{ 0%{background-position:-160% 0;} 100%{background-position:260% 0;} }
+  @keyframes anx-fab{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(-6px);} }
+  @keyframes anx-fade{ 0%{opacity:0;} 100%{opacity:1;} }
+  @keyframes anx-breathe{ 0%,100%{transform:scale(1);opacity:.45;} 50%{transform:scale(1.14);opacity:.8;} }
+  @keyframes anx-bub{ 0%{transform:translateY(20px) scale(.85);opacity:0;} 18%{opacity:.6;} 100%{transform:translateY(-140px) scale(1.2);opacity:0;} }
+
+  .kicker{ display:flex; align-items:center; gap:8px; font-family:'Chakra Petch'; font-size:11px; letter-spacing:3px; color:var(--muted); text-transform:uppercase; }
+  .kicker .bar{ width:20px; height:2px; background:var(--accent); display:inline-block; }
+  h1.title{ margin:16px 0 4px; font-family:'Chakra Petch'; font-weight:600; font-size:23px; color:var(--text); }
+  h2.title{ margin:0 0 4px; font-family:'Chakra Petch'; font-weight:600; font-size:24px; color:var(--text); }
+  .subtitle{ margin:0; font-family:'Chakra Petch'; font-size:12px; letter-spacing:3px; color:var(--accent); text-transform:uppercase; }
+  .desc{ margin:14px 0 0; font-size:13.5px; line-height:1.6; color:var(--muted); }
+
+  .session-row{ display:flex; align-items:center; gap:12px; background:var(--surface); border:1px solid var(--surface-brd);
+    border-radius:13px; padding:12px 14px; }
+  .session-row .time{ font-family:'Chakra Petch'; font-weight:600; font-size:13px; color:var(--accent); width:54px; flex-shrink:0; }
+  .session-row .stitle{ font-family:'Chakra Petch'; font-weight:600; font-size:14px; color:var(--text); }
+  .session-row .ssub{ font-size:11.5px; color:var(--muted); }
+
+  .cta-btn, .ghost-btn, .back-btn{ font-family:'Chakra Petch'; cursor:pointer; }
+  .cta-btn{ display:inline-flex; align-items:center; justify-content:center; gap:9px; width:100%; padding:16px 20px; border:none;
+    border-radius:14px; background:var(--cta-bg); color:var(--cta-text); font-weight:600; font-size:15px; letter-spacing:.4px;
+    box-shadow:0 12px 30px var(--glow); transition:transform .16s ease; margin-top:14px; }
+  .cta-btn:hover{ transform:translateY(-2px); }
+  .cta-btn:disabled{ opacity:.6; cursor:not-allowed; transform:none; }
+  .ghost-btn{ width:100%; padding:14px; border-radius:13px; background:transparent; border:1px solid var(--surface-brd);
+    color:var(--text); font-weight:500; font-size:13.5px; margin-top:10px; }
+  .back-btn{ align-self:flex-start; display:inline-flex; align-items:center; gap:6px; background:transparent; border:none;
+    color:var(--muted); font-size:13px; padding:0; margin-bottom:20px; }
+  .admin-link{ display:inline-flex; align-items:center; justify-content:center; gap:6px; background:transparent; border:none;
+    color:var(--muted); font-family:'Chakra Petch'; font-size:12px; cursor:pointer; margin-top:14px; text-decoration:none; }
+
+  .field{ width:100%; padding:16px 18px; border-radius:13px; background:var(--chip); border:1px solid var(--surface-brd);
+    color:var(--text); font-family:'Chakra Petch'; font-size:16px; letter-spacing:.5px; outline:none; margin-bottom:0; }
+  .field:focus{ border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
+  textarea.field{ font-family:'IBM Plex Sans Thai'; font-size:14px; min-height:90px; resize:vertical; letter-spacing:normal; }
+  .error-msg{ margin:10px 0 0; color:#fff; background:rgba(0,0,0,.28); border:1px solid var(--surface-brd); border-radius:10px;
+    padding:9px 12px; font-size:12.5px; display:flex; align-items:center; gap:6px; }
+
+  .dial-wrap{ position:relative; width:170px; height:170px; border-radius:50%; margin:6px auto; display:flex; align-items:center; justify-content:center; }
+  .dial-ring{ position:absolute; inset:0; border-radius:50%; border:4px solid transparent; border-top-color:var(--accent);
+    border-right-color:var(--accent); animation:anx-spin 1.3s linear infinite; }
+  .dial-inner{ position:absolute; inset:11px; border-radius:50%; background:var(--dial); display:flex; flex-direction:column;
+    align-items:center; justify-content:center; border:1px solid var(--surface-brd); text-align:center; padding:10px; }
+
+  .stat-box{ flex:1; background:var(--surface); border:1px solid var(--surface-brd); border-radius:13px; padding:13px; text-align:left; }
+  .stat-box .lbl{ font-size:11px; color:var(--muted); }
+  .stat-box .val{ font-family:'Chakra Petch'; font-weight:600; font-size:14px; color:var(--text); }
+
+  .progress-card{ background:var(--surface); border:1px solid var(--surface-brd); border-radius:16px; padding:16px; margin-bottom:18px; }
+  .progress-card .row{ display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+  .progress-track{ height:9px; border-radius:999px; background:var(--line); overflow:hidden; }
+  .progress-fill{ height:100%; border-radius:999px; background:var(--cta-bg); transition:width .5s ease; }
+
+  .task-card{ display:flex; align-items:center; gap:13px; width:100%; text-align:left; padding:14px; border-radius:14px;
+    cursor:pointer; background:var(--surface); border:1px solid var(--surface-brd); font-family:inherit; color:inherit; }
+  .task-card.done{ border-color:var(--accent); }
+  .task-card .icon{ width:38px; height:38px; border-radius:11px; flex-shrink:0; display:flex; align-items:center; justify-content:center;
+    font-family:'Chakra Petch'; color:var(--accent); background:var(--accent-soft); }
+  .task-card.done .icon{ color:var(--cta-text); background:var(--cta-bg); }
+  .task-card .ttitle{ font-family:'Chakra Petch'; font-weight:600; font-size:15px; color:var(--text); }
+  .task-card .tsub{ font-size:11.5px; color:var(--muted); }
+  .task-card .badge{ font-family:'Chakra Petch'; font-size:11px; padding:5px 10px; border-radius:999px; flex-shrink:0;
+    border:1px solid var(--surface-brd); color:var(--text); }
+
+  .checklist-item{ display:flex; align-items:center; gap:10px; background:var(--surface); border:1px solid var(--surface-brd);
+    border-radius:12px; padding:11px 13px; }
+  .checklist-item .dot{ width:22px; height:22px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center;
+    color:var(--cta-text); background:var(--line); }
+  .checklist-item .dot.on{ background:var(--cta-bg); }
+
+  .cert-card{ position:relative; border-radius:18px; overflow:hidden; padding:26px 22px; background:var(--cert-bg);
+    border:1px solid var(--accent); box-shadow:0 20px 50px var(--glow); }
+  .cert-shine{ position:absolute; inset:0; background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.14) 50%,transparent 70%);
+    background-size:250% 100%; animation:anx-shine 3.5s linear infinite; pointer-events:none; }
+  .cert-card .brand{ font-family:'Chakra Petch'; font-size:10px; letter-spacing:3px; color:var(--cert-muted); text-transform:uppercase; }
+  .cert-card .cname{ font-family:'Chakra Petch'; font-weight:600; font-size:26px; color:var(--cert-text); margin:8px 0 2px; }
+  .cert-card .cdesc{ font-size:12px; color:var(--cert-muted); margin-bottom:18px; }
+  .cert-foot{ display:flex; justify-content:space-between; align-items:flex-end; border-top:1px solid var(--cert-line); padding-top:14px; }
+  .cert-foot .l{ font-size:10px; color:var(--cert-muted); }
+  .cert-foot .v{ font-family:'Chakra Petch'; font-weight:600; font-size:13px; color:var(--cert-text); }
+
+  .quiz-q{ font-size:13px; color:var(--text); margin-bottom:10px; }
+
+  /* Gallery FAB + overlay */
+  .gallery-fab{ position:fixed; right:16px; bottom:22px; z-index:20; width:58px; height:58px; border-radius:50%;
+    border:1px solid rgba(255,255,255,.45); background:radial-gradient(circle at 34% 28%,rgba(255,255,255,.55),rgba(255,150,90,.4) 46%,rgba(217,32,0,.55));
+    box-shadow:0 10px 28px var(--glow), inset 0 1px 6px rgba(255,255,255,.5); cursor:pointer; display:flex; align-items:center;
+    justify-content:center; color:#fff; animation:anx-fab 4s ease-in-out infinite; }
+  .gallery-fab .badge-count{ position:absolute; top:-4px; right:-4px; min-width:20px; height:20px; padding:0 5px; border-radius:999px;
+    background:#fff; color:#b3160a; font-family:'Chakra Petch'; font-weight:700; font-size:11px; display:flex; align-items:center;
+    justify-content:center; box-shadow:0 2px 6px rgba(0,0,0,.3); }
+  .gallery-overlay{ position:fixed; inset:0; z-index:30; display:flex; flex-direction:column; overflow:hidden; animation:anx-fade .3s ease both;
+    background:linear-gradient(180deg,#3a0e08 0%,#7a1a0c 46%,#240611 100%); }
+  .gallery-overlay .bg-blob{ position:absolute; border-radius:50%; pointer-events:none; filter:blur(8px); animation:anx-breathe 8s ease-in-out infinite; }
+  .gallery-head{ position:relative; z-index:2; display:flex; align-items:center; justify-content:space-between; padding:20px 20px 14px; }
+  .gallery-head h2{ margin:0; font-family:'Chakra Petch'; font-weight:600; font-size:20px; color:#fff; }
+  .gallery-head p{ margin:1px 0 0; font-size:11px; letter-spacing:1px; color:rgba(255,255,255,.7); }
+  .gallery-close{ width:38px; height:38px; border-radius:50%; background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.24);
+    color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .gallery-feed{ position:relative; z-index:2; flex:1; overflow-y:auto; padding:4px 16px 26px; display:flex; flex-direction:column; gap:16px; max-width:480px; margin:0 auto; width:100%; }
+  .gal-card{ position:relative; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.18); border-radius:20px;
+    padding:14px; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
+  .gal-card.composer{ background:rgba(255,255,255,.1); border-color:rgba(255,255,255,.26); }
+  .gal-avatar{ width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,#ff9a5a,#d92000); display:flex;
+    align-items:center; justify-content:center; font-family:'Chakra Petch'; font-weight:700; color:#fff; flex-shrink:0; }
+  .gal-card .gal-head{ display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+  .gal-card .gname{ font-family:'Chakra Petch'; font-weight:600; font-size:14px; color:#fff; }
+  .gal-card .gsub{ font-size:11px; color:rgba(255,255,255,.7); }
+  .gal-photo-slot{ width:100%; aspect-ratio:4/3; border-radius:14px; overflow:hidden; border:1px solid rgba(255,255,255,.22);
+    margin-bottom:10px; background:rgba(0,0,0,.2); display:flex; align-items:center; justify-content:center; cursor:pointer; position:relative; }
+  .gal-photo-slot img{ width:100%; height:100%; object-fit:cover; }
+  .gal-photo-slot .placeholder{ color:rgba(255,255,255,.6); font-size:12px; text-align:center; padding:10px; font-family:'IBM Plex Sans Thai'; }
+  .gal-note-input{ width:100%; min-height:46px; padding:11px 13px; border-radius:12px; background:rgba(0,0,0,.25);
+    border:1px solid rgba(255,255,255,.2); color:#fff; font-family:'IBM Plex Sans Thai'; font-size:13px; outline:none; resize:none; }
+  .gal-note-input:focus{ border-color:rgba(255,255,255,.55); }
+  .gal-note-text{ margin:0 0 12px; font-size:13.5px; line-height:1.5; color:rgba(255,255,255,.92); }
+  .gal-actions{ display:flex; align-items:center; gap:20px; }
+  .gal-like-btn, .gal-comment-btn{ display:inline-flex; align-items:center; gap:6px; background:transparent; border:none; cursor:pointer;
+    font-family:'Chakra Petch'; font-weight:600; font-size:13px; color:rgba(255,255,255,.92); padding:0; width:auto; }
+  .gal-like-btn.liked{ color:#ff6b7d; }
+  .gal-comments{ margin-top:13px; display:flex; flex-direction:column; gap:10px; }
+  .gal-comment-item{ display:flex; gap:8px; align-items:flex-start; }
+  .gal-comment-avatar{ width:26px; height:26px; border-radius:50%; background:rgba(255,255,255,.16); display:flex; align-items:center;
+    justify-content:center; font-family:'Chakra Petch'; font-weight:600; font-size:11px; color:#fff; flex-shrink:0; }
+  .gal-comment-text{ font-size:12.5px; line-height:1.45; color:rgba(255,255,255,.9); }
+  .gal-comment-row{ display:flex; gap:8px; margin-top:2px; }
+  .gal-comment-field{ flex:1; min-width:0; padding:9px 13px; border-radius:999px; background:rgba(0,0,0,.25);
+    border:1px solid rgba(255,255,255,.2); color:#fff; font-family:'IBM Plex Sans Thai'; font-size:12.5px; outline:none; }
+  .gal-comment-send{ padding:9px 15px; border-radius:999px; border:none; background:#fff; color:#b3160a; font-family:'Chakra Petch';
+    font-weight:600; font-size:12.5px; cursor:pointer; flex-shrink:0; width:auto; }
+  .gal-login-nudge{ text-align:center; padding:14px; font-size:12.5px; color:rgba(255,255,255,.85); background:rgba(255,255,255,.08);
+    border-radius:12px; }
+  .gal-post-btn{ margin-top:10px; }
 </style>
 </head>
 <body>
-
-<div class="header">
-  <h1>🤖 AI NEXT</h1>
-  <div class="sub">Registration · Check-in · Certificate</div>
-  <div class="tabs">
-    <button class="tab-btn" id="tabBtnTasks">🎯 Tasks</button>
-    <button class="tab-btn" id="tabBtnGallery">✨ Gallery</button>
-  </div>
-</div>
-
-<div class="wrap tabpanel" id="tasksPanel"></div>
-<div class="wrap gallery-wrap tabpanel" id="galleryPanel"></div>
+<div class="app" id="app"></div>
 
 <script>
 /* ================= CONFIG ================= */
-const DEMO_MODE = false; // set false once Code.gs is deployed
+const DEMO_MODE = false;
 const API_BASE_URL = "https://script.google.com/macros/s/AKfycbxlGc6JxljLQgNQlaWhFTuUI4mXj8b-XTYrtpkX9DpYAA2Df7U734Uyqn7F6yc1S3jY/exec";
 
 /* ================= DEMO MOCK BACKEND ================= */
@@ -362,191 +395,364 @@ async function callApi(action, params={}){
   return res.json();
 }
 
-/* ================= SHARED PROFILE ================= */
+/* ================= SHARED PROFILE / STATE ================= */
 const PROFILE_KEY = 'ainext_profile';
 const LAST_Q_KEY = 'ainext_last_answered_qid';
 function getProfile(){ return readLS(PROFILE_KEY); }
 function setProfile(p){ writeLS(PROFILE_KEY, p); }
 function clearProfile(){ localStorage.removeItem(PROFILE_KEY); }
+function getLastAnsweredQId(){ return localStorage.getItem(LAST_Q_KEY) || ''; }
+function setLastAnsweredQId(id){ localStorage.setItem(LAST_Q_KEY, id || ''); }
 
-/* ================= TAB SWITCHING ================= */
-let currentTab = 'tasks';
-function showTab(tab){
-  currentTab = tab;
-  document.getElementById('tasksPanel').classList.toggle('active', tab==='tasks');
-  document.getElementById('galleryPanel').classList.toggle('active', tab==='gallery');
-  document.getElementById('tabBtnTasks').classList.toggle('active', tab==='tasks');
-  document.getElementById('tabBtnGallery').classList.toggle('active', tab==='gallery');
-  if(tab==='tasks'){ stopGalleryPoll(); routeParticipant(); }
-  if(tab==='gallery'){ stopPoll(); loadGallery(); startGalleryPoll(); }
-}
-document.getElementById('tabBtnTasks').onclick = ()=>showTab('tasks');
-document.getElementById('tabBtnGallery').onclick = ()=>showTab('gallery');
+let screen = 'landing';       // landing|checkin|validating|notfound|denied|kit|hub|quiz|selfie|cooldown|cert
+let cooldownTarget = null;    // 'quiz'|'selfie'|'cert'
+let checkinError = '';
+let latestStatus = null;
+let galleryOpen = false;
+let hubPollTimer = null, cooldownPollTimer = null, galleryPollTimer = null;
+let galleryItemsCache = [];
 
-/* ============================================================
-   TASKS TAB
-   ============================================================ */
-const tasksApp = document.getElementById('tasksPanel');
-let pollTimer = null;
-function stopPoll(){ if(pollTimer){ clearInterval(pollTimer); pollTimer=null; } }
-function renderTasks(html){ tasksApp.innerHTML = html; }
+function stopHubPoll(){ if(hubPollTimer){ clearInterval(hubPollTimer); hubPollTimer=null; } }
+function stopCooldownPoll(){ if(cooldownPollTimer){ clearInterval(cooldownPollTimer); cooldownPollTimer=null; } }
+function stopGalleryPoll(){ if(galleryPollTimer){ clearInterval(galleryPollTimer); galleryPollTimer=null; } }
+function stopAllPolls(){ stopHubPoll(); stopCooldownPoll(); }
 
-function stepperHtml(activeCompletedStage){
-  const labels=['Register','Question','Selfie','Cert'];
-  let html = '<div class="stepper">';
-  for(let i=1;i<=4;i++){
-    let cls = i<=activeCompletedStage ? 'done' : (i===activeCompletedStage+1 ? 'active':'');
-    html += `<div class="step ${cls}"><div class="dot">${i<=activeCompletedStage?'✓':i}</div><span>${labels[i-1]}</span></div>`;
-  }
-  return html+'</div>';
-}
+const root = document.getElementById('app');
 
-function screenLogin(errorMsg=''){
-  stopPoll();
-  renderTasks(`
-    <div class="card">
-      <h2>ลงทะเบียนเข้าร่วมงาน</h2>
-      <p style="font-size:14px; opacity:.85;">กรอกชื่อ-นามสกุลให้ตรงกับที่ลงทะเบียนไว้ เพื่อเช็คอินเข้าร่วมงาน</p>
-      ${errorMsg? `<div class="error">${errorMsg}</div>`:''}
-      <label>ชื่อ-นามสกุล / Full name</label>
-      <input type="text" id="nameInput" placeholder="เช่น สมชาย ใจดี">
-      <button id="checkinBtn">เช็คชื่อเข้าร่วม</button>
+function iconArrow(){ return `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>`; }
+function iconBack(){ return `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"></path></svg>`; }
+function iconShield(){ return `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>`; }
+function iconCheck(){ return `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>`; }
+function iconCert(){ return `<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"></path><circle cx="12" cy="8" r="6"></circle></svg>`; }
+function iconGallery(){ return `<svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"></rect><circle cx="9" cy="9" r="2"></circle><path d="m21 15-3.86-3.86a2 2 0 0 0-2.83 0L6 19"></path></svg>`; }
+function iconSearch(){ return `<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>`; }
+function iconAlert(){ return `<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>`; }
+function iconBan(){ return `<svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m4.9 4.9 14.2 14.2"></path></svg>`; }
+function iconBox(){ return `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="M3.3 7 12 12l8.7-5"></path><path d="M12 22V12"></path></svg>`; }
+function iconClock(){ return `<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>`; }
+
+/* ================= SHELL / RENDER ================= */
+function shell(bodyHtml, showBar){
+  const profile = getProfile();
+  root.innerHTML = `
+    <div class="grid-overlay"></div>
+    <div class="blob-tr"></div>
+    <div class="blob-bl"></div>
+    <div class="content">
+      <div class="appbar ${showBar?'show':''}">
+        <div class="brand"><img src="ainext-logo.png" alt="AI NEXT"></div>
+        <div class="cert-chip" id="appbarCertBtn">${iconCert()}<span id="appbarDone">0/3</span></div>
+      </div>
+      <div class="screen-wrap" id="screenWrap"></div>
     </div>
-  `);
-  document.getElementById('checkinBtn').onclick = doCheckin;
+    ${(!['staff'].includes(screen)) ? `<button class="gallery-fab" id="galleryFabBtn">${iconGallery()}<span class="badge-count" id="galBadge">0</span></button>` : ''}
+  `;
+  document.getElementById('screenWrap').innerHTML = bodyHtml;
+  const certBtn = document.getElementById('appbarCertBtn');
+  if(certBtn) certBtn.onclick = ()=>goCert();
+  const fab = document.getElementById('galleryFabBtn');
+  if(fab) fab.onclick = openGallery;
+  updateGalleryBadge();
+}
+
+async function updateGalleryBadge(){
+  const el = document.getElementById('galBadge');
+  if(!el) return;
+  const res = await callApi('getGallery', {});
+  if(res.success) el.textContent = (res.items||[]).length;
+}
+
+/* ================= LANDING ================= */
+function screenLanding(){
+  stopAllPolls();
+  shell(`
+    <div class="screen">
+      <div class="kicker"><span class="bar"></span>Event Registration</div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px 0">
+        <img src="ainext-logo.png" alt="AI NEXT Bootcamp" style="width:150px;height:auto;animation:anx-float 5.5s ease-in-out infinite">
+        <h1 class="title">ลงทะเบียนเข้าร่วมงาน</h1>
+        <p class="subtitle">Attendee Registration</p>
+        <p class="desc" style="max-width:300px">เช็คอิน 3 ช่วงเวลาให้ครบ ร่วมกิจกรรม และรับ E-Certificate</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px">
+        <div class="session-row"><div class="time">08:30</div><div><div class="stitle">Morning Registration</div><div class="ssub">รับป้ายชื่อ &amp; welcome kit</div></div></div>
+        <div class="session-row"><div class="time">12:30</div><div><div class="stitle">After Lunch</div><div class="ssub">ตอบคำถามสั้นๆ</div></div></div>
+        <div class="session-row"><div class="time">16:45</div><div><div class="stitle">AI NEXT Challenge</div><div class="ssub">Team Selfie</div></div></div>
+      </div>
+      <button class="cta-btn" id="startBtn">เริ่มลงทะเบียน · Get Started ${iconArrow()}</button>
+      <a class="admin-link" href="admin.html">${iconShield()} เจ้าหน้าที่ · Admin login</a>
+    </div>
+  `, false);
+  document.getElementById('startBtn').onclick = ()=>{ checkinError=''; screen='checkin'; screenCheckin(); };
+}
+
+/* ================= CHECK-IN ================= */
+function screenCheckin(){
+  stopAllPolls();
+  shell(`
+    <div class="screen">
+      <button class="back-btn" id="backBtn">${iconBack()}ย้อนกลับ</button>
+      <h2 class="title">เช็คอิน</h2>
+      <p class="subtitle">Confirm your attendance</p>
+      <label style="font-size:13px;color:var(--muted);margin:14px 0 10px;display:block">กรอกชื่อ-นามสกุลให้ตรงกับที่ลงทะเบียนไว้<br><span style="font-size:11px;opacity:.8">Full name as registered</span></label>
+      <input class="field" id="nameInput" placeholder="เช่น สมชาย ใจดี">
+      ${checkinError? `<p class="error-msg">${checkinError}</p>` : ''}
+      <button class="cta-btn" id="submitBtn" style="margin-top:20px">ยืนยัน · Confirm ${iconArrow()}</button>
+    </div>
+  `, false);
+  document.getElementById('backBtn').onclick = ()=>{ screen='landing'; screenLanding(); };
+  document.getElementById('submitBtn').onclick = doCheckin;
   document.getElementById('nameInput').addEventListener('keydown', e=>{ if(e.key==='Enter') doCheckin(); });
 }
 
 async function doCheckin(){
   const val = document.getElementById('nameInput').value.trim();
-  const btn = document.getElementById('checkinBtn');
-  btn.disabled = true; btn.textContent = 'กำลังตรวจสอบ...';
+  if(!val){ checkinError='กรุณากรอกชื่อ-นามสกุล'; screenCheckin(); return; }
+  screen='validating'; screenValidating();
   const res = await callApi('checkin', {name: val});
+  if(screen!=='validating') return;
   if(!res.success){
-    const msgs = { empty_name:'กรุณากรอกชื่อ-นามสกุล', not_found:'ไม่พบชื่อนี้ในระบบ กรุณาตรวจสอบการสะกดอีกครั้ง',
-      not_confirmed:'ขออภัย ไม่พบการยืนยันเข้าร่วมงานของท่าน กรุณาติดต่อทีมงานหน้างาน' };
-    screenLogin(msgs[res.reason] || 'เกิดข้อผิดพลาด กรุณาลองใหม่');
-    return;
+    if(res.reason==='not_confirmed'){ screen='denied'; screenDenied(); return; }
+    checkinError = res.reason==='not_found' ? `ไม่พบชื่อ "${val}" ในลิสต์ Confirmed` : 'เกิดข้อผิดพลาด กรุณาลองใหม่';
+    screen='notfound'; screenNotfound(val); return;
   }
   setProfile({attendeeId:res.attendeeId, firstName:res.firstName, lastName:res.lastName, team:res.team});
-  routeParticipant();
+  screen='kit'; screenKit();
 }
 
-async function routeParticipant(){
-  if(currentTab!=='tasks') return;
+function screenValidating(){
+  shell(`
+    <div class="screen" style="align-items:center;justify-content:center;text-align:center;gap:24px">
+      <div class="dial-wrap"><div class="dial-ring"></div><div class="dial-inner">${iconSearch()}</div></div>
+      <div>
+        <h2 class="title">กำลังตรวจสอบรายชื่อ…</h2>
+        <p class="subtitle">Checking confirmed list</p>
+      </div>
+    </div>
+  `, false);
+}
+
+function screenNotfound(input){
+  shell(`
+    <div class="screen">
+      <div style="margin:6px 0 18px;width:80px;height:80px;border-radius:20px;display:flex;align-items:center;justify-content:center;background:var(--accent-soft);border:1px solid var(--surface-brd)">${iconAlert()}</div>
+      <h2 class="title">ไม่พบชื่อในลิสต์ Confirmed</h2>
+      <p class="desc">"${input}" ยังไม่อยู่ในรายชื่อยืนยัน — ตรวจสอบข้อความยืนยัน แล้วให้เจ้าหน้าที่แก้ไขข้อมูลในระบบ<br><span style="font-size:12px;opacity:.8">Not on the confirmed list — please see the registration desk.</span></p>
+      <div style="flex:1"></div>
+      <button class="cta-btn" id="retryBtn">ลองอีกครั้ง · Try again ${iconArrow()}</button>
+      <a class="admin-link" href="admin.html">${iconShield()} เจ้าหน้าที่ · Admin login</a>
+    </div>
+  `, false);
+  document.getElementById('retryBtn').onclick = ()=>{ checkinError=''; screen='checkin'; screenCheckin(); };
+}
+
+function screenDenied(){
+  shell(`
+    <div class="screen" style="align-items:center;justify-content:center;text-align:center;gap:8px">
+      <div style="width:96px;height:96px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.24);border:1px solid var(--surface-brd);margin-bottom:8px">${iconBan()}</div>
+      <h2 class="title">ยังเข้าร่วมไม่ได้</h2>
+      <p class="desc" style="max-width:280px">ไม่พบข้อมูลการยืนยันของคุณในระบบ กรุณาติดต่อเจ้าหน้าที่ลงทะเบียนที่หน้างาน<br><span style="font-size:12px;opacity:.8">We couldn't verify your registration. Please see the registration desk.</span></p>
+      <button class="ghost-btn" id="retryBtn2">ลองอีกครั้ง · Try again</button>
+    </div>
+  `, false);
+  document.getElementById('retryBtn2').onclick = ()=>{ checkinError=''; screen='checkin'; screenCheckin(); };
+}
+
+/* ================= WELCOME KIT ================= */
+function screenKit(){
   const profile = getProfile();
-  if(!profile){ screenLogin(); return; }
-  const status = await callApi('getStatus', {attendeeId: profile.attendeeId});
-  const completed = status.stage ?? 0;
-
-  if(completed>=4 || status.certIssued){ screenCertificate(profile); return; }
-  if(completed===3){ if(status.cert_open) screenCertificate(profile); else screenCooldown(3, status, completed); return; }
-  if(completed===1 || completed===2){ screenQuestionFlow(profile, status, completed); return; }
-  screenLogin();
+  shell(`
+    <div class="screen" style="align-items:center;text-align:center">
+      <div style="margin:12px 0 18px;width:100px;height:100px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--accent-soft);border:1px solid var(--surface-brd)">${iconCheck()}</div>
+      <p class="subtitle">Checked In · Morning</p>
+      <h2 class="title">${profile.firstName} ${profile.lastName}</h2>
+      <p class="desc" style="margin-bottom:20px">ยินดีต้อนรับสู่ AI NEXT</p>
+      <div style="width:100%;display:flex;gap:10px;margin-bottom:16px">
+        <div class="stat-box"><div class="lbl">Attendee ID</div><div class="val">${profile.attendeeId}</div></div>
+        <div class="stat-box"><div class="lbl">Team</div><div class="val">${profile.team||'—'}</div></div>
+      </div>
+      <div style="width:100%;display:flex;align-items:center;gap:12px;background:var(--accent-soft);border:1px dashed var(--surface-brd);border-radius:14px;padding:14px;margin-bottom:auto;text-align:left">
+        <span style="flex-shrink:0;color:var(--accent)">${iconBox()}</span>
+        <span style="font-size:13px;line-height:1.5;color:var(--text)">รับป้ายชื่อ ขนม น้ำ ที่จุดลงทะเบียน<br><span style="color:var(--muted);font-size:11.5px">Collect your badge, snacks &amp; water kit</span></span>
+      </div>
+      <button class="cta-btn" id="toHubBtn">ไปหน้ากิจกรรม · Go to hub ${iconArrow()}</button>
+    </div>
+  `, false);
+  document.getElementById('toHubBtn').onclick = ()=>{ screen='hub'; screenHub(); };
 }
 
-/* ---- Stage 1->2: rotating question flow + waiting screen ---- */
-function getLastAnsweredQId(){ return localStorage.getItem(LAST_Q_KEY) || ''; }
-function setLastAnsweredQId(id){ localStorage.setItem(LAST_Q_KEY, id || ''); }
-
-function screenQuestionFlow(profile, status, completed){
-  // Already checked in (or already answered once). Decide: proceed to stage3, show a fresh
-  // question, or show a waiting screen.
-  if(completed===2 && status.stage3_open){ routeParticipant(); return; } // will re-fetch and hit stage3 branch
-  if(!status.stage2_open){ screenCooldown(1, status, completed); return; }
+/* ================= HUB ================= */
+async function screenHub(){
+  if(screen!=='hub') return;
+  const profile = getProfile();
+  if(!profile){ screen='landing'; screenLanding(); return; }
+  const status = await callApi('getStatus', {attendeeId: profile.attendeeId});
+  if(screen!=='hub') return;
+  latestStatus = status;
+  const completed = status.stage ?? 1;
+  const doneQuiz = completed>=2, doneSelfie = completed>=3;
+  const doneCount = 1 + (doneQuiz?1:0) + (doneSelfie?1:0);
 
   const hasNewQuestion = status.question_id && status.question_id !== getLastAnsweredQId();
-  if(hasNewQuestion){ screenQuestion(profile, status, completed); return; }
 
-  screenWaiting(profile, status, completed);
-}
+  function cardFor(kind){
+    if(kind==='morning'){
+      return { done:true, n:'1', title:'Morning · เช็คอิน', sub:'รับ welcome kit แล้ว', status:'เสร็จ', onClick:null };
+    }
+    if(kind==='quiz'){
+      if(doneQuiz && !hasNewQuestion) return { done:true, n:'2', title:'Lunch · ตอบคำถามสั้นๆ', sub:'ตอบแล้ว', status:'เสร็จ', onClick:null };
+      if(!status.stage2_open) return { done:false, n:'2', title:'Lunch · ตอบคำถามสั้นๆ', sub:'ยังไม่เปิด', status:'ล็อก', onClick:()=>startCooldown('quiz') };
+      if(!status.question_id) return { done:false, n:'2', title:'Lunch · ตอบคำถามสั้นๆ', sub:'รอทีมงานเพิ่มคำถาม', status:'รอคำถาม', onClick:()=>startCooldown('quiz') };
+      return { done:false, n:'2', title:'Lunch · ตอบคำถามสั้นๆ', sub: hasNewQuestion&&doneQuiz? 'มีคำถามใหม่!' : '12:30–13:30', status:'ทำเลย', onClick:()=>{ screen='quiz'; screenQuiz(); } };
+    }
+    if(kind==='selfie'){
+      if(doneSelfie) return { done:true, n:'3', title:'After Break · Team Selfie', sub:'อัปโหลดแล้ว', status:'เสร็จ', onClick:null };
+      if(!status.stage3_open) return { done:false, n:'3', title:'After Break · Team Selfie', sub:'ยังไม่เปิด', status:'ล็อก', onClick:()=>startCooldown('selfie') };
+      return { done:false, n:'3', title:'After Break · Team Selfie', sub:'16:45–17:30 · Gallery Wall', status:'ทำเลย', onClick:()=>{ screen='selfie'; screenSelfie(); } };
+    }
+  }
+  const cards = ['morning','quiz','selfie'].map(cardFor);
 
-function screenWaiting(profile, status, completed){
-  stopPoll();
-  const msg = completed===1
-    ? (status.question_id ? 'รอทีมงานเปิดคำถาม...' : (status.cooldown_msg_1 || 'รอคำถามจากทีมงาน...'))
-    : (status.cooldown_msg_2 || 'รอคำถามข้อถัดไป หรือ กิจกรรมถัดไป...');
-  renderTasks(`
-    <div class="toplink"><a href="#" id="switchUser">ไม่ใช่คุณ ${profile.firstName}? เปลี่ยนชื่อ</a></div>
-    ${stepperHtml(completed)}
-    <div class="card center">
-      <h2>⏳ Cooldown</h2>
-      <div class="spinner"></div>
-      <p>${msg}</p>
-      <p class="hint">หน้านี้จะเปลี่ยนอัตโนมัติเมื่อทีมงานเปิดคำถาม/กิจกรรมถัดไป</p>
+  shell(`
+    <div class="screen">
+      <p class="subtitle">Your day · ${profile.attendeeId}</p>
+      <h2 class="title">สวัสดี ${profile.firstName}</h2>
+      <p class="desc" style="margin-bottom:18px">เช็คอินให้ครบ 3 ช่วง เพื่อรับ E-Certificate</p>
+      <div class="progress-card">
+        <div class="row"><span style="font-family:'Chakra Petch';font-size:12px;letter-spacing:1px">ความคืบหน้าเกียรติบัตร</span><span style="font-family:'Chakra Petch';font-weight:600;font-size:13px;color:var(--accent)">${doneCount}/3</span></div>
+        <div class="progress-track"><div class="progress-fill" style="width:${Math.round(doneCount/3*100)}%"></div></div>
+      </div>
+      <div style="font-size:11px;letter-spacing:2px;color:var(--accent);text-transform:uppercase;font-family:'Chakra Petch';margin-bottom:10px">กิจกรรม · Sessions</div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:auto" id="taskCards">
+        ${cards.map((c,i)=>`
+          <button class="task-card ${c.done?'done':''}" data-idx="${i}" ${c.onClick?'':'style="cursor:default"'}>
+            <div class="icon">${c.done? iconCheck() : `<span style="font-family:'Chakra Petch';font-weight:600;font-size:15px">${c.n}</span>`}</div>
+            <div style="flex:1;text-align:left;min-width:0"><div class="ttitle">${c.title}</div><div class="tsub">${c.sub}</div></div>
+            <span class="badge">${c.status}</span>
+          </button>
+        `).join('')}
+      </div>
+      <button class="cta-btn" id="toCertBtn">${iconCert()} ดู E-Certificate</button>
+      <button class="ghost-btn" id="signOutBtn">ออกจากระบบ · Sign out</button>
     </div>
-  `);
-  document.getElementById('switchUser').onclick = (e)=>{ e.preventDefault(); clearProfile(); setLastAnsweredQId(''); screenLogin(); };
-  pollTimer = setInterval(routeParticipant, 4000);
+  `, true);
+  document.getElementById('appbarDone').textContent = doneCount+'/3';
+
+  cards.forEach((c,i)=>{
+    if(!c.onClick) return;
+    const el = document.querySelector(`[data-idx="${i}"]`);
+    if(el) el.onclick = c.onClick;
+  });
+  document.getElementById('toCertBtn').onclick = goCert;
+  document.getElementById('signOutBtn').onclick = ()=>{ clearProfile(); setLastAnsweredQId(''); screen='landing'; screenLanding(); };
+
+  stopHubPoll();
+  hubPollTimer = setInterval(screenHub, 5000);
 }
 
-function screenCooldown(stageJustDone, status, completed){
-  stopPoll();
+async function goCert(){
+  screen='cert';
   const profile = getProfile();
-  const msgKey = 'cooldown_msg_'+stageJustDone;
-  const msg = status[msgKey] || 'รอทีมงานเปิดกิจกรรมถัดไป กรุณารอสักครู่...';
-  renderTasks(`
-    <div class="toplink"><a href="#" id="switchUser">ไม่ใช่คุณ ${profile.firstName}? เปลี่ยนชื่อ</a></div>
-    ${stepperHtml(completed)}
-    <div class="card center">
-      <h2>⏳ Cooldown</h2>
-      <div class="spinner"></div>
-      <p>${msg}</p>
-      <p class="hint">หน้านี้จะเปลี่ยนอัตโนมัติเมื่อทีมงานเปิดด่านถัดไป</p>
-    </div>
-  `);
-  document.getElementById('switchUser').onclick = (e)=>{ e.preventDefault(); clearProfile(); screenLogin(); };
-  pollTimer = setInterval(routeParticipant, 4000);
+  if(profile){
+    const fresh = await callApi('getStatus', {attendeeId: profile.attendeeId});
+    if(screen==='cert') latestStatus = fresh;
+  }
+  screenCert();
 }
 
-function screenQuestion(profile, status, completed){
-  stopPoll();
-  renderTasks(`
-    <div class="toplink"><a href="#" id="switchUser">ไม่ใช่คุณ ${profile.firstName}? เปลี่ยนชื่อ</a></div>
-    ${stepperHtml(completed)}
-    <div class="card">
-      <h2>📝 คำถามช่วงบ่าย</h2>
-      <p>${status.question_text || 'กรุณารอคำถามจากทีมงาน'}</p>
-      <textarea id="answerInput" placeholder="พิมพ์คำตอบของคุณที่นี่..."></textarea>
-      <div id="qErr"></div>
-      <button id="submitAnswerBtn">ส่งคำตอบ</button>
+/* ================= COOLDOWN ================= */
+function startCooldown(target){
+  cooldownTarget = target;
+  screen='cooldown';
+  screenCooldown();
+}
+
+function screenCooldown(){
+  stopAllPolls();
+  const labelMap = { quiz:'Lunch · Question', selfie:'After Break · Selfie', cert:'Certificate' };
+  shell(`
+    <div class="screen">
+      <div class="kicker" style="color:var(--accent)"><span style="width:8px;height:8px;border-radius:50%;background:var(--accent);display:inline-block;animation:anx-blink 1.4s infinite"></span>Cooldown · ${labelMap[cooldownTarget]||'Task'}</div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:18px">
+        <p class="desc" style="max-width:290px">กิจกรรมนี้ยังไม่เปิด — ทีมงานจะปลดล็อกให้ทุกคนพร้อมกัน หน้านี้จะเปลี่ยนอัตโนมัติ<br><span style="font-size:12px;opacity:.8">Not open yet — staff will unlock it for everyone. This page updates automatically.</span></p>
+        <div class="dial-wrap"><div class="dial-ring"></div><div class="dial-inner">${iconClock()}</div></div>
+      </div>
+      <button class="ghost-btn" id="backHubBtn">กลับหน้ากิจกรรม · Back to hub</button>
     </div>
-  `);
-  document.getElementById('switchUser').onclick = (e)=>{ e.preventDefault(); clearProfile(); setLastAnsweredQId(''); screenLogin(); };
+  `, true);
+  document.getElementById('backHubBtn').onclick = ()=>{ screen='hub'; screenHub(); };
+  cooldownPollTimer = setInterval(checkCooldownUnlocked, 3500);
+  checkCooldownUnlocked();
+}
+
+async function checkCooldownUnlocked(){
+  if(screen!=='cooldown') return;
+  const profile = getProfile();
+  const status = await callApi('getStatus', {attendeeId: profile.attendeeId});
+  if(screen!=='cooldown') return;
+  const openMap = { quiz: status.stage2_open && status.question_id, selfie: status.stage3_open, cert: status.cert_open };
+  if(openMap[cooldownTarget]){
+    stopCooldownPoll();
+    screen='hub'; screenHub();
+  }
+}
+
+/* ================= QUIZ (rotating, single active question) ================= */
+function screenQuiz(){
+  stopAllPolls();
+  const profile = getProfile();
+  const status = latestStatus || {};
+  shell(`
+    <div class="screen">
+      <button class="back-btn" id="hubBackBtn">${iconBack()}Hub</button>
+      <div class="kicker"><span class="bar"></span>Lunch · 12:30–13:30</div>
+      <h2 class="title" style="margin-top:8px">ตอบคำถามสั้นๆ</h2>
+      <p class="desc" style="margin-bottom:20px">ตอบให้ครบเพื่อเช็คอินช่วงเที่ยง · Answer to check in for lunch</p>
+      <div class="quiz-q">${status.question_text || 'กรุณารอคำถามจากทีมงาน'}</div>
+      <textarea class="field" id="answerInput" placeholder="พิมพ์คำตอบของคุณที่นี่..." style="margin-top:6px"></textarea>
+      <div id="qErr"></div>
+      <button class="cta-btn" id="submitAnswerBtn">ส่งคำตอบ · Submit</button>
+    </div>
+  `, true);
+  document.getElementById('hubBackBtn').onclick = ()=>{ screen='hub'; screenHub(); };
   document.getElementById('submitAnswerBtn').onclick = async ()=>{
     const answer = document.getElementById('answerInput').value.trim();
-    if(!answer){ document.getElementById('qErr').innerHTML = '<div class="error">กรุณาตอบคำถามก่อนส่ง</div>'; return; }
+    if(!answer){ document.getElementById('qErr').innerHTML = '<p class="error-msg">กรุณาตอบคำถามก่อนส่ง</p>'; return; }
     const btn = document.getElementById('submitAnswerBtn');
-    btn.disabled=true; btn.textContent='กำลังส่ง...';
+    btn.disabled = true; btn.textContent = 'กำลังส่ง...';
     const res = await callApi('submitAnswer', {attendeeId: profile.attendeeId, questionId: status.question_id, answer});
-    if(!res.success){ document.getElementById('qErr').innerHTML = '<div class="error">ส่งไม่สำเร็จ ลองใหม่อีกครั้ง</div>'; btn.disabled=false; btn.textContent='ส่งคำตอบ'; return; }
+    if(!res.success){ document.getElementById('qErr').innerHTML = '<p class="error-msg">ส่งไม่สำเร็จ ลองใหม่อีกครั้ง</p>'; btn.disabled=false; btn.textContent='ส่งคำตอบ · Submit'; return; }
     setLastAnsweredQId(status.question_id);
-    routeParticipant();
+    screen='hub'; screenHub();
   };
 }
 
-function screenSelfie(profile, status){
-  stopPoll();
-  renderTasks(`
-    <div class="toplink"><a href="#" id="switchUser">ไม่ใช่คุณ ${profile.firstName}? เปลี่ยนชื่อ</a></div>
-    ${stepperHtml(2)}
-    <div class="card">
-      <h2>🏆 AI NEXT Challenge — Team Selfie</h2>
-      <p style="font-size:13px; opacity:.85;">ถ่ายรูปกับทีมของคุณ พร้อมข้อความสั้นๆ แล้วอัปโหลดที่นี่</p>
-      <label>ชื่อทีม</label>
-      <input type="text" id="teamInput" value="${profile.team||''}">
-      <label>รูปถ่าย Selfie</label>
-      <input type="file" id="photoInput" accept="image/*" capture="environment">
-      <img id="preview" class="thumb">
-      <label>โน้ตสั้นๆ (จะแสดงบน Gallery ด้วย)</label>
-      <textarea id="noteInput" placeholder="เช่น ทีมเราคิดโปรเจกต์ AI สุดครีเอทีฟ!"></textarea>
+/* ================= SELFIE ================= */
+function screenSelfie(){
+  stopAllPolls();
+  const profile = getProfile();
+  shell(`
+    <div class="screen">
+      <button class="back-btn" id="hubBackBtn">${iconBack()}Hub</button>
+      <div class="kicker"><span class="bar"></span>After Break · 16:45–17:30</div>
+      <h2 class="title" style="margin-top:8px">Team Selfie Challenge</h2>
+      <p class="desc" style="margin-bottom:18px">ถ่ายรูปทีมตอนทำ Challenge แล้วอัปขึ้น Gallery Wall</p>
+      <label style="font-size:13px;color:var(--muted);margin-bottom:6px;display:block">ชื่อทีม</label>
+      <input class="field" id="teamInput" value="${profile.team||''}" style="margin-bottom:14px">
+      <div class="gal-photo-slot" id="photoSlot" style="margin-bottom:14px">
+        <span class="placeholder" id="photoPlaceholder">แตะเพื่ออัปโหลดรูปทีม · Tap to upload</span>
+        <img id="photoPreview" style="display:none">
+      </div>
+      <input type="file" id="photoInput" accept="image/*" capture="environment" style="display:none">
+      <textarea class="field" id="noteInput" placeholder="โน้ตสั้นๆ (จะแสดงบน Gallery ด้วย)" style="margin-bottom:auto"></textarea>
       <div id="sErr"></div>
-      <button id="submitSelfieBtn">อัปโหลด</button>
+      <button class="cta-btn" id="submitSelfieBtn">อัปขึ้น Gallery Wall · Post</button>
     </div>
-  `);
-  document.getElementById('switchUser').onclick = (e)=>{ e.preventDefault(); clearProfile(); screenLogin(); };
+  `, true);
+  document.getElementById('hubBackBtn').onclick = ()=>{ screen='hub'; screenHub(); };
 
   let resizedBase64 = null, mimeType = 'image/jpeg';
+  document.getElementById('photoSlot').onclick = ()=> document.getElementById('photoInput').click();
   document.getElementById('photoInput').addEventListener('change', (e)=>{
     const file = e.target.files[0];
     if(!file) return;
@@ -562,8 +768,9 @@ function screenSelfie(profile, status){
         ctx.drawImage(img,0,0,canvas.width,canvas.height);
         const dataUrl = canvas.toDataURL('image/jpeg', 0.72);
         resizedBase64 = dataUrl.split(',')[1];
-        const prev = document.getElementById('preview');
-        prev.src = dataUrl; prev.style.display='block';
+        document.getElementById('photoPreview').src = dataUrl;
+        document.getElementById('photoPreview').style.display='block';
+        document.getElementById('photoPlaceholder').style.display='none';
       };
       img.src = ev.target.result;
     };
@@ -571,36 +778,72 @@ function screenSelfie(profile, status){
   });
 
   document.getElementById('submitSelfieBtn').onclick = async ()=>{
-    if(!resizedBase64){ document.getElementById('sErr').innerHTML = '<div class="error">กรุณาแนบรูปถ่ายก่อน</div>'; return; }
+    if(!resizedBase64){ document.getElementById('sErr').innerHTML = '<p class="error-msg">กรุณาแนบรูปถ่ายก่อน</p>'; return; }
     const btn = document.getElementById('submitSelfieBtn');
     btn.disabled=true; btn.textContent='กำลังอัปโหลด...';
     const team = document.getElementById('teamInput').value.trim();
     const note = document.getElementById('noteInput').value.trim();
     const res = await callApi('submitSelfie', {attendeeId: profile.attendeeId, team, note, imageBase64: resizedBase64, mimeType});
-    if(!res.success){ document.getElementById('sErr').innerHTML = '<div class="error">อัปโหลดไม่สำเร็จ ลองใหม่อีกครั้ง</div>'; btn.disabled=false; btn.textContent='อัปโหลด'; return; }
-    if(team) { profile.team = team; setProfile(profile); }
-    routeParticipant();
+    if(!res.success){ document.getElementById('sErr').innerHTML = '<p class="error-msg">อัปโหลดไม่สำเร็จ ลองใหม่อีกครั้ง</p>'; btn.disabled=false; btn.textContent='อัปขึ้น Gallery Wall · Post'; return; }
+    if(team){ profile.team = team; setProfile(profile); }
+    screen='hub'; screenHub();
   };
 }
 
-function screenCertificate(profile){
-  stopPoll();
+/* ================= CERTIFICATE ================= */
+function screenCert(){
+  stopAllPolls();
+  const profile = getProfile();
+  const status = latestStatus || {};
+  const completed = status.stage ?? 1;
+  const certReady = completed>=3 && status.cert_open;
+  if(!certReady){
+    shell(`
+      <div class="screen">
+        <button class="back-btn" id="hubBackBtn">${iconBack()}Hub</button>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:16px">
+          <div style="width:96px;height:96px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--chip);border:1px solid var(--surface-brd)">${iconShield()}</div>
+          <div>
+            <h2 class="title">ยังไม่ปลดล็อก</h2>
+            <p class="desc" style="max-width:280px">เช็คอินให้ครบทั้ง 3 ช่วง แล้ว E-Certificate จะออกให้ทีมงานประกาศ<br><span style="font-size:12px;opacity:.8">Complete all 3 sessions — cert issues once staff releases it.</span></p>
+          </div>
+          <div style="width:100%;max-width:280px;display:flex;flex-direction:column;gap:8px">
+            <div class="checklist-item"><span class="dot on">${iconCheck()}</span><span style="flex:1;text-align:left">เช็คอินช่วงเช้า</span></div>
+            <div class="checklist-item"><span class="dot ${completed>=2?'on':''}">${completed>=2?iconCheck():''}</span><span style="flex:1;text-align:left">ตอบคำถามช่วงเที่ยง</span></div>
+            <div class="checklist-item"><span class="dot ${completed>=3?'on':''}">${completed>=3?iconCheck():''}</span><span style="flex:1;text-align:left">อัป Team Selfie</span></div>
+          </div>
+          <button class="ghost-btn" id="backHub2">กลับหน้ากิจกรรม · Back to hub</button>
+        </div>
+      </div>
+    `, true);
+    document.getElementById('hubBackBtn').onclick = ()=>{ screen='hub'; screenHub(); };
+    document.getElementById('backHub2').onclick = ()=>{ screen='hub'; screenHub(); };
+    return;
+  }
   const today = new Date().toLocaleDateString('th-TH', {year:'numeric', month:'long', day:'numeric'});
-  renderTasks(`
-    ${stepperHtml(4)}
-    <div class="card cert" id="certCard">
-      <div class="brand">AI NEXT · CERTIFICATE OF PARTICIPATION</div>
-      <h2>ใบประกาศนียบัตร</h2>
-      <p style="font-size:13px;">This certifies that</p>
-      <div class="name">${profile.firstName} ${profile.lastName}</div>
-      <p style="font-size:13px;">has successfully participated in the AI NEXT event, completing all sessions.</p>
-      ${profile.team? `<p style="font-size:13px;">Team: <b>${profile.team}</b></p>`:''}
-      <div class="meta">Issued ${today}</div>
+  shell(`
+    <div class="screen">
+      <button class="back-btn" id="hubBackBtn">${iconBack()}Hub</button>
+      <h2 class="title">E-Certificate</h2>
+      <p class="desc" style="margin-bottom:18px">ยินดีด้วย! คุณเช็คอินครบทุกช่วงแล้ว</p>
+      <div class="cert-card" id="certCard">
+        <div class="cert-shine"></div>
+        <img src="ainext-logo.png" alt="AI NEXT" style="height:24px;width:auto;margin-bottom:16px">
+        <div class="brand">Certificate of Completion</div>
+        <div class="cname">${profile.firstName} ${profile.lastName}</div>
+        <div class="cdesc">ได้เข้าร่วม AI NEXT ครบทุกกิจกรรม</div>
+        <div class="cert-foot">
+          <div><div class="l">Attendee ID</div><div class="v">${profile.attendeeId}</div></div>
+          <div style="text-align:right"><div class="l">Issued</div><div class="v">${today}</div></div>
+        </div>
+      </div>
+      <div style="flex:1"></div>
+      <button class="cta-btn" id="downloadBtn">บันทึก E-Certificate · Download</button>
     </div>
-    <button id="downloadBtn">ดาวน์โหลด Certificate (PNG)</button>
-  `);
+  `, true);
+  document.getElementById('hubBackBtn').onclick = ()=>{ screen='hub'; screenHub(); };
   document.getElementById('downloadBtn').onclick = ()=>{
-    html2canvas(document.getElementById('certCard'), {backgroundColor:'#ffffff', scale:2}).then(canvas=>{
+    html2canvas(document.getElementById('certCard'), {backgroundColor:'#8a1204', scale:2}).then(canvas=>{
       const link = document.createElement('a');
       link.download = 'AI-NEXT-Certificate-'+profile.firstName+'.png';
       link.href = canvas.toDataURL('image/png');
@@ -609,226 +852,204 @@ function screenCertificate(profile){
   };
 }
 
-// patch routeParticipant to also handle stage3 screen when needed
-const _origRouteParticipant = routeParticipant;
-async function routeParticipantFull(){
-  if(currentTab!=='tasks') return;
-  const profile = getProfile();
-  if(!profile){ screenLogin(); return; }
-  const status = await callApi('getStatus', {attendeeId: profile.attendeeId});
-  const completed = status.stage ?? 0;
-
-  if(completed>=4 || status.certIssued){ screenCertificate(profile); return; }
-  if(completed===3){ if(status.cert_open) screenCertificate(profile); else screenCooldown(3, status, completed); return; }
-  if(completed===2 && status.stage3_open){ screenSelfie(profile, status); return; }
-  if(completed===1 || completed===2){ screenQuestionFlow(profile, status, completed); return; }
-  screenLogin();
+/* ================= GALLERY (floating FAB + overlay) ================= */
+function openGallery(){
+  galleryOpen = true;
+  stopHubPoll(); // pause background hub refresh while the overlay is up
+  renderGalleryOverlay();
+  loadGallery();
+  stopGalleryPoll();
+  galleryPollTimer = setInterval(loadGallery, 8000);
 }
-routeParticipant = routeParticipantFull;
-
-/* ============================================================
-   GALLERY TAB
-   ============================================================ */
-const galApp = document.getElementById('galleryPanel');
-let galleryPollTimer = null;
-function startGalleryPoll(){ stopGalleryPoll(); galleryPollTimer = setInterval(loadGallery, 8000); }
-function stopGalleryPoll(){ if(galleryPollTimer){ clearInterval(galleryPollTimer); galleryPollTimer=null; } }
-
-function starsHtml(n){
-  let s='';
-  for(let i=0;i<n;i++){
-    const top = Math.random()*100, left = Math.random()*100, delay=(Math.random()*3).toFixed(2);
-    s += `<div class="star" style="top:${top}%; left:${left}%; animation-delay:${delay}s;"></div>`;
-  }
-  return s;
+function closeGallery(){
+  galleryOpen = false;
+  stopGalleryPoll();
+  openCommentPostId = null;
+  const ov = document.getElementById('galleryOverlayRoot');
+  if(ov) ov.remove();
+  if(screen==='hub') screenHub(); // resume hub + its poll
 }
 
-let galleryItemsCache = [];
+function renderGalleryOverlay(){
+  if(document.getElementById('galleryOverlayRoot')) return;
+  const div = document.createElement('div');
+  div.id = 'galleryOverlayRoot';
+  div.className = 'gallery-overlay';
+  div.innerHTML = `
+    <div class="bg-blob" style="top:10%;left:-40px;width:220px;height:220px;background:radial-gradient(circle,rgba(255,150,90,.5),transparent 70%)"></div>
+    <div class="bg-blob" style="bottom:6%;right:-50px;width:260px;height:260px;background:radial-gradient(circle,rgba(255,90,120,.4),transparent 70%)"></div>
+    <div class="gallery-head">
+      <div style="display:flex;align-items:center;gap:10px">${iconGallery()}<div><h2>Gallery Wall</h2><p>ความทรงจำทั้งวัน · Moments</p></div></div>
+      <button class="gallery-close" id="galleryCloseBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+    </div>
+    <div class="gallery-feed" id="galleryFeed"></div>
+  `;
+  document.body.appendChild(div);
+  document.getElementById('galleryCloseBtn').onclick = closeGallery;
+}
+
+let composerBase64 = null;
 async function loadGallery(){
   const profile = getProfile();
   const res = await callApi('getGallery', {attendeeId: profile? profile.attendeeId : ''});
   if(!res.success) return;
   galleryItemsCache = res.items || [];
-  renderGallery();
+  renderGalleryFeed();
 }
 
-function renderGallery(){
+function renderGalleryFeed(){
+  const feed = document.getElementById('galleryFeed');
+  if(!feed) return;
   const profile = getProfile();
-  const nudge = !profile ? `<div class="login-nudge">เช็คชื่อในแท็บ 🎯 Tasks ก่อน เพื่อโพสต์รูป / กดถูกใจ / คอมเมนต์ได้</div>` : '';
-  let body;
-  if(!galleryItemsCache.length){
-    body = `<div class="gallery-sky"><div class="stars">${starsHtml(30)}</div><div class="empty-gal">ยังไม่มีรูปในแกลเลอรี่ — เป็นคนแรกที่โพสต์เลย! ✨</div></div>`;
-  } else {
-    body = `<div class="gallery-sky"><div class="stars">${starsHtml(30)}</div>
-      <div class="bubble-grid">
-      ${galleryItemsCache.map((it,i)=>`
-        <div class="bubble" style="animation-delay:${(i%5)*0.4}s" data-postid="${it.postId}">
-          ${it.photoUrl? `<img src="${it.photoUrl}" alt="">`:''}
-          <div class="body">
-            <div class="name">${it.name||it.team||'—'}</div>
-            ${it.note? `<div class="note">${it.note}</div>`:''}
-            <div class="meta">
-              <button class="like-btn ${it.likedByMe?'liked':''}" data-like="${it.postId}">❤ ${it.likes||0}</button>
-              <span>💬 ${it.commentCount||0}</span>
-            </div>
-          </div>
-        </div>
-      `).join('')}
+  const initials = profile ? (profile.firstName||'?')[0] : '?';
+
+  const composerHtml = profile ? `
+    <div class="gal-card composer">
+      <div class="gal-head"><div class="gal-avatar">${initials}</div><div><div class="gname">โพสต์ของคุณ</div><div class="gsub">Share your moment</div></div></div>
+      <div class="gal-photo-slot" id="composerSlot">
+        <span class="placeholder" id="composerPlaceholder">แตะเพื่ออัปโหลดรูป · Tap to upload</span>
+        <img id="composerPreview" style="display:none">
       </div>
-    </div>`;
+      <input type="file" id="composerFile" accept="image/*" capture="environment" style="display:none">
+      <textarea class="gal-note-input" id="composerNote" placeholder="เขียนโน้ตของช่วงเวลานี้… · add a note"></textarea>
+      <button class="cta-btn gal-post-btn" id="composerPostBtn">โพสต์ · Post</button>
+    </div>
+  ` : `<div class="gal-login-nudge">เช็คอินก่อน เพื่อโพสต์รูป / กดถูกใจ / คอมเมนต์ได้</div>`;
+
+  const postsHtml = galleryItemsCache.map(it=>`
+    <div class="gal-card" data-postid="${it.postId}">
+      <div class="gal-head"><div class="gal-avatar">${(it.team||it.name||'?')[0]}</div>
+        <div style="flex:1;min-width:0"><div class="gname">ทีม ${it.team||'—'}</div><div class="gsub">${it.name||''} ${it.timestamp? '· '+new Date(it.timestamp).toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'}):''}</div></div>
+      </div>
+      <div class="gal-photo-slot" style="cursor:default">${it.photoUrl? `<img src="${it.photoUrl}">` : `<span class="placeholder">${it.team||''}</span>`}</div>
+      ${it.note? `<p class="gal-note-text">${it.note}</p>` : ''}
+      <div class="gal-actions">
+        <button class="gal-like-btn ${it.likedByMe?'liked':''}" data-like="${it.postId}">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="${it.likedByMe?'#ff6b7d':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"></path></svg>
+          ${it.likes||0}
+        </button>
+        <button class="gal-comment-btn" data-togglec="${it.postId}">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          ${it.commentCount||0}
+        </button>
+      </div>
+      <div class="gal-comments-slot" data-cslot="${it.postId}"></div>
+    </div>
+  `).join('');
+
+  feed.innerHTML = composerHtml + postsHtml;
+
+  if(profile){
+    document.getElementById('composerSlot').onclick = ()=> document.getElementById('composerFile').click();
+    document.getElementById('composerFile').addEventListener('change', (e)=>{
+      const file = e.target.files[0];
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev)=>{
+        const img = new Image();
+        img.onload = ()=>{
+          const maxW = 900;
+          const scale = Math.min(1, maxW/img.width);
+          const canvas = document.createElement('canvas');
+          canvas.width = img.width*scale; canvas.height = img.height*scale;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img,0,0,canvas.width,canvas.height);
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.72);
+          composerBase64 = dataUrl.split(',')[1];
+          document.getElementById('composerPreview').src = dataUrl;
+          document.getElementById('composerPreview').style.display='block';
+          document.getElementById('composerPlaceholder').style.display='none';
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+    document.getElementById('composerPostBtn').onclick = async ()=>{
+      if(!composerBase64){ alert('กรุณาแนบรูปก่อนโพสต์'); return; }
+      const btn = document.getElementById('composerPostBtn');
+      btn.disabled = true; btn.textContent = 'กำลังโพสต์...';
+      const note = document.getElementById('composerNote').value.trim();
+      const res = await callApi('uploadGalleryPost', {attendeeId: profile.attendeeId, team: profile.team, note, imageBase64: composerBase64, mimeType:'image/jpeg'});
+      btn.disabled = false; btn.textContent = 'โพสต์ · Post';
+      if(res.success){ composerBase64 = null; loadGallery(); }
+    };
   }
-  galApp.innerHTML = `
-    ${nudge}
-    ${body}
-    <button class="fab" id="fabUpload">＋ โพสต์รูปใหม่</button>
-  `;
-  document.querySelectorAll('[data-like]').forEach(btn=>{
-    btn.onclick = async (e)=>{
-      e.stopPropagation();
-      if(!profile){ alert('กรุณาเช็คชื่อในแท็บ Tasks ก่อน'); return; }
+
+  feed.querySelectorAll('[data-like]').forEach(btn=>{
+    btn.onclick = async ()=>{
+      if(!profile){ alert('กรุณาเช็คอินก่อน'); return; }
       const postId = btn.dataset.like;
       const res = await callApi('likePost', {attendeeId: profile.attendeeId, postId});
       if(res.success){
         const item = galleryItemsCache.find(g=>g.postId===postId);
         if(item){ item.likes = res.likes; item.likedByMe = res.liked; }
-        renderGallery();
+        renderGalleryFeed();
       }
     };
   });
-  document.querySelectorAll('.bubble').forEach(el=>{
-    el.onclick = ()=> openPostModal(el.dataset.postid);
+
+  feed.querySelectorAll('[data-togglec]').forEach(btn=>{
+    btn.onclick = ()=> toggleComments(btn.dataset.togglec);
   });
-  document.getElementById('fabUpload').onclick = openUploadModal;
 }
 
-function closeModal(){
-  const m = document.querySelector('.modal-backdrop');
-  if(m) m.remove();
+let openCommentPostId = null;
+function toggleComments(postId){
+  const slot = document.querySelector(`[data-cslot="${postId}"]`);
+  if(!slot) return;
+  if(openCommentPostId===postId){ slot.innerHTML=''; openCommentPostId=null; return; }
+  openCommentPostId = postId;
+  loadComments(postId);
 }
 
-function openUploadModal(){
+async function loadComments(postId){
+  let slot = document.querySelector(`[data-cslot="${postId}"]`);
+  if(!slot || !slot.isConnected) return;
+  slot.innerHTML = `<div class="gal-comments"><span style="font-size:11px;opacity:.7">กำลังโหลด...</span></div>`;
+  const res = await callApi('getComments', {postId});
+  // The gallery overlay may have been closed (or re-rendered) while this request was in flight.
+  slot = document.querySelector(`[data-cslot="${postId}"]`);
+  if(!slot || !slot.isConnected) return;
   const profile = getProfile();
-  if(!profile){ alert('กรุณาเช็คชื่อในแท็บ 🎯 Tasks ก่อน เพื่อโพสต์รูป'); return; }
-  const div = document.createElement('div');
-  div.className = 'modal-backdrop';
-  div.innerHTML = `
-    <div class="modal-sheet">
-      <div class="close-x"><span id="closeUpload">✕</span></div>
-      <h2 style="font-family:'Orbitron',sans-serif; color:var(--orange); font-size:16px;">✨ โพสต์รูปใหม่</h2>
-      <label>รูปถ่าย</label>
-      <input type="file" id="galPhotoInput" accept="image/*" capture="environment">
-      <img id="galPreview" class="thumb">
-      <label>โน้ตสั้นๆ</label>
-      <textarea id="galNoteInput" placeholder="แชร์โมเมนต์ของคุณ..."></textarea>
-      <div id="galErr"></div>
-      <button id="galSubmitBtn">โพสต์</button>
+  const items = res.success ? res.items : [];
+  slot.innerHTML = `
+    <div class="gal-comments">
+      ${items.map(c=>`<div class="gal-comment-item"><div class="gal-comment-avatar">${(c.name||'?')[0]}</div><div class="gal-comment-text"><b style="color:#fff">${c.name}</b> ${c.comment}</div></div>`).join('')}
+      ${profile ? `
+        <div class="gal-comment-row">
+          <input class="gal-comment-field" id="commentField-${postId}" placeholder="เพิ่มความคิดเห็น…">
+          <button class="gal-comment-send" id="commentSend-${postId}">ส่ง</button>
+        </div>
+      ` : `<div class="gal-login-nudge">เช็คอินก่อน เพื่อคอมเมนต์</div>`}
     </div>
   `;
-  document.body.appendChild(div);
-  document.getElementById('closeUpload').onclick = closeModal;
-  div.addEventListener('click', (e)=>{ if(e.target===div) closeModal(); });
-
-  let resizedBase64 = null;
-  document.getElementById('galPhotoInput').addEventListener('change', (e)=>{
-    const file = e.target.files[0];
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev)=>{
-      const img = new Image();
-      img.onload = ()=>{
-        const maxW = 900;
-        const scale = Math.min(1, maxW/img.width);
-        const canvas = document.createElement('canvas');
-        canvas.width = img.width*scale; canvas.height = img.height*scale;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img,0,0,canvas.width,canvas.height);
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.72);
-        resizedBase64 = dataUrl.split(',')[1];
-        const prev = document.getElementById('galPreview');
-        prev.src = dataUrl; prev.style.display='block';
-      };
-      img.src = ev.target.result;
-    };
-    reader.readAsDataURL(file);
-  });
-
-  document.getElementById('galSubmitBtn').onclick = async ()=>{
-    if(!resizedBase64){ document.getElementById('galErr').innerHTML = '<div class="error">กรุณาแนบรูปก่อน</div>'; return; }
-    const btn = document.getElementById('galSubmitBtn');
-    btn.disabled = true; btn.textContent = 'กำลังโพสต์...';
-    const note = document.getElementById('galNoteInput').value.trim();
-    const res = await callApi('uploadGalleryPost', {attendeeId: profile.attendeeId, team: profile.team, note, imageBase64: resizedBase64, mimeType:'image/jpeg'});
-    if(!res.success){ document.getElementById('galErr').innerHTML = '<div class="error">โพสต์ไม่สำเร็จ ลองใหม่อีกครั้ง</div>'; btn.disabled=false; btn.textContent='โพสต์'; return; }
-    closeModal();
-    loadGallery();
-  };
-}
-
-async function openPostModal(postId){
-  const profile = getProfile();
-  const item = galleryItemsCache.find(g=>g.postId===postId);
-  if(!item) return;
-  const div = document.createElement('div');
-  div.className = 'modal-backdrop';
-  div.innerHTML = `
-    <div class="modal-sheet">
-      <div class="close-x"><span id="closePost">✕</span></div>
-      ${item.photoUrl? `<img class="full" src="${item.photoUrl}">`:''}
-      <div class="name">${item.name||item.team||'—'}</div>
-      ${item.note? `<p style="font-size:14px;">${item.note}</p>`:''}
-      <button class="like-btn ${item.likedByMe?'liked':''}" id="modalLikeBtn" style="width:auto; margin-bottom:14px;">❤ ${item.likes||0}</button>
-      <h2 style="font-size:14px;">ความคิดเห็น</h2>
-      <div id="commentsList"><div class="hint">กำลังโหลด...</div></div>
-      ${profile? `
-        <textarea id="commentInput" placeholder="แสดงความคิดเห็น..." style="min-height:50px; margin-top:10px;"></textarea>
-        <button id="commentSubmitBtn">ส่งคอมเมนต์</button>
-      ` : `<div class="login-nudge">เช็คชื่อในแท็บ Tasks ก่อน เพื่อคอมเมนต์</div>`}
-    </div>
-  `;
-  document.body.appendChild(div);
-  document.getElementById('closePost').onclick = closeModal;
-  div.addEventListener('click', (e)=>{ if(e.target===div) closeModal(); });
-
-  document.getElementById('modalLikeBtn').onclick = async ()=>{
-    if(!profile){ alert('กรุณาเช็คชื่อในแท็บ Tasks ก่อน'); return; }
-    const res = await callApi('likePost', {attendeeId: profile.attendeeId, postId});
-    if(res.success){
-      item.likes = res.likes; item.likedByMe = res.liked;
-      document.getElementById('modalLikeBtn').textContent = `❤ ${res.likes}`;
-      document.getElementById('modalLikeBtn').classList.toggle('liked', res.liked);
-    }
-  };
-
-  const commentsRes = await callApi('getComments', {postId});
-  const list = document.getElementById('commentsList');
-  if(commentsRes.success && commentsRes.items.length){
-    list.innerHTML = commentsRes.items.map(c=>`<div class="comment-item"><b>${c.name}</b>: ${c.comment}</div>`).join('');
-  } else {
-    list.innerHTML = '<div class="hint">ยังไม่มีความคิดเห็น</div>';
-  }
-
-  const submitBtn = document.getElementById('commentSubmitBtn');
-  if(submitBtn){
-    submitBtn.onclick = async ()=>{
-      const text = document.getElementById('commentInput').value.trim();
+  if(profile){
+    const send = async ()=>{
+      const field = document.getElementById(`commentField-${postId}`);
+      if(!field) return;
+      const text = field.value.trim();
       if(!text) return;
-      submitBtn.disabled = true; submitBtn.textContent = 'กำลังส่ง...';
-      const res = await callApi('addComment', {attendeeId: profile.attendeeId, postId, comment: text});
-      if(res.success){
-        item.commentCount = (item.commentCount||0)+1;
-        list.innerHTML += `<div class="comment-item"><b>${res.comment.name}</b>: ${res.comment.comment}</div>`;
-        document.getElementById('commentInput').value = '';
+      const res2 = await callApi('addComment', {attendeeId: profile.attendeeId, postId, comment: text});
+      if(res2.success){
+        const item = galleryItemsCache.find(g=>g.postId===postId);
+        if(item) item.commentCount = (item.commentCount||0)+1;
+        if(field.isConnected) field.value='';
+        loadComments(postId);
       }
-      submitBtn.disabled = false; submitBtn.textContent = 'ส่งคอมเมนต์';
     };
+    const sendBtn = document.getElementById(`commentSend-${postId}`);
+    const fieldEl = document.getElementById(`commentField-${postId}`);
+    if(sendBtn) sendBtn.onclick = send;
+    if(fieldEl) fieldEl.addEventListener('keydown', e=>{ if(e.key==='Enter') send(); });
   }
 }
 
 /* ================= INIT ================= */
 (function init(){
   seedDemo();
-  if(location.hash === '#gallery'){ showTab('gallery'); }
-  else { showTab('tasks'); }
+  const profile = getProfile();
+  if(profile){ screen='hub'; screenHub(); }
+  else { screen='landing'; screenLanding(); }
 })();
 </script>
 </body>
