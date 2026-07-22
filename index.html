@@ -2,20 +2,22 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 <title>AI NEXT — Registration</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
+  /* ===== Solar CI (คงจาก Project: Event Registration Website) ===== */
   :root{
     --accent:#fff; --accent-soft:rgba(255,255,255,.18); --glow:rgba(255,120,40,.55);
     --surface:rgba(20,0,2,.30); --surface-brd:rgba(255,255,255,.32); --line:rgba(255,255,255,.26);
     --muted:rgba(255,236,227,.85); --chip:rgba(0,0,0,.26); --bar:rgba(90,10,4,.35); --grid:rgba(255,255,255,.06);
     --dial:#8a1204; --text:#fff; --cta-bg:#fff; --cta-text:#b3160a;
+    --ok:#4CD98B; --err:#ff9a90; --line-green:#06C755;
     --cert-bg:linear-gradient(150deg,#F37100,#8a1204); --cert-text:#fff; --cert-muted:rgba(255,236,227,.82); --cert-line:rgba(255,255,255,.35);
   }
-  *{box-sizing:border-box;}
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
   html,body{ height:100%; }
   body{
     margin:0; min-height:100vh; color:var(--text); font-family:'IBM Plex Sans Thai',sans-serif;
@@ -38,7 +40,7 @@
   .appbar .brand{ font-family:'Chakra Petch'; font-weight:700; font-size:15px; letter-spacing:1px; display:flex; align-items:center; }
   .appbar .brand img{ height:24px; width:auto; display:block; }
   .appbar .cert-chip{ display:inline-flex; align-items:center; gap:7px; background:var(--chip); border:1px solid var(--surface-brd);
-    border-radius:999px; padding:6px 12px; cursor:pointer; color:var(--text); border-width:1px; font-family:'Chakra Petch'; font-weight:600; font-size:12px; letter-spacing:1px; }
+    border-radius:999px; padding:6px 12px; cursor:pointer; color:var(--text); font-family:'Chakra Petch'; font-weight:600; font-size:12px; letter-spacing:1px; }
 
   .screen-wrap{ flex:1; overflow-y:auto; padding:26px 22px 30px; }
   .screen{ min-height:100%; display:flex; flex-direction:column; animation:anx-rise .45s ease both; }
@@ -50,7 +52,7 @@
   @keyframes anx-fab{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(-6px);} }
   @keyframes anx-fade{ 0%{opacity:0;} 100%{opacity:1;} }
   @keyframes anx-breathe{ 0%,100%{transform:scale(1);opacity:.45;} 50%{transform:scale(1.14);opacity:.8;} }
-  @keyframes anx-bub{ 0%{transform:translateY(20px) scale(.85);opacity:0;} 18%{opacity:.6;} 100%{transform:translateY(-140px) scale(1.2);opacity:0;} }
+  @keyframes anx-pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.4);}50%{box-shadow:0 0 0 12px rgba(255,255,255,0);}}
 
   .kicker{ display:flex; align-items:center; gap:8px; font-family:'Chakra Petch'; font-size:11px; letter-spacing:3px; color:var(--muted); text-transform:uppercase; }
   .kicker .bar{ width:20px; height:2px; background:var(--accent); display:inline-block; }
@@ -65,12 +67,14 @@
   .session-row .stitle{ font-family:'Chakra Petch'; font-weight:600; font-size:14px; color:var(--text); }
   .session-row .ssub{ font-size:11.5px; color:var(--muted); }
 
-  .cta-btn, .ghost-btn, .back-btn{ font-family:'Chakra Petch'; cursor:pointer; }
+  .cta-btn, .ghost-btn, .back-btn, .line-btn{ font-family:'Chakra Petch'; cursor:pointer; }
   .cta-btn{ display:inline-flex; align-items:center; justify-content:center; gap:9px; width:100%; padding:16px 20px; border:none;
     border-radius:14px; background:var(--cta-bg); color:var(--cta-text); font-weight:600; font-size:15px; letter-spacing:.4px;
     box-shadow:0 12px 30px var(--glow); transition:transform .16s ease; margin-top:14px; }
   .cta-btn:hover{ transform:translateY(-2px); }
-  .cta-btn:disabled{ opacity:.6; cursor:not-allowed; transform:none; }
+  .cta-btn:disabled{ opacity:.5; cursor:not-allowed; transform:none; }
+  .line-btn{ display:inline-flex; align-items:center; justify-content:center; gap:9px; width:100%; padding:15px 20px; border:none;
+    border-radius:14px; background:var(--line-green); color:#fff; font-weight:600; font-size:15px; margin-top:14px; box-shadow:0 10px 26px rgba(6,199,85,.35); }
   .ghost-btn{ width:100%; padding:14px; border-radius:13px; background:transparent; border:1px solid var(--surface-brd);
     color:var(--text); font-weight:500; font-size:13.5px; margin-top:10px; }
   .back-btn{ align-self:flex-start; display:inline-flex; align-items:center; gap:6px; background:transparent; border:none;
@@ -79,11 +83,19 @@
     color:var(--muted); font-family:'Chakra Petch'; font-size:12px; cursor:pointer; margin-top:14px; text-decoration:none; }
 
   .field{ width:100%; padding:16px 18px; border-radius:13px; background:var(--chip); border:1px solid var(--surface-brd);
-    color:var(--text); font-family:'Chakra Petch'; font-size:16px; letter-spacing:.5px; outline:none; margin-bottom:0; }
+    color:var(--text); font-family:'Chakra Petch'; font-size:16px; letter-spacing:.5px; outline:none; }
   .field:focus{ border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
-  textarea.field{ font-family:'IBM Plex Sans Thai'; font-size:14px; min-height:90px; resize:vertical; letter-spacing:normal; }
+  textarea.field{ font-family:'IBM Plex Sans Thai'; font-size:14px; min-height:80px; resize:vertical; letter-spacing:normal; }
   .error-msg{ margin:10px 0 0; color:#fff; background:rgba(0,0,0,.28); border:1px solid var(--surface-brd); border-radius:10px;
     padding:9px 12px; font-size:12.5px; display:flex; align-items:center; gap:6px; }
+
+  /* consent / gate */
+  .agree{ display:flex; gap:11px; align-items:flex-start; font-size:13px; color:var(--text); margin-top:14px;
+    background:var(--surface); border:1px solid var(--surface-brd); border-radius:13px; padding:13px 14px; cursor:pointer; }
+  .agree input{ width:22px; height:22px; accent-color:#fff; flex:0 0 auto; margin-top:1px; }
+  .agree .sub{ color:var(--muted); font-size:11.5px; display:block; margin-top:2px; }
+  .gate-step{ display:flex; align-items:center; gap:10px; margin-top:6px; font-size:12px; color:var(--muted); font-family:'Chakra Petch'; letter-spacing:1px; }
+  .gate-done{ color:var(--ok); }
 
   .dial-wrap{ position:relative; width:170px; height:170px; border-radius:50%; margin:6px auto; display:flex; align-items:center; justify-content:center; }
   .dial-ring{ position:absolute; inset:0; border-radius:50%; border:4px solid transparent; border-top-color:var(--accent);
@@ -117,6 +129,21 @@
     color:var(--cta-text); background:var(--line); }
   .checklist-item .dot.on{ background:var(--cta-bg); }
 
+  /* mission form controls (จาก AI NEXT Mission Passport) */
+  label.q{ display:block; font-size:14px; font-weight:600; margin:18px 0 8px; color:var(--text); line-height:1.5; }
+  .scale{ display:flex; gap:8px; }
+  .scale button{ flex:1; padding:12px 0; border-radius:11px; border:1px solid var(--surface-brd); background:var(--chip);
+    color:var(--muted); font-size:16px; font-weight:700; cursor:pointer; font-family:'Chakra Petch'; }
+  .scale button.sel{ background:var(--cta-bg); color:var(--cta-text); border-color:transparent; }
+  .scale.ten{ flex-wrap:wrap; }
+  .scale.ten button{ flex:0 0 calc(20% - 7px); }
+  .seg{ display:flex; gap:8px; }
+  .seg.col{ flex-direction:column; }
+  .seg button{ flex:1; padding:12px; border-radius:11px; border:1px solid var(--surface-brd); background:var(--chip);
+    color:var(--muted); font-weight:600; font-size:13.5px; cursor:pointer; font-family:'IBM Plex Sans Thai'; text-align:left; }
+  .seg:not(.col) button{ text-align:center; }
+  .seg button.sel{ background:var(--cta-bg); color:var(--cta-text); border-color:transparent; }
+
   .cert-card{ position:relative; border-radius:18px; overflow:hidden; padding:26px 22px; background:var(--cert-bg);
     border:1px solid var(--accent); box-shadow:0 20px 50px var(--glow); }
   .cert-shine{ position:absolute; inset:0; background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.14) 50%,transparent 70%);
@@ -128,9 +155,7 @@
   .cert-foot .l{ font-size:10px; color:var(--cert-muted); }
   .cert-foot .v{ font-family:'Chakra Petch'; font-weight:600; font-size:13px; color:var(--cert-text); }
 
-  .quiz-q{ font-size:13px; color:var(--text); margin-bottom:10px; }
-
-  /* Gallery FAB + overlay */
+  /* Gallery FAB + overlay (คงจาก Event Reg) */
   .gallery-fab{ position:fixed; right:16px; bottom:22px; z-index:20; width:58px; height:58px; border-radius:50%;
     border:1px solid rgba(255,255,255,.45); background:radial-gradient(circle at 34% 28%,rgba(255,255,255,.55),rgba(255,150,90,.4) 46%,rgba(217,32,0,.55));
     box-shadow:0 10px 28px var(--glow), inset 0 1px 6px rgba(255,255,255,.5); cursor:pointer; display:flex; align-items:center;
@@ -161,7 +186,6 @@
   .gal-photo-slot .placeholder{ color:rgba(255,255,255,.6); font-size:12px; text-align:center; padding:10px; font-family:'IBM Plex Sans Thai'; }
   .gal-note-input{ width:100%; min-height:46px; padding:11px 13px; border-radius:12px; background:rgba(0,0,0,.25);
     border:1px solid rgba(255,255,255,.2); color:#fff; font-family:'IBM Plex Sans Thai'; font-size:13px; outline:none; resize:none; }
-  .gal-note-input:focus{ border-color:rgba(255,255,255,.55); }
   .gal-note-text{ margin:0 0 12px; font-size:13.5px; line-height:1.5; color:rgba(255,255,255,.92); }
   .gal-actions{ display:flex; align-items:center; gap:20px; }
   .gal-like-btn, .gal-comment-btn{ display:inline-flex; align-items:center; gap:6px; background:transparent; border:none; cursor:pointer;
@@ -177,9 +201,8 @@
     border:1px solid rgba(255,255,255,.2); color:#fff; font-family:'IBM Plex Sans Thai'; font-size:12.5px; outline:none; }
   .gal-comment-send{ padding:9px 15px; border-radius:999px; border:none; background:#fff; color:#b3160a; font-family:'Chakra Petch';
     font-weight:600; font-size:12.5px; cursor:pointer; flex-shrink:0; width:auto; }
-  .gal-login-nudge{ text-align:center; padding:14px; font-size:12.5px; color:rgba(255,255,255,.85); background:rgba(255,255,255,.08);
-    border-radius:12px; }
-  .gal-post-btn{ margin-top:10px; }
+  .gal-login-nudge{ text-align:center; padding:14px; font-size:12.5px; color:rgba(255,255,255,.85); background:rgba(255,255,255,.08); border-radius:12px; }
+  @media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important;}}
 </style>
 </head>
 <body>
@@ -187,238 +210,128 @@
 
 <script>
 /* ================= CONFIG ================= */
-const DEMO_MODE = false;
-const API_BASE_URL = "https://script.google.com/macros/s/AKfycbxlGc6JxljLQgNQlaWhFTuUI4mXj8b-XTYrtpkX9DpYAA2Df7U734Uyqn7F6yc1S3jY/exec";
+/* DEMO_MODE=true -> ใช้ข้อมูลจำลองในเครื่อง (เปิดไฟล์ดูได้เลย)
+   หลัง Deploy Apps Script แล้ว: ตั้ง DEMO_MODE=false และวาง URL เว็บแอปที่ API_BASE_URL */
+const DEMO_MODE = true;
+const API_BASE_URL = "PASTE_YOUR_WEB_APP_URL_HERE";
+const OPENCHAT_URL_FALLBACK = "https://line.me/ti/g2/rjoazgqKFHS_5oK3khzSAKXecKsuZqP40sLAOg";
 
 /* ================= DEMO MOCK BACKEND ================= */
-const LS_PARTICIPANTS='ainext_participants', LS_CONFIG='ainext_config', LS_GALLERY='ainext_gallery',
-      LS_LIKES='ainext_likes', LS_COMMENTS='ainext_comments', LS_QUESTIONS='ainext_questions';
+const LS_ROSTER='ainext_m_roster', LS_CONFIG='ainext_m_config', LS_GALLERY='ainext_m_gallery',
+      LS_LIKES='ainext_m_likes', LS_COMMENTS='ainext_m_comments';
 
 function seedDemo(){
-  if(!localStorage.getItem(LS_PARTICIPANTS)){
-    localStorage.setItem(LS_PARTICIPANTS, JSON.stringify([
-      {AttendeeID:'A001', FirstName:'สมชาย', LastName:'ใจดี', Team:'Team Rocket AI', Confirmed:true, Stage1_Time:null, Stage2_Time:null, Stage2_Answer:'', Stage3_Time:null, Stage3_PhotoURL:'', Stage3_Note:'', CertIssued:false},
-      {AttendeeID:'A002', FirstName:'Jane', LastName:'Doe', Team:'Neural Ninjas', Confirmed:true, Stage1_Time:null, Stage2_Time:null, Stage2_Answer:'', Stage3_Time:null, Stage3_PhotoURL:'', Stage3_Note:'', CertIssued:false},
-      {AttendeeID:'A003', FirstName:'ไม่', LastName:'ยืนยัน', Team:'', Confirmed:false, Stage1_Time:null, Stage2_Time:null, Stage2_Answer:'', Stage3_Time:null, Stage3_PhotoURL:'', Stage3_Note:'', CertIssued:false}
+  if(!localStorage.getItem(LS_ROSTER)){
+    localStorage.setItem(LS_ROSTER, JSON.stringify([
+      {no:'39', runNo:'A01', name:'ปิยาภา เดชฟุ้ง', nick:'แป้ง', team:'Team A', menu:'ไก่บอนชอน', joinedOpenChat:false, checkedIn:false, m1:false,m2:false,m3:false, cert:false},
+      {no:'48', runNo:'A04', name:'กัญญาณัฐ ตั้งประจักษ์ภักดี', nick:'แพรว', team:'Team A', menu:'ไก่บอนชอน', joinedOpenChat:true, checkedIn:false, m1:false,m2:false,m3:false, cert:false},
+      {no:'10', runNo:'B08', name:'ธนกาญจน์ กันไพเราะ', nick:'แทน', team:'Team B', menu:'กิมจิหมู', joinedOpenChat:false, checkedIn:false, m1:false,m2:false,m3:false, cert:false},
+      {no:'8', runNo:'C15', name:'อธิคม มูฮำหมัดอารี', nick:'ร็อก', team:'Team C', menu:'ปลาทอดบอนชอน', joinedOpenChat:false, checkedIn:false, m1:false,m2:false,m3:false, cert:false}
     ]));
   }
   if(!localStorage.getItem(LS_CONFIG)){
     localStorage.setItem(LS_CONFIG, JSON.stringify({
-      stage1_open:true, stage2_open:false, stage3_open:false, cert_open:false,
-      admin_password:'ainext2026', event_name:'AI NEXT',
-      cooldown_msg_1:'รอทีมงานเปิดกิจกรรมช่วงบ่าย...',
-      cooldown_msg_2:'รอทีมงานเปิดกิจกรรม AI NEXT Challenge...',
-      cooldown_msg_3:'รอทีมงานประกาศผล และปล่อย Certificate...'
+      checkin_open:true, mission1_open:true, mission2_open:false, mission3_open:false, cert_open:false,
+      admin_password:'ainext2026', event_name:'AI NEXT', openchat_url:OPENCHAT_URL_FALLBACK
     }));
   }
   if(!localStorage.getItem(LS_GALLERY)) localStorage.setItem(LS_GALLERY, JSON.stringify([]));
   if(!localStorage.getItem(LS_LIKES)) localStorage.setItem(LS_LIKES, JSON.stringify([]));
   if(!localStorage.getItem(LS_COMMENTS)) localStorage.setItem(LS_COMMENTS, JSON.stringify([]));
-  if(!localStorage.getItem(LS_QUESTIONS)) localStorage.setItem(LS_QUESTIONS, JSON.stringify([]));
 }
-function readLS(k){ return JSON.parse(localStorage.getItem(k) || 'null'); }
+function readLS(k){ return JSON.parse(localStorage.getItem(k)||'null'); }
 function writeLS(k,v){ localStorage.setItem(k, JSON.stringify(v)); }
 function genId(){ return Math.random().toString(36).slice(2,10); }
-function participantStage(p){
-  if(p.CertIssued) return 4;
-  if(p.Stage3_Time) return 3;
-  if(p.Stage2_Time) return 2;
-  if(p.Stage1_Time) return 1;
-  return 0;
-}
 function normalizeName(s){ return String(s||'').trim().toLowerCase().replace(/\s+/g,' '); }
+function stageOf(p){ if(p.m3) return 4; if(p.m2) return 3; if(p.m1) return 2; return 1; }
 
 function mockApi(action, params){
   seedDemo();
   return new Promise(resolve=>{
     setTimeout(()=>{
-      const cfg = readLS(LS_CONFIG);
-      let parts = readLS(LS_PARTICIPANTS);
-      let gallery = readLS(LS_GALLERY);
-      let likes = readLS(LS_LIKES);
-      let comments = readLS(LS_COMMENTS);
-      let questions = readLS(LS_QUESTIONS);
+      const cfg = readLS(LS_CONFIG); let roster = readLS(LS_ROSTER);
+      let gallery = readLS(LS_GALLERY), likes = readLS(LS_LIKES), comments = readLS(LS_COMMENTS);
+      const find = id => roster.find(p=>String(p.no)===String(id));
+      const statusOf = p => ({ success:true, event_name:cfg.event_name, attendeeId:p.no, runNo:p.runNo, team:p.team, nick:p.nick, menu:p.menu,
+        joinedOpenChat:!!p.joinedOpenChat, checkedIn:!!p.checkedIn, openchatUrl:cfg.openchat_url, stage:stageOf(p),
+        done:{m1:!!p.m1,m2:!!p.m2,m3:!!p.m3}, certIssued:!!p.cert,
+        mission1_open:!!cfg.mission1_open, mission2_open:!!cfg.mission2_open, mission3_open:!!cfg.mission3_open, cert_open:!!cfg.cert_open });
 
       if(action==='checkin'){
-        const name = normalizeName(params.name);
-        if(!name) return resolve({success:false, reason:'empty_name'});
-        const idx = parts.findIndex(p=>normalizeName(p.FirstName+' '+p.LastName)===name);
-        if(idx<0) return resolve({success:false, reason:'not_found'});
-        if(!parts[idx].Confirmed) return resolve({success:false, reason:'not_confirmed'});
-        if(!parts[idx].Stage1_Time) parts[idx].Stage1_Time = new Date().toISOString();
-        writeLS(LS_PARTICIPANTS, parts);
-        return resolve({success:true, attendeeId:parts[idx].AttendeeID, firstName:parts[idx].FirstName,
-          lastName:parts[idx].LastName, team:parts[idx].Team, stage:participantStage(parts[idx]),
-          stage1_open:!!cfg.stage1_open, stage2_open:!!cfg.stage2_open, stage3_open:!!cfg.stage3_open, cert_open:!!cfg.cert_open});
+        const nm = normalizeName(params.name);
+        if(!nm) return resolve({success:false, reason:'empty_name'});
+        if(!cfg.checkin_open) return resolve({success:false, reason:'checkin_closed'});
+        let p = roster.find(x=>normalizeName(x.name)===nm) || roster.find(x=>normalizeName(x.name).includes(nm));
+        if(!p) return resolve({success:false, reason:'not_found'});
+        const parts = p.name.split(' ');
+        return resolve(Object.assign(statusOf(p), {firstName:parts[0], lastName:parts.slice(1).join(' ')}));
       }
-      if(action==='getStatus'){
-        const activeQ = questions.find(q=>q.active);
-        const resp = {success:true, event_name:cfg.event_name,
-          question_text: activeQ? activeQ.text : '', question_id: activeQ? activeQ.id : '',
-          cooldown_msg_1:cfg.cooldown_msg_1, cooldown_msg_2:cfg.cooldown_msg_2, cooldown_msg_3:cfg.cooldown_msg_3,
-          stage1_open:!!cfg.stage1_open, stage2_open:!!cfg.stage2_open, stage3_open:!!cfg.stage3_open, cert_open:!!cfg.cert_open};
-        if(params.attendeeId){
-          const p = parts.find(p=>p.AttendeeID===params.attendeeId);
-          if(p){ resp.stage = participantStage(p); resp.team = p.Team; resp.certIssued = !!p.CertIssued; }
-        }
-        return resolve(resp);
+      if(action==='confirmCheckin'){
+        if(!params.pdpa) return resolve({success:false, reason:'need_pdpa'});
+        const p = find(params.attendeeId); if(!p) return resolve({success:false, reason:'not_found'});
+        if(params.joinedOpenChat) p.joinedOpenChat = true;
+        p.checkedIn = true; writeLS(LS_ROSTER, roster);
+        return resolve(statusOf(p));
       }
-      if(action==='submitAnswer'){
-        if(!cfg.stage2_open) return resolve({success:false, reason:'stage2_closed'});
-        const idx = parts.findIndex(p=>p.AttendeeID===params.attendeeId);
-        if(idx<0) return resolve({success:false, reason:'not_found'});
-        if(!parts[idx].Stage2_Time) parts[idx].Stage2_Time = new Date().toISOString();
-        parts[idx].Stage2_Answer = params.answer||'';
-        writeLS(LS_PARTICIPANTS, parts);
-        return resolve({success:true});
-      }
-      if(action==='submitSelfie' || action==='uploadGalleryPost'){
-        if(action==='submitSelfie' && !cfg.stage3_open) return resolve({success:false, reason:'stage3_closed'});
-        const idx = parts.findIndex(p=>p.AttendeeID===params.attendeeId);
-        if(idx<0) return resolve({success:false, reason:'not_found'});
-        const photoUrl = params.imageBase64 ? ('data:'+(params.mimeType||'image/jpeg')+';base64,'+params.imageBase64) : '';
-        if(action==='submitSelfie' && !parts[idx].Stage3_Time){
-          parts[idx].Stage3_Time = new Date().toISOString();
-          parts[idx].Stage3_PhotoURL = photoUrl;
-          parts[idx].Stage3_Note = params.note||'';
-          writeLS(LS_PARTICIPANTS, parts);
-        }
-        const postId = genId();
-        gallery.push({postId, timestamp:new Date().toISOString(), attendeeId:params.attendeeId,
-          name:(parts[idx].FirstName+' '+parts[idx].LastName).trim(), team:params.team||parts[idx].Team,
-          photoUrl, note:params.note||'', likes:0});
-        writeLS(LS_GALLERY, gallery);
-        return resolve({success:true, photoUrl, postId});
+      if(action==='getStatus'){ const p = find(params.attendeeId); if(!p) return resolve({success:false}); return resolve(statusOf(p)); }
+      if(action==='submitMission'){
+        const p = find(params.attendeeId); if(!p) return resolve({success:false});
+        const key = 'mission'+params.mission+'_open'; if(!cfg[key]) return resolve({success:false, reason:'mission_closed'});
+        if(!p.checkedIn) return resolve({success:false, reason:'not_checked_in'});
+        p['m'+params.mission]=true; writeLS(LS_ROSTER, roster);
+        return resolve(statusOf(p));
       }
       if(action==='getGallery'){
-        const list = gallery.slice(-300).reverse().map(g=>{
-          const likedByMe = params.attendeeId ? likes.some(l=>l.postId===g.postId && l.attendeeId===params.attendeeId) : false;
-          const commentCount = comments.filter(c=>c.postId===g.postId).length;
-          return {...g, likedByMe, commentCount};
-        });
-        return resolve({success:true, items:list});
-      }
-      if(action==='likePost'){
-        const gIdx = gallery.findIndex(g=>g.postId===params.postId);
-        if(gIdx<0) return resolve({success:false, reason:'not_found'});
-        const likeIdx = likes.findIndex(l=>l.postId===params.postId && l.attendeeId===params.attendeeId);
-        let liked;
-        if(likeIdx>=0){ likes.splice(likeIdx,1); gallery[gIdx].likes = Math.max(0,(gallery[gIdx].likes||0)-1); liked=false; }
-        else{ likes.push({postId:params.postId, attendeeId:params.attendeeId}); gallery[gIdx].likes = (gallery[gIdx].likes||0)+1; liked=true; }
-        writeLS(LS_LIKES, likes); writeLS(LS_GALLERY, gallery);
-        return resolve({success:true, liked, likes:gallery[gIdx].likes});
-      }
-      if(action==='getComments'){
-        return resolve({success:true, items: comments.filter(c=>c.postId===params.postId)});
-      }
-      if(action==='addComment'){
-        const p = parts.find(p=>p.AttendeeID===params.attendeeId);
-        if(!p) return resolve({success:false, reason:'not_found'});
-        const name = (p.FirstName+' '+p.LastName).trim();
-        const c = {postId:params.postId, name, comment:params.comment, timestamp:new Date().toISOString()};
-        comments.push(c); writeLS(LS_COMMENTS, comments);
-        return resolve({success:true, comment:c});
-      }
-      if(action==='adminLogin') return resolve({success: String(params.password)===String(cfg.admin_password)});
-      if(action==='adminUnlock'){
-        if(String(params.password)!==String(cfg.admin_password)) return resolve({success:false, reason:'bad_password'});
-        const map = {1:'stage1_open',2:'stage2_open',3:'stage3_open',4:'cert_open'};
-        const key = map[params.stage]; if(!key) return resolve({success:false, reason:'bad_stage'});
-        cfg[key] = !!params.open;
-        if(params.stage==4 && params.open){
-          parts = parts.map(p=> (p.Stage3_Time && !p.CertIssued) ? {...p, CertIssued:true} : p);
-          writeLS(LS_PARTICIPANTS, parts);
-        }
-        writeLS(LS_CONFIG, cfg);
-        return resolve({success:true});
-      }
-      if(action==='adminStats'){
-        if(String(params.password)!==String(cfg.admin_password)) return resolve({success:false, reason:'bad_password'});
-        const stats = {total:parts.length, confirmed:0, stage1:0, stage2:0, stage3:0, cert:0,
-          stage1_open:!!cfg.stage1_open, stage2_open:!!cfg.stage2_open, stage3_open:!!cfg.stage3_open, cert_open:!!cfg.cert_open,
-          galleryPosts: gallery.length};
-        parts.forEach(p=>{ if(p.Confirmed) stats.confirmed++; if(p.Stage1_Time) stats.stage1++; if(p.Stage2_Time) stats.stage2++; if(p.Stage3_Time) stats.stage3++; if(p.CertIssued) stats.cert++; });
-        return resolve({success:true, stats});
-      }
-      if(action==='adminListQuestions'){
-        if(String(params.password)!==String(cfg.admin_password)) return resolve({success:false, reason:'bad_password'});
-        return resolve({success:true, items:questions});
-      }
-      if(action==='adminAddQuestion'){
-        if(String(params.password)!==String(cfg.admin_password)) return resolve({success:false, reason:'bad_password'});
-        const id = genId();
-        questions.push({id, text:params.text, active:false});
-        writeLS(LS_QUESTIONS, questions);
-        return resolve({success:true, id});
-      }
-      if(action==='adminSetActiveQuestion'){
-        if(String(params.password)!==String(cfg.admin_password)) return resolve({success:false, reason:'bad_password'});
-        questions = questions.map(q=>({...q, active: q.id===params.questionId}));
-        writeLS(LS_QUESTIONS, questions);
-        return resolve({success:true});
-      }
-      if(action==='adminSearchParticipants'){
-        if(String(params.password)!==String(cfg.admin_password)) return resolve({success:false, reason:'bad_password'});
-        const q = normalizeName(params.query||'');
-        let rows = parts;
-        if(q) rows = rows.filter(p=>normalizeName(p.AttendeeID+' '+p.FirstName+' '+p.LastName+' '+p.Team).includes(q));
-        const items = rows.slice(0,40).map(p=>({attendeeId:p.AttendeeID, firstName:p.FirstName, lastName:p.LastName,
-          team:p.Team, confirmed:!!p.Confirmed, stage1:!!p.Stage1_Time, stage2:!!p.Stage2_Time, stage3:!!p.Stage3_Time, certIssued:!!p.CertIssued}));
+        const items = gallery.slice().reverse().map(g=>({...g,
+          likedByMe: params.attendeeId? likes.some(l=>l.postId===g.postId&&String(l.no)===String(params.attendeeId)):false,
+          commentCount: comments.filter(c=>c.postId===g.postId).length }));
         return resolve({success:true, items});
       }
-      if(action==='adminUpdateParticipant'){
-        if(String(params.password)!==String(cfg.admin_password)) return resolve({success:false, reason:'bad_password'});
-        const idx = parts.findIndex(p=>p.AttendeeID===params.attendeeId);
-        if(idx<0) return resolve({success:false, reason:'not_found'});
-        const patch = params.patch||{};
-        if(typeof patch.confirmed==='boolean') parts[idx].Confirmed = patch.confirmed;
-        if(typeof patch.team==='string') parts[idx].Team = patch.team;
-        if(typeof patch.stage1==='boolean') parts[idx].Stage1_Time = patch.stage1 ? (parts[idx].Stage1_Time||new Date().toISOString()) : null;
-        if(typeof patch.stage2==='boolean') parts[idx].Stage2_Time = patch.stage2 ? (parts[idx].Stage2_Time||new Date().toISOString()) : null;
-        if(typeof patch.stage3==='boolean') parts[idx].Stage3_Time = patch.stage3 ? (parts[idx].Stage3_Time||new Date().toISOString()) : null;
-        if(typeof patch.certIssued==='boolean') parts[idx].CertIssued = patch.certIssued;
-        writeLS(LS_PARTICIPANTS, parts);
-        return resolve({success:true});
+      if(action==='uploadGalleryPost'||action==='submitSelfie'){
+        const p = find(params.attendeeId); if(!p) return resolve({success:false});
+        const postId = genId();
+        const photoUrl = params.imageBase64 ? ('data:'+(params.mimeType||'image/jpeg')+';base64,'+params.imageBase64) : '';
+        gallery.push({postId, timestamp:new Date().toISOString(), name:p.name, team:params.team||p.team, note:params.note||'', photoUrl, likes:0});
+        writeLS(LS_GALLERY, gallery); return resolve({success:true, postId, photoUrl});
+      }
+      if(action==='likePost'){
+        const gi = gallery.findIndex(g=>g.postId===params.postId); if(gi<0) return resolve({success:false});
+        const li = likes.findIndex(l=>l.postId===params.postId&&String(l.no)===String(params.attendeeId)); let liked;
+        if(li>=0){ likes.splice(li,1); gallery[gi].likes=Math.max(0,(gallery[gi].likes||0)-1); liked=false; }
+        else { likes.push({postId:params.postId, no:params.attendeeId}); gallery[gi].likes=(gallery[gi].likes||0)+1; liked=true; }
+        writeLS(LS_LIKES,likes); writeLS(LS_GALLERY,gallery); return resolve({success:true, liked, likes:gallery[gi].likes});
+      }
+      if(action==='getComments') return resolve({success:true, items:comments.filter(c=>c.postId===params.postId)});
+      if(action==='addComment'){
+        const p = find(params.attendeeId); if(!p) return resolve({success:false});
+        const c={postId:params.postId, name:p.name, comment:params.comment, timestamp:new Date().toISOString()};
+        comments.push(c); writeLS(LS_COMMENTS,comments); return resolve({success:true, comment:c});
       }
       resolve({success:false, error:'unknown_action'});
-    }, 180);
+    }, 160);
   });
 }
-
 async function callApi(action, params={}){
   if(DEMO_MODE) return mockApi(action, params);
-  const res = await fetch(API_BASE_URL, {
-    method:'POST',
-    headers:{'Content-Type':'text/plain;charset=utf-8'},
-    body: JSON.stringify({action, ...params})
-  });
+  const res = await fetch(API_BASE_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({action, ...params}) });
   return res.json();
 }
 
-/* ================= SHARED PROFILE / STATE ================= */
-const PROFILE_KEY = 'ainext_profile';
-const LAST_Q_KEY = 'ainext_last_answered_qid';
+/* ================= STATE ================= */
+const PROFILE_KEY='ainext_profile';
 function getProfile(){ return readLS(PROFILE_KEY); }
-function setProfile(p){ writeLS(PROFILE_KEY, p); }
+function setProfile(p){ writeLS(PROFILE_KEY,p); }
 function clearProfile(){ localStorage.removeItem(PROFILE_KEY); }
-function getLastAnsweredQId(){ return localStorage.getItem(LAST_Q_KEY) || ''; }
-function setLastAnsweredQId(id){ localStorage.setItem(LAST_Q_KEY, id || ''); }
 
-let screen = 'landing';       // landing|checkin|validating|notfound|denied|kit|hub|quiz|selfie|cooldown|cert
-let cooldownTarget = null;    // 'quiz'|'selfie'|'cert'
-let checkinError = '';
-let latestStatus = null;
-let galleryOpen = false;
-let hubPollTimer = null, cooldownPollTimer = null, galleryPollTimer = null;
-let galleryItemsCache = [];
-
-function stopHubPoll(){ if(hubPollTimer){ clearInterval(hubPollTimer); hubPollTimer=null; } }
-function stopCooldownPoll(){ if(cooldownPollTimer){ clearInterval(cooldownPollTimer); cooldownPollTimer=null; } }
-function stopGalleryPoll(){ if(galleryPollTimer){ clearInterval(galleryPollTimer); galleryPollTimer=null; } }
+let screen='landing', checkinError='', latestStatus=null, cooldownTarget=null;
+let hubPollTimer=null, cooldownPollTimer=null, galleryPollTimer=null, galleryItemsCache=[];
+function stopHubPoll(){ if(hubPollTimer){clearInterval(hubPollTimer);hubPollTimer=null;} }
+function stopCooldownPoll(){ if(cooldownPollTimer){clearInterval(cooldownPollTimer);cooldownPollTimer=null;} }
+function stopGalleryPoll(){ if(galleryPollTimer){clearInterval(galleryPollTimer);galleryPollTimer=null;} }
 function stopAllPolls(){ stopHubPoll(); stopCooldownPoll(); }
-
 const root = document.getElementById('app');
 
+/* ================= ICONS ================= */
 function iconArrow(){ return `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>`; }
 function iconBack(){ return `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"></path></svg>`; }
 function iconShield(){ return `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>`; }
@@ -427,17 +340,15 @@ function iconCert(){ return `<svg width="19" height="19" viewBox="0 0 24 24" fil
 function iconGallery(){ return `<svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"></rect><circle cx="9" cy="9" r="2"></circle><path d="m21 15-3.86-3.86a2 2 0 0 0-2.83 0L6 19"></path></svg>`; }
 function iconSearch(){ return `<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>`; }
 function iconAlert(){ return `<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>`; }
-function iconBan(){ return `<svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m4.9 4.9 14.2 14.2"></path></svg>`; }
 function iconBox(){ return `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="M3.3 7 12 12l8.7-5"></path><path d="M12 22V12"></path></svg>`; }
 function iconClock(){ return `<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>`; }
+function iconChat(){ return `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>`; }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
-/* ================= SHELL / RENDER ================= */
+/* ================= SHELL ================= */
 function shell(bodyHtml, showBar){
-  const profile = getProfile();
   root.innerHTML = `
-    <div class="grid-overlay"></div>
-    <div class="blob-tr"></div>
-    <div class="blob-bl"></div>
+    <div class="grid-overlay"></div><div class="blob-tr"></div><div class="blob-bl"></div>
     <div class="content">
       <div class="appbar ${showBar?'show':''}">
         <div class="brand"><img src="ainext-logo.png" alt="AI NEXT"></div>
@@ -445,22 +356,15 @@ function shell(bodyHtml, showBar){
       </div>
       <div class="screen-wrap" id="screenWrap"></div>
     </div>
-    ${(!['staff'].includes(screen)) ? `<button class="gallery-fab" id="galleryFabBtn">${iconGallery()}<span class="badge-count" id="galBadge">0</span></button>` : ''}
+    <button class="gallery-fab" id="galleryFabBtn">${iconGallery()}<span class="badge-count" id="galBadge">0</span></button>
   `;
   document.getElementById('screenWrap').innerHTML = bodyHtml;
-  const certBtn = document.getElementById('appbarCertBtn');
-  if(certBtn) certBtn.onclick = ()=>goCert();
-  const fab = document.getElementById('galleryFabBtn');
-  if(fab) fab.onclick = openGallery;
+  const c=document.getElementById('appbarCertBtn'); if(c) c.onclick=goCert;
+  const f=document.getElementById('galleryFabBtn'); if(f) f.onclick=openGallery;
   updateGalleryBadge();
 }
-
-async function updateGalleryBadge(){
-  const el = document.getElementById('galBadge');
-  if(!el) return;
-  const res = await callApi('getGallery', {});
-  if(res.success) el.textContent = (res.items||[]).length;
-}
+async function updateGalleryBadge(){ const el=document.getElementById('galBadge'); if(!el) return;
+  const r=await callApi('getGallery',{}); if(r.success) el.textContent=(r.items||[]).length; }
 
 /* ================= LANDING ================= */
 function screenLanding(){
@@ -469,21 +373,21 @@ function screenLanding(){
     <div class="screen">
       <div class="kicker"><span class="bar"></span>Event Registration</div>
       <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px 0">
-        <img src="ainext-logo.png" alt="AI NEXT Bootcamp" style="width:150px;height:auto;animation:anx-float 5.5s ease-in-out infinite">
+        <img src="ainext-logo.png" alt="AI NEXT by Bizcore" style="width:210px;height:auto;animation:anx-float 5.5s ease-in-out infinite">
         <h1 class="title">ลงทะเบียนเข้าร่วมงาน</h1>
         <p class="subtitle">Attendee Registration</p>
-        <p class="desc" style="max-width:300px">เช็คอิน 3 ช่วงเวลาให้ครบ ร่วมกิจกรรม และรับ E-Certificate</p>
+        <p class="desc" style="max-width:300px">เช็คอิน เข้ากลุ่ม OpenChat และทำ Mission ให้ครบ เพื่อรับ E-Certificate</p>
       </div>
       <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px">
-        <div class="session-row"><div class="time">08:30</div><div><div class="stitle">Morning Registration</div><div class="ssub">รับป้ายชื่อ &amp; welcome kit</div></div></div>
-        <div class="session-row"><div class="time">12:30</div><div><div class="stitle">After Lunch</div><div class="ssub">ตอบคำถามสั้นๆ</div></div></div>
-        <div class="session-row"><div class="time">16:45</div><div><div class="stitle">AI NEXT Challenge</div><div class="ssub">Team Selfie</div></div></div>
+        <div class="session-row"><div class="time">08:30</div><div><div class="stitle">Check-in &amp; OpenChat</div><div class="ssub">เช็คอิน + เข้ากลุ่ม LINE</div></div></div>
+        <div class="session-row"><div class="time">Session</div><div><div class="stitle">Mission 1–3</div><div class="ssub">กรอกฟอร์มสะท้อนสิ่งที่ได้เรียนรู้</div></div></div>
+        <div class="session-row"><div class="time">Final</div><div><div class="stitle">E-Certificate</div><div class="ssub">ครบ 3 Mission มีสิทธิ์รับเกียรติบัตร</div></div></div>
       </div>
       <button class="cta-btn" id="startBtn">เริ่มลงทะเบียน · Get Started ${iconArrow()}</button>
       <a class="admin-link" href="admin.html">${iconShield()} เจ้าหน้าที่ · Admin login</a>
     </div>
   `, false);
-  document.getElementById('startBtn').onclick = ()=>{ checkinError=''; screen='checkin'; screenCheckin(); };
+  document.getElementById('startBtn').onclick=()=>{ checkinError=''; screen='checkin'; screenCheckin(); };
 }
 
 /* ================= CHECK-IN ================= */
@@ -495,345 +399,318 @@ function screenCheckin(){
       <h2 class="title">เช็คอิน</h2>
       <p class="subtitle">Confirm your attendance</p>
       <label style="font-size:13px;color:var(--muted);margin:14px 0 10px;display:block">กรอกชื่อ-นามสกุลให้ตรงกับที่ลงทะเบียนไว้<br><span style="font-size:11px;opacity:.8">Full name as registered</span></label>
-      <input class="field" id="nameInput" placeholder="เช่น สมชาย ใจดี">
-      ${checkinError? `<p class="error-msg">${checkinError}</p>` : ''}
+      <input class="field" id="nameInput" placeholder="เช่น ปิยาภา เดชฟุ้ง">
+      ${checkinError? `<p class="error-msg">${esc(checkinError)}</p>`:''}
       <button class="cta-btn" id="submitBtn" style="margin-top:20px">ยืนยัน · Confirm ${iconArrow()}</button>
     </div>
   `, false);
-  document.getElementById('backBtn').onclick = ()=>{ screen='landing'; screenLanding(); };
-  document.getElementById('submitBtn').onclick = doCheckin;
+  document.getElementById('backBtn').onclick=()=>{ screen='landing'; screenLanding(); };
+  document.getElementById('submitBtn').onclick=doCheckin;
   document.getElementById('nameInput').addEventListener('keydown', e=>{ if(e.key==='Enter') doCheckin(); });
 }
-
 async function doCheckin(){
-  const val = document.getElementById('nameInput').value.trim();
+  const val=document.getElementById('nameInput').value.trim();
   if(!val){ checkinError='กรุณากรอกชื่อ-นามสกุล'; screenCheckin(); return; }
   screen='validating'; screenValidating();
-  const res = await callApi('checkin', {name: val});
+  const res=await callApi('checkin', {name:val});
   if(screen!=='validating') return;
   if(!res.success){
-    if(res.reason==='not_confirmed'){ screen='denied'; screenDenied(); return; }
-    checkinError = res.reason==='not_found' ? `ไม่พบชื่อ "${val}" ในลิสต์ Confirmed` : 'เกิดข้อผิดพลาด กรุณาลองใหม่';
+    if(res.reason==='checkin_closed'){ checkinError='ยังไม่เปิดให้เช็คอิน — รอประกาศจากทีมงาน'; screen='checkin'; screenCheckin(); return; }
+    checkinError = res.reason==='not_found' ? `ไม่พบชื่อ "${val}" ในรายชื่อ` : 'เกิดข้อผิดพลาด กรุณาลองใหม่';
     screen='notfound'; screenNotfound(val); return;
   }
-  setProfile({attendeeId:res.attendeeId, firstName:res.firstName, lastName:res.lastName, team:res.team});
-  screen='kit'; screenKit();
+  setProfile({attendeeId:res.attendeeId, runNo:res.runNo, firstName:res.firstName, lastName:res.lastName, nick:res.nick, team:res.team, menu:res.menu});
+  latestStatus=res;
+  // ประตู OpenChat + PDPA — แสดงถ้ายังไม่เช็คอิน (ยังไม่ยืนยันเข้ากลุ่ม/ยินยอม)
+  if(!res.checkedIn){ screen='gate'; screenGate(); }
+  else { screen='hub'; screenHub(); }
 }
-
 function screenValidating(){
   shell(`
     <div class="screen" style="align-items:center;justify-content:center;text-align:center;gap:24px">
       <div class="dial-wrap"><div class="dial-ring"></div><div class="dial-inner">${iconSearch()}</div></div>
-      <div>
-        <h2 class="title">กำลังตรวจสอบรายชื่อ…</h2>
-        <p class="subtitle">Checking confirmed list</p>
-      </div>
-    </div>
-  `, false);
+      <div><h2 class="title">กำลังตรวจสอบรายชื่อ…</h2><p class="subtitle">Checking list</p></div>
+    </div>`, false);
 }
-
 function screenNotfound(input){
   shell(`
     <div class="screen">
       <div style="margin:6px 0 18px;width:80px;height:80px;border-radius:20px;display:flex;align-items:center;justify-content:center;background:var(--accent-soft);border:1px solid var(--surface-brd)">${iconAlert()}</div>
-      <h2 class="title">ไม่พบชื่อในลิสต์ Confirmed</h2>
-      <p class="desc">"${input}" ยังไม่อยู่ในรายชื่อยืนยัน — ตรวจสอบข้อความยืนยัน แล้วให้เจ้าหน้าที่แก้ไขข้อมูลในระบบ<br><span style="font-size:12px;opacity:.8">Not on the confirmed list — please see the registration desk.</span></p>
+      <h2 class="title">ไม่พบชื่อในรายชื่อ</h2>
+      <p class="desc">"${esc(input)}" ยังไม่อยู่ในรายชื่อ — ตรวจสอบการสะกดชื่อ หรือให้เจ้าหน้าที่ช่วยตรวจสอบที่จุดลงทะเบียน</p>
       <div style="flex:1"></div>
       <button class="cta-btn" id="retryBtn">ลองอีกครั้ง · Try again ${iconArrow()}</button>
       <a class="admin-link" href="admin.html">${iconShield()} เจ้าหน้าที่ · Admin login</a>
-    </div>
-  `, false);
-  document.getElementById('retryBtn').onclick = ()=>{ checkinError=''; screen='checkin'; screenCheckin(); };
+    </div>`, false);
+  document.getElementById('retryBtn').onclick=()=>{ checkinError=''; screen='checkin'; screenCheckin(); };
 }
 
-function screenDenied(){
+/* ================= OPENCHAT + PDPA GATE (ฟีเจอร์ใหม่จาก AI NEXT) ================= */
+function screenGate(){
+  stopAllPolls();
+  const st=latestStatus||{}; const p=getProfile();
+  const joined = !!st.joinedOpenChat;
   shell(`
-    <div class="screen" style="align-items:center;justify-content:center;text-align:center;gap:8px">
-      <div style="width:96px;height:96px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.24);border:1px solid var(--surface-brd);margin-bottom:8px">${iconBan()}</div>
-      <h2 class="title">ยังเข้าร่วมไม่ได้</h2>
-      <p class="desc" style="max-width:280px">ไม่พบข้อมูลการยืนยันของคุณในระบบ กรุณาติดต่อเจ้าหน้าที่ลงทะเบียนที่หน้างาน<br><span style="font-size:12px;opacity:.8">We couldn't verify your registration. Please see the registration desk.</span></p>
-      <button class="ghost-btn" id="retryBtn2">ลองอีกครั้ง · Try again</button>
+    <div class="screen">
+      <div class="kicker"><span class="bar"></span>อีก 2 ขั้น ก่อนรับพาสปอร์ต</div>
+      <h2 class="title" style="margin-top:10px">เข้ากลุ่ม &amp; ยินยอมข้อมูล</h2>
+      <p class="desc">สวัสดีคุณ <b style="color:#fff">${esc(p.nick||p.firstName)}</b>! เข้ากลุ่ม LINE OpenChat ของงานก่อน ใช้สื่อสาร รับโจทย์ และส่งงานตลอดทั้งวัน</p>
+
+      ${joined ? `<div class="agree" style="cursor:default"><span style="color:var(--ok)">${iconCheck()}</span><div>คุณเข้ากลุ่ม OpenChat แล้ว ✓<span class="sub">ระบบตรวจพบว่าคุณอยู่ในกลุ่มเรียบร้อย</span></div></div>`
+        : `<button class="line-btn" id="btnLine">${iconChat()} เข้ากลุ่ม LINE OpenChat</button>
+      <label class="agree"><input type="checkbox" id="ckJoined"><div>ฉันเข้ากลุ่ม OpenChat แล้ว<span class="sub">กดปุ่มเขียว เข้ากลุ่ม แล้วกลับมาติ๊กช่องนี้</span></div></label>`}
+
+      <label class="agree"><input type="checkbox" id="ckPdpa"><div>ยินยอมให้เก็บข้อมูลคำตอบเพื่อพัฒนากิจกรรม (PDPA)<span class="sub">ข้อมูลใช้เพื่อจัดกิจกรรมและวิเคราะห์ภาพรวมเท่านั้น</span></div></label>
+
+      <button class="cta-btn" id="btnConfirm" disabled>ยืนยันเช็คอิน 🎉</button>
+      <p id="gateErr"></p>
+      <p style="text-align:center"><a class="admin-link" href="#" id="notyou">ไม่ใช่คุณ? แตะเพื่อกรอกชื่อใหม่</a></p>
     </div>
   `, false);
-  document.getElementById('retryBtn2').onclick = ()=>{ checkinError=''; screen='checkin'; screenCheckin(); };
+
+  const ckJoined=document.getElementById('ckJoined');
+  const ckPdpa=document.getElementById('ckPdpa');
+  const btn=document.getElementById('btnConfirm');
+  function upd(){ btn.disabled = !( (joined || (ckJoined&&ckJoined.checked)) && ckPdpa.checked ); }
+  if(document.getElementById('btnLine')) document.getElementById('btnLine').onclick=()=> window.open(st.openchatUrl||OPENCHAT_URL_FALLBACK,'_blank');
+  if(ckJoined) ckJoined.onchange=upd;
+  ckPdpa.onchange=upd;
+  document.getElementById('notyou').onclick=(e)=>{ e.preventDefault(); clearProfile(); screen='checkin'; checkinError=''; screenCheckin(); };
+  btn.onclick=async ()=>{
+    btn.disabled=true; document.getElementById('gateErr').textContent='';
+    const res=await callApi('confirmCheckin', {attendeeId:p.attendeeId, pdpa:true, joinedOpenChat: joined || (ckJoined&&ckJoined.checked)});
+    if(!res.success){ document.getElementById('gateErr').innerHTML='<p class="error-msg">บันทึกไม่สำเร็จ ลองอีกครั้ง</p>'; btn.disabled=false; return; }
+    latestStatus=res; screen='kit'; screenKit();
+  };
 }
 
 /* ================= WELCOME KIT ================= */
 function screenKit(){
-  const profile = getProfile();
+  const p=getProfile();
   shell(`
     <div class="screen" style="align-items:center;text-align:center">
       <div style="margin:12px 0 18px;width:100px;height:100px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--accent-soft);border:1px solid var(--surface-brd)">${iconCheck()}</div>
-      <p class="subtitle">Checked In · Morning</p>
-      <h2 class="title">${profile.firstName} ${profile.lastName}</h2>
-      <p class="desc" style="margin-bottom:20px">ยินดีต้อนรับสู่ AI NEXT</p>
-      <div style="width:100%;display:flex;gap:10px;margin-bottom:16px">
-        <div class="stat-box"><div class="lbl">Attendee ID</div><div class="val">${profile.attendeeId}</div></div>
-        <div class="stat-box"><div class="lbl">Team</div><div class="val">${profile.team||'—'}</div></div>
+      <p class="subtitle">Checked In</p>
+      <h2 class="title">ยินดีต้อนรับ คุณ${esc(p.nick||p.firstName)}</h2>
+      <p class="desc" style="margin-bottom:20px">${esc(p.firstName)} ${esc(p.lastName)}</p>
+      <div style="width:100%;display:flex;gap:10px;margin-bottom:12px">
+        <div class="stat-box"><div class="lbl">Attendee ID</div><div class="val">${esc(p.runNo||p.attendeeId)}</div></div>
+        <div class="stat-box"><div class="lbl">Team</div><div class="val">${esc(p.team||'—')}</div></div>
       </div>
       <div style="width:100%;display:flex;align-items:center;gap:12px;background:var(--accent-soft);border:1px dashed var(--surface-brd);border-radius:14px;padding:14px;margin-bottom:auto;text-align:left">
         <span style="flex-shrink:0;color:var(--accent)">${iconBox()}</span>
-        <span style="font-size:13px;line-height:1.5;color:var(--text)">รับป้ายชื่อ ขนม น้ำ ที่จุดลงทะเบียน<br><span style="color:var(--muted);font-size:11.5px">Collect your badge, snacks &amp; water kit</span></span>
+        <span style="font-size:13px;line-height:1.5;color:var(--text)">เมนูอาหารกลางวันของคุณ<br><span style="color:var(--muted);font-size:12.5px">${esc(p.menu||'รอยืนยันหน้างาน')}</span></span>
       </div>
       <button class="cta-btn" id="toHubBtn">ไปหน้ากิจกรรม · Go to hub ${iconArrow()}</button>
     </div>
   `, false);
-  document.getElementById('toHubBtn').onclick = ()=>{ screen='hub'; screenHub(); };
+  document.getElementById('toHubBtn').onclick=()=>{ screen='hub'; screenHub(); };
 }
 
-/* ================= HUB ================= */
+/* ================= HUB (3 Missions เป็นฟอร์ม) ================= */
+const M_META=[
+  {n:1, title:'Mission 1 · Session แรก', sub:'สะท้อนสิ่งที่ได้จาก session ช่วงเช้า'},
+  {n:2, title:'Mission 2 · Session สอง', sub:'สะท้อนสิ่งที่ได้จาก session ช่วงบ่าย'},
+  {n:3, title:'Mission 3 · Challenge + ปิดงาน', sub:'Mission สุดท้าย ตอบครบ = ครบสิทธิ์ Certificate'}
+];
 async function screenHub(){
   if(screen!=='hub') return;
-  const profile = getProfile();
-  if(!profile){ screen='landing'; screenLanding(); return; }
-  const status = await callApi('getStatus', {attendeeId: profile.attendeeId});
+  const p=getProfile(); if(!p){ screen='landing'; screenLanding(); return; }
+  const st=await callApi('getStatus', {attendeeId:p.attendeeId});
   if(screen!=='hub') return;
-  latestStatus = status;
-  const completed = status.stage ?? 1;
-  const doneQuiz = completed>=2, doneSelfie = completed>=3;
-  const doneCount = 1 + (doneQuiz?1:0) + (doneSelfie?1:0);
-
-  const hasNewQuestion = status.question_id && status.question_id !== getLastAnsweredQId();
-
-  function cardFor(kind){
-    if(kind==='morning'){
-      return { done:true, n:'1', title:'Morning · เช็คอิน', sub:'รับ welcome kit แล้ว', status:'เสร็จ', onClick:null };
-    }
-    if(kind==='quiz'){
-      if(doneQuiz && !hasNewQuestion) return { done:true, n:'2', title:'Lunch · ตอบคำถามสั้นๆ', sub:'ตอบแล้ว', status:'เสร็จ', onClick:null };
-      if(!status.stage2_open) return { done:false, n:'2', title:'Lunch · ตอบคำถามสั้นๆ', sub:'ยังไม่เปิด', status:'ล็อก', onClick:()=>startCooldown('quiz') };
-      if(!status.question_id) return { done:false, n:'2', title:'Lunch · ตอบคำถามสั้นๆ', sub:'รอทีมงานเพิ่มคำถาม', status:'รอคำถาม', onClick:()=>startCooldown('quiz') };
-      return { done:false, n:'2', title:'Lunch · ตอบคำถามสั้นๆ', sub: hasNewQuestion&&doneQuiz? 'มีคำถามใหม่!' : '12:30–13:30', status:'ทำเลย', onClick:()=>{ screen='quiz'; screenQuiz(); } };
-    }
-    if(kind==='selfie'){
-      if(doneSelfie) return { done:true, n:'3', title:'After Break · Team Selfie', sub:'อัปโหลดแล้ว', status:'เสร็จ', onClick:null };
-      if(!status.stage3_open) return { done:false, n:'3', title:'After Break · Team Selfie', sub:'ยังไม่เปิด', status:'ล็อก', onClick:()=>startCooldown('selfie') };
-      return { done:false, n:'3', title:'After Break · Team Selfie', sub:'16:45–17:30 · Gallery Wall', status:'ทำเลย', onClick:()=>{ screen='selfie'; screenSelfie(); } };
-    }
+  if(!st.success){ clearProfile(); screen='landing'; screenLanding(); return; }
+  latestStatus=st;
+  if(!st.checkedIn){ screen='gate'; screenGate(); return; } // ยังไม่ผ่านประตู OpenChat/PDPA
+  const done=st.done||{}; const doneCount=(done.m1?1:0)+(done.m2?1:0)+(done.m3?1:0);
+  function cardFor(m){
+    const isDone=done['m'+m.n]; const isOpen=st['mission'+m.n+'_open'];
+    if(isDone) return {done:true, n:m.n, title:m.title, sub:'ส่งแล้ว ✓', status:'เสร็จ', onClick:null};
+    if(!isOpen) return {done:false, n:m.n, title:m.title, sub:'ยังไม่เปิด — รอทีมงาน', status:'ล็อก', onClick:()=>startCooldown(m.n)};
+    return {done:false, n:m.n, title:m.title, sub:m.sub, status:'ทำเลย', onClick:()=>openMission(m.n)};
   }
-  const cards = ['morning','quiz','selfie'].map(cardFor);
-
+  const cards=M_META.map(cardFor);
   shell(`
     <div class="screen">
-      <p class="subtitle">Your day · ${profile.attendeeId}</p>
-      <h2 class="title">สวัสดี ${profile.firstName}</h2>
-      <p class="desc" style="margin-bottom:18px">เช็คอินให้ครบ 3 ช่วง เพื่อรับ E-Certificate</p>
+      <p class="subtitle">Your Attendee ID · ${esc(p.runNo||p.attendeeId)}</p>
+      <h2 class="title">สวัสดี คุณ${esc(p.nick||p.firstName)}</h2>
+      <p class="desc" style="margin-bottom:14px">ทำ Mission ให้ครบ 3 ข้อ เพื่อรับ E-Certificate</p>
+      <div style="display:flex;align-items:center;gap:12px;background:var(--accent-soft);border:1px dashed var(--surface-brd);border-radius:14px;padding:12px 14px;margin-bottom:16px">
+        <span style="flex-shrink:0;color:var(--accent)">${iconBox()}</span>
+        <span style="font-size:13px;line-height:1.4;color:var(--text)">เมนูอาหารกลางวันของคุณ<br><span style="color:var(--muted);font-size:12.5px">${esc(p.menu||'รอยืนยันหน้างาน')}</span></span>
+      </div>
       <div class="progress-card">
         <div class="row"><span style="font-family:'Chakra Petch';font-size:12px;letter-spacing:1px">ความคืบหน้าเกียรติบัตร</span><span style="font-family:'Chakra Petch';font-weight:600;font-size:13px;color:var(--accent)">${doneCount}/3</span></div>
         <div class="progress-track"><div class="progress-fill" style="width:${Math.round(doneCount/3*100)}%"></div></div>
       </div>
-      <div style="font-size:11px;letter-spacing:2px;color:var(--accent);text-transform:uppercase;font-family:'Chakra Petch';margin-bottom:10px">กิจกรรม · Sessions</div>
+      <div style="font-size:11px;letter-spacing:2px;color:var(--accent);text-transform:uppercase;font-family:'Chakra Petch';margin-bottom:10px">Missions</div>
       <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:auto" id="taskCards">
         ${cards.map((c,i)=>`
           <button class="task-card ${c.done?'done':''}" data-idx="${i}" ${c.onClick?'':'style="cursor:default"'}>
             <div class="icon">${c.done? iconCheck() : `<span style="font-family:'Chakra Petch';font-weight:600;font-size:15px">${c.n}</span>`}</div>
             <div style="flex:1;text-align:left;min-width:0"><div class="ttitle">${c.title}</div><div class="tsub">${c.sub}</div></div>
             <span class="badge">${c.status}</span>
-          </button>
-        `).join('')}
+          </button>`).join('')}
       </div>
       <button class="cta-btn" id="toCertBtn">${iconCert()} ดู E-Certificate</button>
       <button class="ghost-btn" id="signOutBtn">ออกจากระบบ · Sign out</button>
     </div>
   `, true);
-  document.getElementById('appbarDone').textContent = doneCount+'/3';
-
-  cards.forEach((c,i)=>{
-    if(!c.onClick) return;
-    const el = document.querySelector(`[data-idx="${i}"]`);
-    if(el) el.onclick = c.onClick;
-  });
-  document.getElementById('toCertBtn').onclick = goCert;
-  document.getElementById('signOutBtn').onclick = ()=>{ clearProfile(); setLastAnsweredQId(''); screen='landing'; screenLanding(); };
-
-  stopHubPoll();
-  hubPollTimer = setInterval(screenHub, 5000);
+  document.getElementById('appbarDone').textContent=doneCount+'/3';
+  cards.forEach((c,i)=>{ if(!c.onClick) return; const el=document.querySelector(`[data-idx="${i}"]`); if(el) el.onclick=c.onClick; });
+  document.getElementById('toCertBtn').onclick=goCert;
+  document.getElementById('signOutBtn').onclick=()=>{ clearProfile(); screen='landing'; screenLanding(); };
+  stopHubPoll(); hubPollTimer=setInterval(screenHub, 6000);
 }
 
-async function goCert(){
-  screen='cert';
-  const profile = getProfile();
-  if(profile){
-    const fresh = await callApi('getStatus', {attendeeId: profile.attendeeId});
-    if(screen==='cert') latestStatus = fresh;
-  }
-  screenCert();
-}
-
-/* ================= COOLDOWN ================= */
-function startCooldown(target){
-  cooldownTarget = target;
-  screen='cooldown';
-  screenCooldown();
-}
-
+/* ================= COOLDOWN (mission ยังไม่เปิด) ================= */
+function startCooldown(n){ cooldownTarget=n; screen='cooldown'; screenCooldown(); }
 function screenCooldown(){
   stopAllPolls();
-  const labelMap = { quiz:'Lunch · Question', selfie:'After Break · Selfie', cert:'Certificate' };
   shell(`
     <div class="screen">
-      <div class="kicker" style="color:var(--accent)"><span style="width:8px;height:8px;border-radius:50%;background:var(--accent);display:inline-block;animation:anx-blink 1.4s infinite"></span>Cooldown · ${labelMap[cooldownTarget]||'Task'}</div>
+      <div class="kicker" style="color:var(--accent)"><span style="width:8px;height:8px;border-radius:50%;background:var(--accent);display:inline-block;animation:anx-blink 1.4s infinite"></span>Cooldown · Mission ${cooldownTarget}</div>
       <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:18px">
-        <p class="desc" style="max-width:290px">กิจกรรมนี้ยังไม่เปิด — ทีมงานจะปลดล็อกให้ทุกคนพร้อมกัน หน้านี้จะเปลี่ยนอัตโนมัติ<br><span style="font-size:12px;opacity:.8">Not open yet — staff will unlock it for everyone. This page updates automatically.</span></p>
+        <p class="desc" style="max-width:290px">Mission นี้ยังไม่เปิด — ทีมงานจะปลดล็อกให้ทุกคนพร้อมกัน หน้านี้จะเปลี่ยนอัตโนมัติ</p>
         <div class="dial-wrap"><div class="dial-ring"></div><div class="dial-inner">${iconClock()}</div></div>
       </div>
       <button class="ghost-btn" id="backHubBtn">กลับหน้ากิจกรรม · Back to hub</button>
-    </div>
-  `, true);
-  document.getElementById('backHubBtn').onclick = ()=>{ screen='hub'; screenHub(); };
-  cooldownPollTimer = setInterval(checkCooldownUnlocked, 3500);
-  checkCooldownUnlocked();
+    </div>`, true);
+  document.getElementById('backHubBtn').onclick=()=>{ screen='hub'; screenHub(); };
+  cooldownPollTimer=setInterval(checkCooldown, 3500); checkCooldown();
 }
-
-async function checkCooldownUnlocked(){
+async function checkCooldown(){
   if(screen!=='cooldown') return;
-  const profile = getProfile();
-  const status = await callApi('getStatus', {attendeeId: profile.attendeeId});
-  if(screen!=='cooldown') return;
-  const openMap = { quiz: status.stage2_open && status.question_id, selfie: status.stage3_open, cert: status.cert_open };
-  if(openMap[cooldownTarget]){
-    stopCooldownPoll();
-    screen='hub'; screenHub();
-  }
+  const p=getProfile(); const st=await callApi('getStatus',{attendeeId:p.attendeeId});
+  if(screen!=='cooldown') return; latestStatus=st;
+  if(st['mission'+cooldownTarget+'_open']){ stopCooldownPoll(); screen='hub'; screenHub(); }
 }
 
-/* ================= QUIZ (rotating, single active question) ================= */
-function screenQuiz(){
+/* ================= MISSION FORMS (แปลง Mission เป็นฟอร์มกรอก) ================= */
+const FORMS = {
+  1:{ items:[
+    {k:'q1',t:'text',q:'วันนี้คุณได้ insight อะไรมากที่สุดจาก session นี้?'},
+    {k:'q2',t:'text',q:'มี 1 อย่างที่จะเอาไปใช้กับงานจริงใน 7 วันข้างหน้า คืออะไร?'},
+    {k:'q3',t:'scale5',q:'ความพึงพอใจต่อ session นี้'},
+    {k:'q4',t:'scale5',q:'เนื้อหาชัดเจน / ใช้ได้จริง / น่าสนใจแค่ไหน'},
+    {k:'q5',t:'text',q:'มีอะไรที่อยากให้ปรับไหม?'}]},
+  2:{ items:[
+    {k:'q1',t:'text',q:'วันนี้คุณได้อะไรจาก session นี้มากที่สุด?'},
+    {k:'q2',t:'text',q:'1 อย่างที่คุณจะเอาไปใช้กับงานจริงคืออะไร?'},
+    {k:'q3',t:'text',q:'AI + Data ช่วยงานคุณตรงไหนได้บ้าง?'},
+    {k:'q4',t:'seg',q:'ความยากของเนื้อหา',opts:['ง่าย','พอดี','ยากไป']},
+    {k:'q5',t:'scale5',q:'ความพึงพอใจต่อ session นี้'},
+    {k:'q6',t:'text',q:'มีอะไรที่อยากให้เพิ่มหรือลดไหม?'}]},
+  3:{ items:[
+    {k:'q1',t:'text',q:'ทีมของคุณใช้ความรู้จากวันนี้ตรงไหนบ้าง?'},
+    {k:'q2',t:'scale5',q:'AI NEXT Challenge / pitch ช่วยให้คุณเชื่อมสิ่งที่เรียนทั้งวันได้ไหม?'},
+    {k:'q3',t:'scale5',q:'ให้คะแนนกิจกรรม pitch'},
+    {k:'q4',t:'text',q:'วันนี้ได้อะไรกลับไป 3 อย่าง'},
+    {k:'q5',t:'text',q:'จะลงมือทำอะไรใน 7 วัน'},
+    {k:'q6',t:'scale10',q:'คะแนนภาพรวมงาน AI NEXT Bootcamp'},
+    {k:'q7',t:'scale5',q:'สถานที่ / ห้อง / ความสะดวกของ venue'},
+    {k:'q8',t:'scale5',q:'อาหาร / เครื่องดื่ม / เวลา break'},
+    {k:'q9',t:'scale5',q:'ทีมงาน / registration / การสื่อสารหน้างาน'},
+    {k:'q10',t:'scale5',q:'จะแนะนำงานนี้ให้เพื่อนไหม?'},
+    {k:'q11',t:'text',q:'รุ่นถัดไปอยากให้เชิญ speaker AI คนไหน? เพราะอะไร?'},
+    {k:'q14',t:'segcol',q:'ถ้ามีการจัด AI Meetup หัวข้อที่คุณอยากเข้าร่วมมากที่สุดคืออะไร?',opts:['AI Productivity','AI Agent / Automation','Data / Dashboard','Content / Marketing','AI for Management','Vibe Coding','Career in AI','อื่น ๆ']},
+    {k:'q15',t:'segcol',q:'คุณสนใจแชร์ use case หรือผลงานของตัวเองใน Meetup ครั้งถัดไปหรือไม่?',opts:['สนใจเป็น Speaker','สนใจแชร์แบบ Lightning Talk','สนใจช่วยจัดกิจกรรม','สนใจเข้าร่วมอย่างเดียว','ยังไม่แน่ใจ']},
+    {k:'q12',t:'segcol',q:'สนใจร่วมงานกับ Bizcore ไหม?',opts:['สนใจมาก อยากให้ติดต่อกลับเรื่องตำแหน่งงาน','สนใจ แต่ขอเรียนรู้และดูความเหมาะสมก่อน','ยังไม่แน่ใจ','ไม่สนใจ']},
+    {k:'q13',t:'text',q:'มีอะไรที่อยากให้ปรับในรุ่นถัดไป?'}]}
+};
+let curMission=0, answers={};
+function openMission(n){
   stopAllPolls();
-  const profile = getProfile();
-  const status = latestStatus || {};
-  shell(`
-    <div class="screen">
-      <button class="back-btn" id="hubBackBtn">${iconBack()}Hub</button>
-      <div class="kicker"><span class="bar"></span>Lunch · 12:30–13:30</div>
-      <h2 class="title" style="margin-top:8px">ตอบคำถามสั้นๆ</h2>
-      <p class="desc" style="margin-bottom:20px">ตอบให้ครบเพื่อเช็คอินช่วงเที่ยง · Answer to check in for lunch</p>
-      <div class="quiz-q">${status.question_text || 'กรุณารอคำถามจากทีมงาน'}</div>
-      <textarea class="field" id="answerInput" placeholder="พิมพ์คำตอบของคุณที่นี่..." style="margin-top:6px"></textarea>
-      <div id="qErr"></div>
-      <button class="cta-btn" id="submitAnswerBtn">ส่งคำตอบ · Submit</button>
-    </div>
-  `, true);
-  document.getElementById('hubBackBtn').onclick = ()=>{ screen='hub'; screenHub(); };
-  document.getElementById('submitAnswerBtn').onclick = async ()=>{
-    const answer = document.getElementById('answerInput').value.trim();
-    if(!answer){ document.getElementById('qErr').innerHTML = '<p class="error-msg">กรุณาตอบคำถามก่อนส่ง</p>'; return; }
-    const btn = document.getElementById('submitAnswerBtn');
-    btn.disabled = true; btn.textContent = 'กำลังส่ง...';
-    const res = await callApi('submitAnswer', {attendeeId: profile.attendeeId, questionId: status.question_id, answer});
-    if(!res.success){ document.getElementById('qErr').innerHTML = '<p class="error-msg">ส่งไม่สำเร็จ ลองใหม่อีกครั้ง</p>'; btn.disabled=false; btn.textContent='ส่งคำตอบ · Submit'; return; }
-    setLastAnsweredQId(status.question_id);
-    screen='hub'; screenHub();
-  };
-}
-
-/* ================= SELFIE ================= */
-function screenSelfie(){
-  stopAllPolls();
-  const profile = getProfile();
-  shell(`
-    <div class="screen">
-      <button class="back-btn" id="hubBackBtn">${iconBack()}Hub</button>
-      <div class="kicker"><span class="bar"></span>After Break · 16:45–17:30</div>
-      <h2 class="title" style="margin-top:8px">Team Selfie Challenge</h2>
-      <p class="desc" style="margin-bottom:18px">ถ่ายรูปทีมตอนทำ Challenge แล้วอัปขึ้น Gallery Wall</p>
-      <label style="font-size:13px;color:var(--muted);margin-bottom:6px;display:block">ชื่อทีม</label>
-      <input class="field" id="teamInput" value="${profile.team||''}" style="margin-bottom:14px">
-      <div class="gal-photo-slot" id="photoSlot" style="margin-bottom:14px">
-        <span class="placeholder" id="photoPlaceholder">แตะเพื่ออัปโหลดรูปทีม · Tap to upload</span>
-        <img id="photoPreview" style="display:none">
-      </div>
-      <input type="file" id="photoInput" accept="image/*" capture="environment" style="display:none">
-      <textarea class="field" id="noteInput" placeholder="โน้ตสั้นๆ (จะแสดงบน Gallery ด้วย)" style="margin-bottom:auto"></textarea>
-      <div id="sErr"></div>
-      <button class="cta-btn" id="submitSelfieBtn">อัปขึ้น Gallery Wall · Post</button>
-    </div>
-  `, true);
-  document.getElementById('hubBackBtn').onclick = ()=>{ screen='hub'; screenHub(); };
-
-  let resizedBase64 = null, mimeType = 'image/jpeg';
-  document.getElementById('photoSlot').onclick = ()=> document.getElementById('photoInput').click();
-  document.getElementById('photoInput').addEventListener('change', (e)=>{
-    const file = e.target.files[0];
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev)=>{
-      const img = new Image();
-      img.onload = ()=>{
-        const maxW = 900;
-        const scale = Math.min(1, maxW/img.width);
-        const canvas = document.createElement('canvas');
-        canvas.width = img.width*scale; canvas.height = img.height*scale;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img,0,0,canvas.width,canvas.height);
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.72);
-        resizedBase64 = dataUrl.split(',')[1];
-        document.getElementById('photoPreview').src = dataUrl;
-        document.getElementById('photoPreview').style.display='block';
-        document.getElementById('photoPlaceholder').style.display='none';
-      };
-      img.src = ev.target.result;
-    };
-    reader.readAsDataURL(file);
+  curMission=n; answers={};
+  const f=FORMS[n], meta=M_META[n-1];
+  let h='';
+  f.items.forEach((it,idx)=>{
+    h+=`<label class="q">${idx+1}. ${esc(it.q)}</label>`;
+    if(it.t==='text') h+=`<textarea class="field" data-k="${it.k}" oninput="answers[this.dataset.k]=this.value"></textarea>`;
+    if(it.t==='scale5'||it.t==='scale10'){ const max=it.t==='scale5'?5:10;
+      h+=`<div class="scale${max===10?' ten':''}">`;
+      for(let i=1;i<=max;i++) h+=`<button type="button" onclick="pickScale(this,'${it.k}',${i})">${i}</button>`;
+      h+=`</div>`;
+    }
+    if(it.t==='seg'||it.t==='segcol'){ h+=`<div class="seg${it.t==='segcol'?' col':''}">`;
+      it.opts.forEach(o=>{ h+=`<button type="button" onclick="pickSeg(this,'${it.k}')">${esc(o)}</button>`; });
+      h+=`</div>`;
+    }
   });
-
-  document.getElementById('submitSelfieBtn').onclick = async ()=>{
-    if(!resizedBase64){ document.getElementById('sErr').innerHTML = '<p class="error-msg">กรุณาแนบรูปถ่ายก่อน</p>'; return; }
-    const btn = document.getElementById('submitSelfieBtn');
-    btn.disabled=true; btn.textContent='กำลังอัปโหลด...';
-    const team = document.getElementById('teamInput').value.trim();
-    const note = document.getElementById('noteInput').value.trim();
-    const res = await callApi('submitSelfie', {attendeeId: profile.attendeeId, team, note, imageBase64: resizedBase64, mimeType});
-    if(!res.success){ document.getElementById('sErr').innerHTML = '<p class="error-msg">อัปโหลดไม่สำเร็จ ลองใหม่อีกครั้ง</p>'; btn.disabled=false; btn.textContent='อัปขึ้น Gallery Wall · Post'; return; }
-    if(team){ profile.team = team; setProfile(profile); }
-    screen='hub'; screenHub();
-  };
+  shell(`
+    <div class="screen">
+      <button class="back-btn" id="mBack">${iconBack()}Hub</button>
+      <div class="kicker"><span class="bar"></span>Mission ${n}</div>
+      <h2 class="title" style="margin-top:8px">${esc(meta.title)}</h2>
+      <p class="desc" style="margin-bottom:6px">${esc(meta.sub)}</p>
+      <div id="mBody">${h}</div>
+      <div id="mErr"></div>
+      <button class="cta-btn" id="mSubmit">ส่งคำตอบ · รับแสตมป์ 🎖</button>
+    </div>
+  `, true);
+  document.getElementById('mBack').onclick=()=>{ screen='hub'; screenHub(); };
+  document.getElementById('mSubmit').onclick=submitMission;
+  screen='mission';
+}
+function pickScale(btn,k,v){ answers[k]=v; markSel(btn); }
+function pickSeg(btn,k){ answers[k]=btn.textContent; markSel(btn); }
+function markSel(btn){ Array.prototype.forEach.call(btn.parentNode.children,b=>b.classList.remove('sel')); btn.classList.add('sel'); }
+async function submitMission(){
+  const f=FORMS[curMission], missing=[];
+  f.items.forEach((it,idx)=>{ const v=answers[it.k]; if(v===undefined||String(v).trim()===''){ missing.push(idx+1); } });
+  if(missing.length){ document.getElementById('mErr').innerHTML=`<p class="error-msg">ยังไม่ได้ตอบข้อ: ${missing.join(', ')}</p>`; return; }
+  const btn=document.getElementById('mSubmit'); btn.disabled=true; btn.textContent='กำลังส่ง…';
+  const p=getProfile();
+  const res=await callApi('submitMission', {attendeeId:p.attendeeId, mission:curMission, answers});
+  if(!res.success){ document.getElementById('mErr').innerHTML='<p class="error-msg">ส่งไม่สำเร็จ ลองอีกครั้ง</p>'; btn.disabled=false; btn.textContent='ส่งคำตอบ · รับแสตมป์ 🎖'; return; }
+  latestStatus=res;
+  if(res.done&&res.done.m1&&res.done.m2&&res.done.m3){ screen='cert'; screenCert(); }
+  else { screen='hub'; screenHub(); }
 }
 
 /* ================= CERTIFICATE ================= */
+async function goCert(){
+  screen='cert'; const p=getProfile();
+  if(p){ const fresh=await callApi('getStatus',{attendeeId:p.attendeeId}); if(screen==='cert') latestStatus=fresh; }
+  screenCert();
+}
 function screenCert(){
   stopAllPolls();
-  const profile = getProfile();
-  const status = latestStatus || {};
-  const completed = status.stage ?? 1;
-  const certReady = completed>=3 && status.cert_open;
-  if(!certReady){
+  const p=getProfile(); const st=latestStatus||{}; const done=st.done||{};
+  const all3=done.m1&&done.m2&&done.m3;
+  const ready=all3 && st.cert_open;
+  if(!ready){
     shell(`
       <div class="screen">
-        <button class="back-btn" id="hubBackBtn">${iconBack()}Hub</button>
+        <button class="back-btn" id="mBack">${iconBack()}Hub</button>
         <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:16px">
           <div style="width:96px;height:96px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--chip);border:1px solid var(--surface-brd)">${iconShield()}</div>
-          <div>
-            <h2 class="title">ยังไม่ปลดล็อก</h2>
-            <p class="desc" style="max-width:280px">เช็คอินให้ครบทั้ง 3 ช่วง แล้ว E-Certificate จะออกให้ทีมงานประกาศ<br><span style="font-size:12px;opacity:.8">Complete all 3 sessions — cert issues once staff releases it.</span></p>
-          </div>
+          <div><h2 class="title">ยังไม่ปลดล็อก</h2><p class="desc" style="max-width:280px">ทำครบทั้ง 3 Mission แล้ว E-Certificate จะออกให้เมื่อทีมงานประกาศ</p></div>
           <div style="width:100%;max-width:280px;display:flex;flex-direction:column;gap:8px">
-            <div class="checklist-item"><span class="dot on">${iconCheck()}</span><span style="flex:1;text-align:left">เช็คอินช่วงเช้า</span></div>
-            <div class="checklist-item"><span class="dot ${completed>=2?'on':''}">${completed>=2?iconCheck():''}</span><span style="flex:1;text-align:left">ตอบคำถามช่วงเที่ยง</span></div>
-            <div class="checklist-item"><span class="dot ${completed>=3?'on':''}">${completed>=3?iconCheck():''}</span><span style="flex:1;text-align:left">อัป Team Selfie</span></div>
+            <div class="checklist-item"><span class="dot ${done.m1?'on':''}">${done.m1?iconCheck():''}</span><span style="flex:1;text-align:left">Mission 1</span></div>
+            <div class="checklist-item"><span class="dot ${done.m2?'on':''}">${done.m2?iconCheck():''}</span><span style="flex:1;text-align:left">Mission 2</span></div>
+            <div class="checklist-item"><span class="dot ${done.m3?'on':''}">${done.m3?iconCheck():''}</span><span style="flex:1;text-align:left">Mission 3</span></div>
           </div>
-          <button class="ghost-btn" id="backHub2">กลับหน้ากิจกรรม · Back to hub</button>
+          <button class="ghost-btn" id="backHub2">กลับหน้ากิจกรรม</button>
         </div>
-      </div>
-    `, true);
-    document.getElementById('hubBackBtn').onclick = ()=>{ screen='hub'; screenHub(); };
-    document.getElementById('backHub2').onclick = ()=>{ screen='hub'; screenHub(); };
+      </div>`, true);
+    document.getElementById('mBack').onclick=()=>{ screen='hub'; screenHub(); };
+    document.getElementById('backHub2').onclick=()=>{ screen='hub'; screenHub(); };
     return;
   }
-  const today = new Date().toLocaleDateString('th-TH', {year:'numeric', month:'long', day:'numeric'});
+  const today=new Date().toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'});
   shell(`
     <div class="screen">
-      <button class="back-btn" id="hubBackBtn">${iconBack()}Hub</button>
+      <button class="back-btn" id="mBack">${iconBack()}Hub</button>
       <h2 class="title">E-Certificate</h2>
-      <p class="desc" style="margin-bottom:18px">ยินดีด้วย! คุณเช็คอินครบทุกช่วงแล้ว</p>
+      <p class="desc" style="margin-bottom:18px">ยินดีด้วย! คุณทำครบทั้ง 3 Mission แล้ว รอรับ Certificate ได้เลย!</p>
       <div class="cert-card" id="certCard">
         <div class="cert-shine"></div>
         <img src="ainext-logo.png" alt="AI NEXT" style="height:24px;width:auto;margin-bottom:16px">
         <div class="brand">Certificate of Completion</div>
-        <div class="cname">${profile.firstName} ${profile.lastName}</div>
+        <div class="cname">${esc(p.firstName)} ${esc(p.lastName)}</div>
         <div class="cdesc">ได้เข้าร่วม AI NEXT ครบทุกกิจกรรม</div>
         <div class="cert-foot">
-          <div><div class="l">Attendee ID</div><div class="v">${profile.attendeeId}</div></div>
+          <div><div class="l">Attendee ID</div><div class="v">${esc(p.runNo||p.attendeeId)}</div></div>
           <div style="text-align:right"><div class="l">Issued</div><div class="v">${today}</div></div>
         </div>
       </div>
@@ -841,215 +718,97 @@ function screenCert(){
       <button class="cta-btn" id="downloadBtn">บันทึก E-Certificate · Download</button>
     </div>
   `, true);
-  document.getElementById('hubBackBtn').onclick = ()=>{ screen='hub'; screenHub(); };
-  document.getElementById('downloadBtn').onclick = ()=>{
+  document.getElementById('mBack').onclick=()=>{ screen='hub'; screenHub(); };
+  document.getElementById('downloadBtn').onclick=()=>{
     html2canvas(document.getElementById('certCard'), {backgroundColor:'#8a1204', scale:2}).then(canvas=>{
-      const link = document.createElement('a');
-      link.download = 'AI-NEXT-Certificate-'+profile.firstName+'.png';
-      link.href = canvas.toDataURL('image/png');
-      link.click();
+      const link=document.createElement('a'); link.download='AI-NEXT-Certificate-'+p.firstName+'.png'; link.href=canvas.toDataURL('image/png'); link.click();
     });
   };
 }
 
-/* ================= GALLERY (floating FAB + overlay) ================= */
-function openGallery(){
-  galleryOpen = true;
-  stopHubPoll(); // pause background hub refresh while the overlay is up
-  renderGalleryOverlay();
-  loadGallery();
-  stopGalleryPoll();
-  galleryPollTimer = setInterval(loadGallery, 8000);
-}
-function closeGallery(){
-  galleryOpen = false;
-  stopGalleryPoll();
-  openCommentPostId = null;
-  const ov = document.getElementById('galleryOverlayRoot');
-  if(ov) ov.remove();
-  if(screen==='hub') screenHub(); // resume hub + its poll
-}
-
+/* ================= GALLERY (คงจาก Event Reg) ================= */
+let galleryOpen=false, composerBase64=null, openCommentPostId=null;
+function openGallery(){ galleryOpen=true; stopHubPoll(); renderGalleryOverlay(); loadGallery(); stopGalleryPoll(); galleryPollTimer=setInterval(loadGallery,8000); }
+function closeGallery(){ galleryOpen=false; stopGalleryPoll(); openCommentPostId=null; const ov=document.getElementById('galleryOverlayRoot'); if(ov) ov.remove(); if(screen==='hub') screenHub(); }
 function renderGalleryOverlay(){
   if(document.getElementById('galleryOverlayRoot')) return;
-  const div = document.createElement('div');
-  div.id = 'galleryOverlayRoot';
-  div.className = 'gallery-overlay';
-  div.innerHTML = `
+  const div=document.createElement('div'); div.id='galleryOverlayRoot'; div.className='gallery-overlay';
+  div.innerHTML=`
     <div class="bg-blob" style="top:10%;left:-40px;width:220px;height:220px;background:radial-gradient(circle,rgba(255,150,90,.5),transparent 70%)"></div>
     <div class="bg-blob" style="bottom:6%;right:-50px;width:260px;height:260px;background:radial-gradient(circle,rgba(255,90,120,.4),transparent 70%)"></div>
-    <div class="gallery-head">
-      <div style="display:flex;align-items:center;gap:10px">${iconGallery()}<div><h2>Gallery Wall</h2><p>ความทรงจำทั้งวัน · Moments</p></div></div>
+    <div class="gallery-head"><div style="display:flex;align-items:center;gap:10px">${iconGallery()}<div><h2>Gallery Wall</h2><p>ความทรงจำทั้งวัน · Moments</p></div></div>
       <button class="gallery-close" id="galleryCloseBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
     </div>
-    <div class="gallery-feed" id="galleryFeed"></div>
-  `;
+    <div class="gallery-feed" id="galleryFeed"></div>`;
   document.body.appendChild(div);
-  document.getElementById('galleryCloseBtn').onclick = closeGallery;
+  document.getElementById('galleryCloseBtn').onclick=closeGallery;
 }
-
-let composerBase64 = null;
-async function loadGallery(){
-  const profile = getProfile();
-  const res = await callApi('getGallery', {attendeeId: profile? profile.attendeeId : ''});
-  if(!res.success) return;
-  galleryItemsCache = res.items || [];
-  renderGalleryFeed();
-}
-
+async function loadGallery(){ const p=getProfile(); const res=await callApi('getGallery',{attendeeId:p?p.attendeeId:''}); if(!res.success) return; galleryItemsCache=res.items||[]; renderGalleryFeed(); }
 function renderGalleryFeed(){
-  const feed = document.getElementById('galleryFeed');
-  if(!feed) return;
-  const profile = getProfile();
-  const initials = profile ? (profile.firstName||'?')[0] : '?';
-
-  const composerHtml = profile ? `
+  const feed=document.getElementById('galleryFeed'); if(!feed) return;
+  const p=getProfile(); const initials=p?(p.nick||p.firstName||'?')[0]:'?';
+  const composer = p ? `
     <div class="gal-card composer">
-      <div class="gal-head"><div class="gal-avatar">${initials}</div><div><div class="gname">โพสต์ของคุณ</div><div class="gsub">Share your moment</div></div></div>
-      <div class="gal-photo-slot" id="composerSlot">
-        <span class="placeholder" id="composerPlaceholder">แตะเพื่ออัปโหลดรูป · Tap to upload</span>
-        <img id="composerPreview" style="display:none">
-      </div>
+      <div class="gal-head"><div class="gal-avatar">${esc(initials)}</div><div><div class="gname">โพสต์ของคุณ</div><div class="gsub">Share your moment</div></div></div>
+      <div class="gal-photo-slot" id="composerSlot"><span class="placeholder" id="composerPlaceholder">แตะเพื่ออัปโหลดรูป · Tap to upload</span><img id="composerPreview" style="display:none"></div>
       <input type="file" id="composerFile" accept="image/*" capture="environment" style="display:none">
       <textarea class="gal-note-input" id="composerNote" placeholder="เขียนโน้ตของช่วงเวลานี้… · add a note"></textarea>
-      <button class="cta-btn gal-post-btn" id="composerPostBtn">โพสต์ · Post</button>
-    </div>
-  ` : `<div class="gal-login-nudge">เช็คอินก่อน เพื่อโพสต์รูป / กดถูกใจ / คอมเมนต์ได้</div>`;
-
-  const postsHtml = galleryItemsCache.map(it=>`
+      <button class="cta-btn" id="composerPostBtn" style="margin-top:10px">โพสต์ · Post</button>
+    </div>` : `<div class="gal-login-nudge">เช็คอินก่อน เพื่อโพสต์รูป / กดถูกใจ / คอมเมนต์ได้</div>`;
+  const posts=galleryItemsCache.map(it=>`
     <div class="gal-card" data-postid="${it.postId}">
-      <div class="gal-head"><div class="gal-avatar">${(it.team||it.name||'?')[0]}</div>
-        <div style="flex:1;min-width:0"><div class="gname">ทีม ${it.team||'—'}</div><div class="gsub">${it.name||''} ${it.timestamp? '· '+new Date(it.timestamp).toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'}):''}</div></div>
-      </div>
-      <div class="gal-photo-slot" style="cursor:default">${it.photoUrl? `<img src="${it.photoUrl}">` : `<span class="placeholder">${it.team||''}</span>`}</div>
-      ${it.note? `<p class="gal-note-text">${it.note}</p>` : ''}
+      <div class="gal-head"><div class="gal-avatar">${esc((it.team||it.name||'?')[0])}</div>
+        <div style="flex:1;min-width:0"><div class="gname">ทีม ${esc(it.team||'—')}</div><div class="gsub">${esc(it.name||'')} ${it.timestamp?'· '+new Date(it.timestamp).toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'}):''}</div></div></div>
+      <div class="gal-photo-slot" style="cursor:default">${it.photoUrl?`<img src="${esc(it.photoUrl)}">`:`<span class="placeholder">${esc(it.team||'')}</span>`}</div>
+      ${it.note?`<p class="gal-note-text">${esc(it.note)}</p>`:''}
       <div class="gal-actions">
-        <button class="gal-like-btn ${it.likedByMe?'liked':''}" data-like="${it.postId}">
-          <svg width="19" height="19" viewBox="0 0 24 24" fill="${it.likedByMe?'#ff6b7d':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"></path></svg>
-          ${it.likes||0}
-        </button>
-        <button class="gal-comment-btn" data-togglec="${it.postId}">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-          ${it.commentCount||0}
-        </button>
+        <button class="gal-like-btn ${it.likedByMe?'liked':''}" data-like="${it.postId}"><svg width="19" height="19" viewBox="0 0 24 24" fill="${it.likedByMe?'#ff6b7d':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"></path></svg>${it.likes||0}</button>
+        <button class="gal-comment-btn" data-togglec="${it.postId}">${iconChat()}${it.commentCount||0}</button>
       </div>
       <div class="gal-comments-slot" data-cslot="${it.postId}"></div>
-    </div>
-  `).join('');
-
-  feed.innerHTML = composerHtml + postsHtml;
-
-  if(profile){
-    document.getElementById('composerSlot').onclick = ()=> document.getElementById('composerFile').click();
-    document.getElementById('composerFile').addEventListener('change', (e)=>{
-      const file = e.target.files[0];
-      if(!file) return;
-      const reader = new FileReader();
-      reader.onload = (ev)=>{
-        const img = new Image();
-        img.onload = ()=>{
-          const maxW = 900;
-          const scale = Math.min(1, maxW/img.width);
-          const canvas = document.createElement('canvas');
-          canvas.width = img.width*scale; canvas.height = img.height*scale;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img,0,0,canvas.width,canvas.height);
-          const dataUrl = canvas.toDataURL('image/jpeg', 0.72);
-          composerBase64 = dataUrl.split(',')[1];
-          document.getElementById('composerPreview').src = dataUrl;
-          document.getElementById('composerPreview').style.display='block';
-          document.getElementById('composerPlaceholder').style.display='none';
-        };
-        img.src = ev.target.result;
-      };
-      reader.readAsDataURL(file);
-    });
-    document.getElementById('composerPostBtn').onclick = async ()=>{
-      if(!composerBase64){ alert('กรุณาแนบรูปก่อนโพสต์'); return; }
-      const btn = document.getElementById('composerPostBtn');
-      btn.disabled = true; btn.textContent = 'กำลังโพสต์...';
-      const note = document.getElementById('composerNote').value.trim();
-      const res = await callApi('uploadGalleryPost', {attendeeId: profile.attendeeId, team: profile.team, note, imageBase64: composerBase64, mimeType:'image/jpeg'});
-      btn.disabled = false; btn.textContent = 'โพสต์ · Post';
-      if(res.success){ composerBase64 = null; loadGallery(); }
-    };
+    </div>`).join('');
+  feed.innerHTML=composer+posts;
+  if(p){
+    document.getElementById('composerSlot').onclick=()=>document.getElementById('composerFile').click();
+    document.getElementById('composerFile').addEventListener('change',(e)=>{ const file=e.target.files[0]; if(!file) return;
+      const reader=new FileReader(); reader.onload=(ev)=>{ const img=new Image(); img.onload=()=>{ const maxW=900; const scale=Math.min(1,maxW/img.width);
+        const canvas=document.createElement('canvas'); canvas.width=img.width*scale; canvas.height=img.height*scale;
+        canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height); const dataUrl=canvas.toDataURL('image/jpeg',0.72);
+        composerBase64=dataUrl.split(',')[1]; const pv=document.getElementById('composerPreview'); pv.src=dataUrl; pv.style.display='block'; document.getElementById('composerPlaceholder').style.display='none';
+      }; img.src=ev.target.result; }; reader.readAsDataURL(file); });
+    document.getElementById('composerPostBtn').onclick=async ()=>{ if(!composerBase64){ alert('กรุณาแนบรูปก่อนโพสต์'); return; }
+      const btn=document.getElementById('composerPostBtn'); btn.disabled=true; btn.textContent='กำลังโพสต์...';
+      const note=document.getElementById('composerNote').value.trim();
+      const res=await callApi('uploadGalleryPost',{attendeeId:p.attendeeId, team:p.team, note, imageBase64:composerBase64, mimeType:'image/jpeg'});
+      btn.disabled=false; btn.textContent='โพสต์ · Post'; if(res.success){ composerBase64=null; loadGallery(); } };
   }
-
-  feed.querySelectorAll('[data-like]').forEach(btn=>{
-    btn.onclick = async ()=>{
-      if(!profile){ alert('กรุณาเช็คอินก่อน'); return; }
-      const postId = btn.dataset.like;
-      const res = await callApi('likePost', {attendeeId: profile.attendeeId, postId});
-      if(res.success){
-        const item = galleryItemsCache.find(g=>g.postId===postId);
-        if(item){ item.likes = res.likes; item.likedByMe = res.liked; }
-        renderGalleryFeed();
-      }
-    };
-  });
-
-  feed.querySelectorAll('[data-togglec]').forEach(btn=>{
-    btn.onclick = ()=> toggleComments(btn.dataset.togglec);
-  });
+  feed.querySelectorAll('[data-like]').forEach(btn=>{ btn.onclick=async ()=>{ if(!p){ alert('กรุณาเช็คอินก่อน'); return; }
+    const res=await callApi('likePost',{attendeeId:p.attendeeId, postId:btn.dataset.like});
+    if(res.success){ const it=galleryItemsCache.find(g=>g.postId===btn.dataset.like); if(it){ it.likes=res.likes; it.likedByMe=res.liked; } renderGalleryFeed(); } }; });
+  feed.querySelectorAll('[data-togglec]').forEach(btn=>{ btn.onclick=()=>toggleComments(btn.dataset.togglec); });
 }
-
-let openCommentPostId = null;
-function toggleComments(postId){
-  const slot = document.querySelector(`[data-cslot="${postId}"]`);
-  if(!slot) return;
-  if(openCommentPostId===postId){ slot.innerHTML=''; openCommentPostId=null; return; }
-  openCommentPostId = postId;
-  loadComments(postId);
-}
-
+function toggleComments(postId){ const slot=document.querySelector(`[data-cslot="${postId}"]`); if(!slot) return;
+  if(openCommentPostId===postId){ slot.innerHTML=''; openCommentPostId=null; return; } openCommentPostId=postId; loadComments(postId); }
 async function loadComments(postId){
-  let slot = document.querySelector(`[data-cslot="${postId}"]`);
-  if(!slot || !slot.isConnected) return;
-  slot.innerHTML = `<div class="gal-comments"><span style="font-size:11px;opacity:.7">กำลังโหลด...</span></div>`;
-  const res = await callApi('getComments', {postId});
-  // The gallery overlay may have been closed (or re-rendered) while this request was in flight.
-  slot = document.querySelector(`[data-cslot="${postId}"]`);
-  if(!slot || !slot.isConnected) return;
-  const profile = getProfile();
-  const items = res.success ? res.items : [];
-  slot.innerHTML = `
-    <div class="gal-comments">
-      ${items.map(c=>`<div class="gal-comment-item"><div class="gal-comment-avatar">${(c.name||'?')[0]}</div><div class="gal-comment-text"><b style="color:#fff">${c.name}</b> ${c.comment}</div></div>`).join('')}
-      ${profile ? `
-        <div class="gal-comment-row">
-          <input class="gal-comment-field" id="commentField-${postId}" placeholder="เพิ่มความคิดเห็น…">
-          <button class="gal-comment-send" id="commentSend-${postId}">ส่ง</button>
-        </div>
-      ` : `<div class="gal-login-nudge">เช็คอินก่อน เพื่อคอมเมนต์</div>`}
-    </div>
-  `;
-  if(profile){
-    const send = async ()=>{
-      const field = document.getElementById(`commentField-${postId}`);
-      if(!field) return;
-      const text = field.value.trim();
-      if(!text) return;
-      const res2 = await callApi('addComment', {attendeeId: profile.attendeeId, postId, comment: text});
-      if(res2.success){
-        const item = galleryItemsCache.find(g=>g.postId===postId);
-        if(item) item.commentCount = (item.commentCount||0)+1;
-        if(field.isConnected) field.value='';
-        loadComments(postId);
-      }
-    };
-    const sendBtn = document.getElementById(`commentSend-${postId}`);
-    const fieldEl = document.getElementById(`commentField-${postId}`);
-    if(sendBtn) sendBtn.onclick = send;
-    if(fieldEl) fieldEl.addEventListener('keydown', e=>{ if(e.key==='Enter') send(); });
-  }
+  let slot=document.querySelector(`[data-cslot="${postId}"]`); if(!slot||!slot.isConnected) return;
+  slot.innerHTML='<div class="gal-comments"><span style="font-size:11px;opacity:.7">กำลังโหลด...</span></div>';
+  const res=await callApi('getComments',{postId}); slot=document.querySelector(`[data-cslot="${postId}"]`); if(!slot||!slot.isConnected) return;
+  const p=getProfile(); const items=res.success?res.items:[];
+  slot.innerHTML=`<div class="gal-comments">
+    ${items.map(c=>`<div class="gal-comment-item"><div class="gal-comment-avatar">${esc((c.name||'?')[0])}</div><div class="gal-comment-text"><b style="color:#fff">${esc(c.name)}</b> ${esc(c.comment)}</div></div>`).join('')}
+    ${p?`<div class="gal-comment-row"><input class="gal-comment-field" id="cf-${postId}" placeholder="เพิ่มความคิดเห็น…"><button class="gal-comment-send" id="cs-${postId}">ส่ง</button></div>`:`<div class="gal-login-nudge">เช็คอินก่อน เพื่อคอมเมนต์</div>`}
+  </div>`;
+  if(p){ const send=async ()=>{ const field=document.getElementById(`cf-${postId}`); if(!field) return; const text=field.value.trim(); if(!text) return;
+      const r=await callApi('addComment',{attendeeId:p.attendeeId, postId, comment:text});
+      if(r.success){ const it=galleryItemsCache.find(g=>g.postId===postId); if(it) it.commentCount=(it.commentCount||0)+1; if(field.isConnected) field.value=''; loadComments(postId); } };
+    const sb=document.getElementById(`cs-${postId}`); const fe=document.getElementById(`cf-${postId}`); if(sb) sb.onclick=send; if(fe) fe.addEventListener('keydown',e=>{ if(e.key==='Enter') send(); }); }
 }
 
 /* ================= INIT ================= */
 (function init(){
   seedDemo();
-  const profile = getProfile();
-  if(profile){ screen='hub'; screenHub(); }
-  else { screen='landing'; screenLanding(); }
+  const p=getProfile();
+  if(p){ screen='hub'; screenHub(); } else { screen='landing'; screenLanding(); }
 })();
 </script>
 </body>
