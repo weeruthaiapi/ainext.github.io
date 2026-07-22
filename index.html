@@ -384,10 +384,12 @@ function screenLanding(){
         <div class="session-row"><div class="time">Final</div><div><div class="stitle">E-Certificate</div><div class="ssub">ครบ 3 Mission มีสิทธิ์รับเกียรติบัตร</div></div></div>
       </div>
       <button class="cta-btn" id="startBtn">เริ่มลงทะเบียน · Get Started ${iconArrow()}</button>
+      <button class="ghost-btn" id="guideBtn">📖 คู่มือผู้เข้าร่วม · Participant Guide</button>
       <a class="admin-link" href="admin.html">${iconShield()} เจ้าหน้าที่ · Admin login</a>
     </div>
   `, false);
   document.getElementById('startBtn').onclick=()=>{ checkinError=''; screen='checkin'; screenCheckin(); };
+  document.getElementById('guideBtn').onclick=()=>window.open('guide.html','_blank');
 }
 
 /* ================= CHECK-IN ================= */
@@ -457,8 +459,12 @@ function screenGate(){
       <p class="desc">สวัสดีคุณ <b style="color:#fff">${esc(p.nick||p.firstName)}</b>! เข้ากลุ่ม LINE OpenChat ของงานก่อน ใช้สื่อสาร รับโจทย์ และส่งงานตลอดทั้งวัน</p>
 
       ${joined ? `<div class="agree" style="cursor:default"><span style="color:var(--ok)">${iconCheck()}</span><div>คุณเข้ากลุ่ม OpenChat แล้ว ✓<span class="sub">ระบบตรวจพบว่าคุณอยู่ในกลุ่มเรียบร้อย</span></div></div>`
-        : `<button class="line-btn" id="btnLine">${iconChat()} เข้ากลุ่ม LINE OpenChat</button>
-      <label class="agree"><input type="checkbox" id="ckJoined"><div>ฉันเข้ากลุ่ม OpenChat แล้ว<span class="sub">กดปุ่มเขียว เข้ากลุ่ม แล้วกลับมาติ๊กช่องนี้</span></div></label>`}
+        : `<div style="text-align:center;margin-top:14px">
+        <img src="openchat-qr.jpg" alt="สแกนเข้ากลุ่ม OpenChat" style="width:230px;max-width:74%;border-radius:14px;border:1px solid var(--surface-brd);box-shadow:0 8px 24px rgba(0,0,0,.35)">
+        <div style="font-size:11.5px;color:var(--muted);margin-top:8px">สแกน QR นี้เพื่อเข้ากลุ่ม หรือกดปุ่มด้านล่าง</div>
+      </div>
+      <button class="line-btn" id="btnLine">${iconChat()} เข้ากลุ่ม LINE OpenChat</button>
+      <label class="agree"><input type="checkbox" id="ckJoined"><div>ฉันเข้ากลุ่ม OpenChat แล้ว<span class="sub">สแกน QR หรือกดปุ่มเขียว เข้ากลุ่ม แล้วกลับมาติ๊กช่องนี้</span></div></label>`}
 
       <label class="agree"><input type="checkbox" id="ckPdpa"><div>ยินยอมให้เก็บข้อมูลคำตอบเพื่อพัฒนากิจกรรม (PDPA)<span class="sub">ข้อมูลใช้เพื่อจัดกิจกรรมและวิเคราะห์ภาพรวมเท่านั้น</span></div></label>
 
@@ -531,7 +537,7 @@ async function screenHub(){
   const cards=M_META.map(cardFor);
   shell(`
     <div class="screen">
-      <p class="subtitle">Your Attendee ID · ${esc(p.runNo||p.attendeeId)}</p>
+      <p class="subtitle">Your Attendee ID · ${esc(p.runNo||p.attendeeId)}${p.team?' · '+esc(p.team):''}</p>
       <h2 class="title">สวัสดี คุณ${esc(p.nick||p.firstName)}</h2>
       <p class="desc" style="margin-bottom:14px">ทำ Mission ให้ครบ 3 ข้อ เพื่อรับ E-Certificate</p>
       <div style="display:flex;align-items:center;gap:12px;background:var(--accent-soft);border:1px dashed var(--surface-brd);border-radius:14px;padding:12px 14px;margin-bottom:16px">
