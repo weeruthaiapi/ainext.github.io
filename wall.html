@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI NEXT — Live Wall</title>
+<style>
+  :root{ --ink:#FFF3EC; --muted:#E8B396; --gold:#FFC24D; --orange:#FF5A1F; }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; min-height:100vh; overflow:hidden; color:var(--ink);
+    font-family:"Sukhumvit Set","Noto Sans Thai","Thonburi",system-ui,sans-serif;
+    background:
+      radial-gradient(circle at 50% 42%, rgba(255,106,0,.65), rgba(255,60,0,.22) 42%, transparent 62%),
+      linear-gradient(180deg,#3A1204 0%, #1E0803 60%, #120409 100%);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+  }
+  .brand-logo{ height:clamp(46px,7vw,86px); width:auto; margin-bottom:6px; filter:drop-shadow(0 0 30px rgba(255,120,30,.4)); }
+  .t2{font-size:clamp(14px,1.6vw,22px); letter-spacing:.6em; text-indent:.6em; color:var(--gold); font-weight:700; margin-top:6px;}
+  .count{font-size:clamp(90px,16vw,220px); font-weight:900; line-height:1; margin:24px 0 0; font-variant-numeric:tabular-nums;}
+  .count small{font-size:.32em; color:var(--muted); font-weight:700;}
+  .label{font-size:clamp(16px,2vw,26px); color:var(--muted); font-weight:700; margin-top:4px;}
+  .bar{width:min(640px,72vw); height:14px; border-radius:8px; background:rgba(255,255,255,.08); margin:26px auto 0; overflow:hidden;}
+  .bar i{display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--orange),var(--gold)); border-radius:8px; transition:width 1s ease;}
+  .recent{display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:34px; max-width:86vw;}
+  .chip{
+    background:rgba(255,255,255,.08); border:1px solid rgba(255,194,77,.35); border-radius:99px;
+    padding:8px 20px; font-size:clamp(15px,1.7vw,22px); font-weight:800; animation:pop .5s ease;
+  }
+  .chip span{color:var(--gold); font-weight:700; font-size:.8em; margin-left:8px;}
+  @keyframes pop{from{transform:scale(.6); opacity:0;} to{transform:scale(1); opacity:1;}}
+  .foot{position:fixed; bottom:18px; width:100%; text-align:center; color:var(--muted); font-size:14px; letter-spacing:.1em;}
+  .live-dot{display:inline-block; width:10px; height:10px; border-radius:50%; background:#4CD98B; margin-right:8px; box-shadow:0 0 0 0 rgba(76,217,139,.6); animation:live 1.6s infinite;}
+  @keyframes live{0%{box-shadow:0 0 0 0 rgba(76,217,139,.6);}70%{box-shadow:0 0 0 12px rgba(76,217,139,0);}100%{box-shadow:0 0 0 0 rgba(76,217,139,0);}}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important;}}
+</style>
+</head>
+<body>
+  <div>
+    <img class="brand-logo" src="ainext-logo.png" alt="AI NEXT by Bizcore">
+    <div class="t2">BOOTCAMP · LIVE CHECK-IN</div>
+    <div class="count"><span id="n">0</span><small> / <span id="total">0</span></small></div>
+    <div class="label"><span class="live-dot"></span>คนถึงงานแล้ว 🔥</div>
+    <div class="bar"><i id="bar"></i></div>
+    <div class="recent" id="recent"></div>
+  </div>
+  <div class="foot">AI NEXT Bootcamp · Bizcore</div>
+<script>
+/* ตั้ง DEMO_MODE=false และวาง URL เว็บแอปเดียวกับ index.html หลัง Deploy */
+const DEMO_MODE = true;
+const API_BASE_URL = "PASTE_YOUR_WEB_APP_URL_HERE";
+
+const LS_ROSTER='ainext_m_roster';
+function mockWall(){
+  const roster = JSON.parse(localStorage.getItem(LS_ROSTER)||'[]');
+  const checkedList = roster.filter(p=>p.checkedIn);
+  return { success:true, total:roster.length, checked:checkedList.length,
+    recent: checkedList.slice(-12).reverse().map(p=>({nick:p.nick, group:p.team})) };
+}
+async function callWall(){
+  if(DEMO_MODE) return mockWall();
+  const res = await fetch(API_BASE_URL, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({action:'getWall'})});
+  return res.json();
+}
+
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+var cur=0;
+function animateTo(target){
+  var el=document.getElementById('n');
+  if(target===cur){ el.textContent=target; return; }
+  (function step(){ cur += (target>cur?1:-1); el.textContent=cur; if(cur!==target) setTimeout(step,60); })();
+}
+async function tick(){
+  try{
+    const d = await callWall();
+    if(!d || !d.success) return;
+    document.getElementById('total').textContent=d.total;
+    animateTo(d.checked||0);
+    document.getElementById('bar').style.width=(d.total? (d.checked/d.total*100):0)+'%';
+    document.getElementById('recent').innerHTML=(d.recent||[]).map(function(r){
+      return '<div class="chip">'+esc(r.nick)+'<span>'+esc(r.group||'—')+'</span></div>';
+    }).join('');
+  }catch(e){}
+}
+tick(); setInterval(tick, 5000); // อัปเดตแบบเรียลไทม์ทุก 5 วินาที
+</script>
+</body>
+</html>

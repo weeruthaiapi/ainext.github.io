@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>คู่มือผู้เข้าร่วม — AI NEXT Mission Passport</title>
+<style>
+  :root{
+    --bg:#180703; --card:#241009; --line:#4A2213; --ink:#FFF3EC; --muted:#D8A88F;
+    --orange:#FF5A1F; --orange2:#FF8A3C; --gold:#FFC24D;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{
+    margin:0; color:var(--ink);
+    font-family:"Sukhumvit Set","Noto Sans Thai","Thonburi","Leelawadee UI",system-ui,sans-serif;
+    background:
+      radial-gradient(circle at 50% 30%, rgba(255,106,0,.5), rgba(255,60,0,.16) 45%, transparent 65%),
+      linear-gradient(180deg,#3A1204 0%, #200803 55%, #12040A 100%);
+    background-attachment:fixed;
+    overflow:hidden;
+  }
+  .deck{height:100dvh; display:flex; flex-direction:column;}
+  .slide{
+    flex:1; display:none; flex-direction:column; justify-content:center; align-items:center;
+    text-align:center; padding:24px 28px 90px; max-width:820px; margin:0 auto; width:100%;
+  }
+  .slide.on{display:flex; animation:in .35s ease;}
+  @keyframes in{from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:none;}}
+  .logo{
+    font-size:clamp(40px,8vw,72px); font-weight:900; letter-spacing:.06em; line-height:1;
+    background:linear-gradient(180deg,#FFF 20%, #FFD9B8 55%, #FF9A4D 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    text-shadow:0 0 30px rgba(255,120,30,.35);
+  }
+  .logo-sub{font-size:clamp(11px,2vw,15px); letter-spacing:.55em; text-indent:.55em; color:var(--gold); font-weight:700; margin-top:6px;}
+  .step{
+    display:inline-block; background:linear-gradient(180deg,var(--orange2),var(--orange)); color:#fff;
+    font-weight:900; font-size:13px; letter-spacing:.12em; border-radius:99px; padding:6px 18px; margin-bottom:14px;
+  }
+  h1{font-size:clamp(26px,5vw,44px); margin:0 0 10px; line-height:1.25; text-wrap:balance;}
+  h1 .em{color:var(--gold);}
+  p.lead{color:var(--muted); font-size:clamp(15px,2.6vw,19px); line-height:1.7; margin:0 0 18px; text-wrap:balance;}
+  ul.big{list-style:none; padding:0; margin:6px 0 0; text-align:left; max-width:560px; width:100%;}
+  ul.big li{
+    background:linear-gradient(180deg, rgba(255,138,60,.10), rgba(255,138,60,.03)), var(--card);
+    border:1px solid var(--line); border-radius:14px; padding:13px 16px; margin:9px 0;
+    font-size:clamp(15px,2.6vw,18.5px); line-height:1.55; display:flex; gap:12px; align-items:flex-start;
+  }
+  ul.big li .ic{flex:0 0 auto; font-size:1.25em; line-height:1.3;}
+  ul.big li b{color:var(--gold);}
+  .stamps{display:flex; gap:14px; margin-top:16px;}
+  .stamp{width:86px; height:86px; border-radius:50%; border:3px dashed var(--orange2); display:flex; align-items:center; justify-content:center; font-size:30px; background:rgba(255,138,60,.08);}
+  .stamp.done{border-style:solid; border-color:var(--gold); color:var(--gold); transform:rotate(-7deg);}
+  .nav{
+    position:fixed; bottom:0; left:0; right:0; display:flex; justify-content:space-between; align-items:center;
+    padding:14px 18px calc(14px + env(safe-area-inset-bottom)); gap:12px;
+    background:linear-gradient(180deg, transparent, rgba(10,3,1,.85) 40%);
+  }
+  .nav button{
+    border:1.5px solid var(--line); background:var(--card); color:var(--ink); font-family:inherit;
+    font-size:15px; font-weight:800; border-radius:12px; padding:11px 22px; cursor:pointer;
+  }
+  .nav button.primary{background:linear-gradient(180deg,var(--orange2),var(--orange)); border:none; color:#fff;}
+  .dots{display:flex; gap:6px;}
+  .dots i{width:8px; height:8px; border-radius:50%; background:var(--line);}
+  .dots i.on{background:var(--gold);}
+  .kbd-hint{position:fixed; top:12px; right:16px; color:var(--muted); font-size:11.5px; opacity:.7;}
+  @media (max-width:640px){ .kbd-hint{display:none;} }
+</style>
+</head>
+<body>
+<div class="deck">
+
+  <section class="slide on">
+    <div class="logo">AI NEXT</div>
+    <div class="logo-sub">BOOTCAMP</div>
+    <h1 style="margin-top:26px">Mission Passport <span class="em">🎫</span></h1>
+    <p class="lead">คู่มือเช็คอิน + ทำ Mission รับ Certificate<br>25 กรกฎาคม 2569 · by Bizcore</p>
+  </section>
+
+  <section class="slide">
+    <div class="step">CONCEPT</div>
+    <h1>Mission Passport คืออะไร?</h1>
+    <ul class="big">
+      <li><span class="ic">🎫</span><span>วันนี้ทุกคนมี<b>พาสปอร์ตดิจิทัล</b>ของตัวเอง เปิดจากมือถือได้ตลอดวัน</span></li>
+      <li><span class="ic">🎖</span><span>สะสม<b>แสตมป์ 3 ดวง</b> จาก 3 Mission สั้น ๆ ระหว่างวัน</span></li>
+      <li><span class="ic">🏆</span><span>ครบ 3 ดวง + อยู่ครบทั้งวัน = <b>รับ Certificate</b></span></li>
+    </ul>
+    <div class="stamps"><div class="stamp done">✓</div><div class="stamp done">✓</div><div class="stamp done">✓</div></div>
+  </section>
+
+  <section class="slide">
+    <div class="step">STEP 1 · ตอนเช้า</div>
+    <h1>เช็คอินเข้างาน</h1>
+    <ul class="big">
+      <li><span class="ic">📱</span><span><b>สแกน QR ของงาน</b> เพื่อเปิดเว็บ Mission Passport</span></li>
+      <li><span class="ic">🔢</span><span>กรอก<b>เบอร์โทร 4 ตัวท้าย</b> (เบอร์ที่ใช้สมัครเข้าร่วมงาน)</span></li>
+      <li><span class="ic">👉</span><span>กด <b>"เช็คอิน"</b></span></li>
+    </ul>
+  </section>
+
+  <section class="slide">
+    <div class="step">STEP 2</div>
+    <h1>เข้ากลุ่ม LINE OpenChat</h1>
+    <ul class="big">
+      <li><span class="ic">💬</span><span>กดปุ่มเขียว <b>"เข้ากลุ่ม LINE OpenChat"</b> แล้วกด Join</span></li>
+      <li><span class="ic">✅</span><span>กลับมาที่เว็บ แตะ <b>"ฉันเข้ากลุ่มแล้ว"</b> + ยินยอม PDPA แล้วกดยืนยัน</span></li>
+      <li><span class="ic">📣</span><span>กลุ่มนี้ใช้ <b>รับโจทย์ · ส่งงาน · ติดตามประกาศ</b> ตลอดทั้งวัน — ห้ามพลาด!</span></li>
+    </ul>
+  </section>
+
+  <section class="slide">
+    <div class="step">STEP 3</div>
+    <h1>จำ 3 อย่างนี้จากหน้าจอ</h1>
+    <ul class="big">
+      <li><span class="ic">🔖</span><span><b>หมายเลขผู้เรียน</b> ของคุณ</span></li>
+      <li><span class="ic">👥</span><span><b>กลุ่มกิจกรรม</b> — นั่งและทำ Challenge กับกลุ่มนี้</span></li>
+      <li><span class="ic">🍛</span><span><b>เมนูอาหารกลางวัน</b> ที่คุณเลือกไว้ตอนสมัคร</span></li>
+    </ul>
+  </section>
+
+  <section class="slide">
+    <div class="step">MISSIONS</div>
+    <h1>3 Missions ระหว่างวัน</h1>
+    <ul class="big">
+      <li><span class="ic">1️⃣</span><span>หลังจบ session <b>คุณมิว (Mew Social)</b></span></li>
+      <li><span class="ic">2️⃣</span><span>หลังจบ session <b>คุณทอย (DataRockie)</b></span></li>
+      <li><span class="ic">3️⃣</span><span>หลังจบ <b>AI NEXT Challenge + Pitch</b> ท้ายวัน</span></li>
+      <li><span class="ic">⏱</span><span>แบบสอบถามสั้น ๆ <b>2-3 นาที</b> · เปิดให้ทำเมื่อ <b>MC ประกาศ</b> เท่านั้น</span></li>
+    </ul>
+  </section>
+
+  <section class="slide">
+    <div class="step">HOW TO</div>
+    <h1>ทำ Mission ยังไง?</h1>
+    <ul class="big">
+      <li><span class="ic">🔗</span><span>เปิด<b>ลิงก์เดิม</b> (หรือสแกน QR เดิม) — ระบบจำคุณได้ ไม่ต้องเช็คอินใหม่</span></li>
+      <li><span class="ic">⭐</span><span>แสตมป์ดวงไหนขึ้น <b>"เปิดแล้ว!"</b> แตะทำได้เลย</span></li>
+      <li><span class="ic">🎖</span><span>ตอบครบ กดส่ง <b>รับแสตมป์ทันที</b></span></li>
+    </ul>
+  </section>
+
+  <section class="slide">
+    <div class="step">FAQ</div>
+    <h1>ปิดหน้าจอไปแล้ว<br>กลับมาได้ไหม?</h1>
+    <ul class="big">
+      <li><span class="ic">😌</span><span><b>ได้!</b> เปิดลิงก์เดิมเมื่อไหร่ ก็กลับมาหน้าพาสปอร์ตของตัวเองทันที</span></li>
+      <li><span class="ic">🔄</span><span>เปลี่ยนเครื่อง / เผลอล้างเบราว์เซอร์ → แค่กรอก<b>เบอร์ 4 ตัวท้าย</b>ใหม่ ข้อมูลไม่หาย</span></li>
+    </ul>
+  </section>
+
+  <section class="slide">
+    <div class="step">CERTIFICATE</div>
+    <h1>กติการับ Certificate <span class="em">🏆</span></h1>
+    <ul class="big">
+      <li><span class="ic">✅</span><span>เช็คอินตอนเช้า + <b>แสตมป์ครบ 3 ดวง</b> = มีสิทธิ์รับ Certificate</span></li>
+      <li><span class="ic">📜</span><span>ชื่อบน Certificate ใช้<b>ชื่อที่กรอกตอนสมัคร</b></span></li>
+      <li><span class="ic">📲</span><span>โชว์หน้าจอ <b>"Certificate Journey Complete"</b> กับทีมงานตอนรับ</span></li>
+    </ul>
+  </section>
+
+  <section class="slide">
+    <div class="logo" style="font-size:clamp(34px,6vw,56px)">AI NEXT</div>
+    <div class="logo-sub">BOOTCAMP</div>
+    <h1 style="margin-top:24px">พร้อมแล้ว ไปให้สุด! <span class="em">🔥</span></h1>
+    <p class="lead">ติดปัญหาตรงไหน ทักทีมงานที่จุดลงทะเบียนได้ตลอดทั้งวัน<br>ขอให้สนุกกับการเรียนรู้ครับ 🧡</p>
+  </section>
+
+</div>
+
+<div class="nav">
+  <button id="prev">← ก่อนหน้า</button>
+  <div class="dots" id="dots"></div>
+  <button id="next" class="primary">ถัดไป →</button>
+</div>
+<div class="kbd-hint">ใช้ปุ่ม ← → หรือปัดซ้าย-ขวาได้</div>
+
+<script>
+var slides=[].slice.call(document.querySelectorAll('.slide')), cur=0;
+var dots=document.getElementById('dots');
+slides.forEach(function(_,i){ var d=document.createElement('i'); if(i===0)d.className='on'; dots.appendChild(d); });
+function go(n){
+  cur=Math.max(0,Math.min(slides.length-1,n));
+  slides.forEach(function(s,i){ s.classList.toggle('on',i===cur); });
+  [].slice.call(dots.children).forEach(function(d,i){ d.className=i===cur?'on':''; });
+}
+document.getElementById('next').onclick=function(){ go(cur+1); };
+document.getElementById('prev').onclick=function(){ go(cur-1); };
+document.addEventListener('keydown',function(e){
+  if(e.key==='ArrowRight'||e.key===' ')go(cur+1);
+  if(e.key==='ArrowLeft')go(cur-1);
+});
+var x0=null;
+document.addEventListener('touchstart',function(e){ x0=e.touches[0].clientX; },{passive:true});
+document.addEventListener('touchend',function(e){
+  if(x0===null)return;
+  var dx=e.changedTouches[0].clientX-x0;
+  if(Math.abs(dx)>50) go(cur+(dx<0?1:-1));
+  x0=null;
+},{passive:true});
+</script>
+</body>
+</html>
