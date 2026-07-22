@@ -19,7 +19,6 @@
   .header{ background:var(--bar); border-bottom:1px solid var(--surface-brd); padding:18px 20px; display:flex; align-items:center; justify-content:center; gap:10px; }
   .header img{ height:24px; width:auto; display:block; }
   .header h1{ font-family:'Chakra Petch',sans-serif; font-weight:700; margin:0; font-size:20px; }
-  .q-active-dot{ display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--accent); margin-right:7px; vertical-align:middle; }
   .wrap{ max-width:680px; margin:0 auto; padding:24px 18px 60px; }
   .card{ background:var(--surface); border:1px solid var(--surface-brd); border-radius:16px; padding:22px 20px; margin-bottom:16px; }
   h2{ font-family:'Chakra Petch',sans-serif; font-weight:600; font-size:15px; color:var(--accent); margin-top:0; }
@@ -42,25 +41,17 @@
   .stat .num{ font-family:'Chakra Petch'; font-weight:700; font-size:22px; color:var(--accent); }
   .stat .lbl{ font-size:11px; color:var(--muted); margin-top:4px;}
   .refresh-hint{ text-align:center; font-size:11px; color:var(--muted); margin-top:6px;}
-  .q-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 0; border-bottom:1px solid var(--line); }
-  .q-text{ font-size:13px; flex:1; }
-  .q-add-row{ display:flex; gap:8px; }
-  .q-add-row input{ margin-bottom:0; }
-  .q-add-row button{ width:auto; white-space:nowrap; }
   .p-row{ border:1px solid var(--surface-brd); border-radius:12px; padding:12px 14px; margin-bottom:10px; }
   .p-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
   .p-name{ font-weight:600; font-size:14px; font-family:'Chakra Petch'; }
   .p-id{ font-size:11px; color:var(--muted); }
-  .p-flags{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:8px; }
+  .p-flags{ display:flex; flex-wrap:wrap; gap:8px; }
   .flag-btn{ width:auto; font-size:11px; padding:6px 10px; background:rgba(255,255,255,.08); border:1px solid var(--surface-brd); color:var(--text); }
   .flag-btn.on{ background:var(--cta-bg); color:var(--cta-text); border-color:transparent; }
-  .p-team-row{ display:flex; gap:8px; }
-  .p-team-row input{ margin-bottom:0; }
   .search-row{ display:flex; gap:8px; }
   .search-row input{ margin-bottom:0; }
   .search-row button{ width:auto; white-space:nowrap; }
   a.admin-back{ color:var(--muted); font-family:'Chakra Petch'; font-size:12px; display:inline-flex; align-items:center; gap:6px; }
-  a.admin-back svg{ flex-shrink:0; }
 </style>
 </head>
 <body>
@@ -68,307 +59,132 @@
 <div class="wrap" id="app"></div>
 
 <script>
-const DEMO_MODE = false;
-const API_BASE_URL = "https://script.google.com/macros/s/AKfycbxlGc6JxljLQgNQlaWhFTuUI4mXj8b-XTYrtpkX9DpYAA2Df7U734Uyqn7F6yc1S3jY/exec";
+/* ตั้ง DEMO_MODE=false และวาง URL เว็บแอปที่ API_BASE_URL หลัง Deploy (ให้ตรงกับ index.html) */
+const DEMO_MODE = true;
+const API_BASE_URL = "PASTE_YOUR_WEB_APP_URL_HERE";
 
-const LS_PARTICIPANTS='ainext_participants', LS_CONFIG='ainext_config', LS_GALLERY='ainext_gallery',
-      LS_LIKES='ainext_likes', LS_COMMENTS='ainext_comments', LS_QUESTIONS='ainext_questions';
-
-function seedDemo(){
-  if(!localStorage.getItem(LS_PARTICIPANTS)){
-    localStorage.setItem(LS_PARTICIPANTS, JSON.stringify([
-      {AttendeeID:'A001', FirstName:'สมชาย', LastName:'ใจดี', Team:'Team Rocket AI', Confirmed:true, Stage1_Time:null, Stage2_Time:null, Stage2_Answer:'', Stage3_Time:null, Stage3_PhotoURL:'', Stage3_Note:'', CertIssued:false},
-      {AttendeeID:'A002', FirstName:'Jane', LastName:'Doe', Team:'Neural Ninjas', Confirmed:true, Stage1_Time:null, Stage2_Time:null, Stage2_Answer:'', Stage3_Time:null, Stage3_PhotoURL:'', Stage3_Note:'', CertIssued:false},
-      {AttendeeID:'A003', FirstName:'ไม่', LastName:'ยืนยัน', Team:'', Confirmed:false, Stage1_Time:null, Stage2_Time:null, Stage2_Answer:'', Stage3_Time:null, Stage3_PhotoURL:'', Stage3_Note:'', CertIssued:false}
-    ]));
-  }
-  if(!localStorage.getItem(LS_CONFIG)){
-    localStorage.setItem(LS_CONFIG, JSON.stringify({
-      stage1_open:true, stage2_open:false, stage3_open:false, cert_open:false,
-      admin_password:'ainext2026', event_name:'AI NEXT',
-      cooldown_msg_1:'รอทีมงานเปิดกิจกรรมช่วงบ่าย...', cooldown_msg_2:'รอทีมงานเปิดกิจกรรม AI NEXT Challenge...',
-      cooldown_msg_3:'รอทีมงานประกาศผล และปล่อย Certificate...'
-    }));
-  }
-  if(!localStorage.getItem(LS_GALLERY)) localStorage.setItem(LS_GALLERY, JSON.stringify([]));
-  if(!localStorage.getItem(LS_LIKES)) localStorage.setItem(LS_LIKES, JSON.stringify([]));
-  if(!localStorage.getItem(LS_COMMENTS)) localStorage.setItem(LS_COMMENTS, JSON.stringify([]));
-  if(!localStorage.getItem(LS_QUESTIONS)) localStorage.setItem(LS_QUESTIONS, JSON.stringify([]));
-}
+/* ===== DEMO mock (ใช้ localStorage ชุดเดียวกับ index.html) ===== */
+const LS_ROSTER='ainext_m_roster', LS_CONFIG='ainext_m_config', LS_GALLERY='ainext_m_gallery';
 function readLS(k){ return JSON.parse(localStorage.getItem(k)||'null'); }
 function writeLS(k,v){ localStorage.setItem(k, JSON.stringify(v)); }
-function genId(){ return Math.random().toString(36).slice(2,10); }
 function normalizeName(s){ return String(s||'').trim().toLowerCase().replace(/\s+/g,' '); }
-
 function mockApi(action, params){
-  seedDemo();
-  return new Promise(resolve=>{
-    setTimeout(()=>{
-      const cfg = readLS(LS_CONFIG);
-      let parts = readLS(LS_PARTICIPANTS);
-      let gallery = readLS(LS_GALLERY);
-      let questions = readLS(LS_QUESTIONS);
-      const badPw = ()=> String(params.password)!==String(cfg.admin_password);
-
-      if(action==='adminLogin') return resolve({success:String(params.password)===String(cfg.admin_password)});
-      if(action==='adminUnlock'){
-        if(badPw()) return resolve({success:false, reason:'bad_password'});
-        const map={1:'stage1_open',2:'stage2_open',3:'stage3_open',4:'cert_open'};
-        const key = map[params.stage]; if(!key) return resolve({success:false});
-        cfg[key] = !!params.open;
-        if(params.stage==4 && params.open){
-          parts = parts.map(p=> (p.Stage3_Time && !p.CertIssued) ? {...p, CertIssued:true} : p);
-          writeLS(LS_PARTICIPANTS, parts);
-        }
-        writeLS(LS_CONFIG, cfg);
-        return resolve({success:true});
-      }
-      if(action==='adminStats'){
-        if(badPw()) return resolve({success:false, reason:'bad_password'});
-        const stats={total:parts.length, confirmed:0, stage1:0, stage2:0, stage3:0, cert:0,
-          stage1_open:!!cfg.stage1_open, stage2_open:!!cfg.stage2_open, stage3_open:!!cfg.stage3_open, cert_open:!!cfg.cert_open,
-          galleryPosts: gallery.length};
-        parts.forEach(p=>{ if(p.Confirmed) stats.confirmed++; if(p.Stage1_Time) stats.stage1++; if(p.Stage2_Time) stats.stage2++; if(p.Stage3_Time) stats.stage3++; if(p.CertIssued) stats.cert++; });
-        return resolve({success:true, stats});
-      }
-      if(action==='adminListQuestions'){
-        if(badPw()) return resolve({success:false, reason:'bad_password'});
-        return resolve({success:true, items:questions});
-      }
-      if(action==='adminAddQuestion'){
-        if(badPw()) return resolve({success:false, reason:'bad_password'});
-        const id = genId();
-        questions.push({id, text:params.text, active:false});
-        writeLS(LS_QUESTIONS, questions);
-        return resolve({success:true, id});
-      }
-      if(action==='adminSetActiveQuestion'){
-        if(badPw()) return resolve({success:false, reason:'bad_password'});
-        questions = questions.map(q=>({...q, active: q.id===params.questionId}));
-        writeLS(LS_QUESTIONS, questions);
-        return resolve({success:true});
-      }
-      if(action==='adminSearchParticipants'){
-        if(badPw()) return resolve({success:false, reason:'bad_password'});
-        const q = normalizeName(params.query||'');
-        let rows = parts;
-        if(q) rows = rows.filter(p=>normalizeName(p.AttendeeID+' '+p.FirstName+' '+p.LastName+' '+p.Team).includes(q));
-        const items = rows.slice(0,40).map(p=>({attendeeId:p.AttendeeID, firstName:p.FirstName, lastName:p.LastName,
-          team:p.Team, confirmed:!!p.Confirmed, stage1:!!p.Stage1_Time, stage2:!!p.Stage2_Time, stage3:!!p.Stage3_Time, certIssued:!!p.CertIssued}));
-        return resolve({success:true, items});
-      }
-      if(action==='adminUpdateParticipant'){
-        if(badPw()) return resolve({success:false, reason:'bad_password'});
-        const idx = parts.findIndex(p=>p.AttendeeID===params.attendeeId);
-        if(idx<0) return resolve({success:false, reason:'not_found'});
-        const patch = params.patch||{};
-        if(typeof patch.confirmed==='boolean') parts[idx].Confirmed = patch.confirmed;
-        if(typeof patch.team==='string') parts[idx].Team = patch.team;
-        if(typeof patch.stage1==='boolean') parts[idx].Stage1_Time = patch.stage1 ? (parts[idx].Stage1_Time||new Date().toISOString()) : null;
-        if(typeof patch.stage2==='boolean') parts[idx].Stage2_Time = patch.stage2 ? (parts[idx].Stage2_Time||new Date().toISOString()) : null;
-        if(typeof patch.stage3==='boolean') parts[idx].Stage3_Time = patch.stage3 ? (parts[idx].Stage3_Time||new Date().toISOString()) : null;
-        if(typeof patch.certIssued==='boolean') parts[idx].CertIssued = patch.certIssued;
-        writeLS(LS_PARTICIPANTS, parts);
-        return resolve({success:true});
-      }
-      resolve({success:false, error:'unknown_action'});
-    }, 160);
-  });
+  return new Promise(resolve=>{ setTimeout(()=>{
+    const cfg=readLS(LS_CONFIG)||{}; let roster=readLS(LS_ROSTER)||[];
+    const bad = ()=> String(params.password)!==String(cfg.admin_password||'ainext2026');
+    if(action==='adminLogin') return resolve({success: String(params.password)===String(cfg.admin_password||'ainext2026')});
+    if(bad()) return resolve({success:false, reason:'bad_password'});
+    if(action==='adminStats'){
+      const s={total:roster.length, confirmed:roster.length, checkin:0, m1:0,m2:0,m3:0,cert:0,openchat:0,
+        checkin_open:!!cfg.checkin_open, mission1_open:!!cfg.mission1_open, mission2_open:!!cfg.mission2_open, mission3_open:!!cfg.mission3_open, cert_open:!!cfg.cert_open,
+        galleryPosts:(readLS(LS_GALLERY)||[]).length};
+      roster.forEach(p=>{ if(p.checkedIn)s.checkin++; if(p.m1)s.m1++; if(p.m2)s.m2++; if(p.m3)s.m3++; if(p.cert)s.cert++; if(p.joinedOpenChat)s.openchat++; });
+      return resolve({success:true, stats:s});
+    }
+    if(action==='adminSetOpen'){
+      const map={checkin:'checkin_open',m1:'mission1_open',m2:'mission2_open',m3:'mission3_open',cert:'cert_open'};
+      const k=map[params.key]; if(k){ cfg[k]=!!params.open; if(params.key==='cert'&&params.open){ roster.forEach(p=>{ if(p.m1&&p.m2&&p.m3) p.cert=true; }); writeLS(LS_ROSTER,roster);} writeLS(LS_CONFIG,cfg); }
+      return resolve({success:true, stats:(function(){ const s={total:roster.length,confirmed:roster.length,checkin:0,m1:0,m2:0,m3:0,cert:0,openchat:0,checkin_open:!!cfg.checkin_open,mission1_open:!!cfg.mission1_open,mission2_open:!!cfg.mission2_open,mission3_open:!!cfg.mission3_open,cert_open:!!cfg.cert_open,galleryPosts:(readLS(LS_GALLERY)||[]).length}; roster.forEach(p=>{ if(p.checkedIn)s.checkin++; if(p.m1)s.m1++; if(p.m2)s.m2++; if(p.m3)s.m3++; if(p.cert)s.cert++; if(p.joinedOpenChat)s.openchat++; }); return s; })()});
+    }
+    if(action==='adminSearchParticipants'){
+      const q=normalizeName(params.query||''); let rows=roster;
+      if(q) rows=rows.filter(p=>normalizeName(p.no+' '+p.runNo+' '+p.name+' '+p.nick+' '+p.team).includes(q));
+      return resolve({success:true, items:rows.slice(0,50).map(p=>({attendeeId:p.no,runNo:p.runNo,name:p.name,nick:p.nick,team:p.team,checkin:!!p.checkedIn,openchat:!!p.joinedOpenChat,m1:!!p.m1,m2:!!p.m2,m3:!!p.m3,cert:!!p.cert}))});
+    }
+    if(action==='adminUpdateParticipant'){
+      const p=roster.find(x=>String(x.no)===String(params.attendeeId)); if(!p) return resolve({success:false});
+      const patch=params.patch||{};
+      if(typeof patch.checkin==='boolean') p.checkedIn=patch.checkin;
+      if(typeof patch.openchat==='boolean') p.joinedOpenChat=patch.openchat;
+      ['m1','m2','m3','cert'].forEach(k=>{ if(typeof patch[k]==='boolean') p[k]=patch[k]; });
+      writeLS(LS_ROSTER,roster); return resolve({success:true});
+    }
+    resolve({success:false, error:'unknown_action'});
+  },140); });
 }
 async function callApi(action, params={}){
   if(DEMO_MODE) return mockApi(action, params);
-  const res = await fetch(API_BASE_URL, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({action, ...params})});
+  const res=await fetch(API_BASE_URL,{method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({action,...params})});
   return res.json();
 }
 
-const app = document.getElementById('app');
-let PASSWORD = null;
-let pollTimer = null;
+const app=document.getElementById('app'); let PASSWORD=null, pollTimer=null;
+function backLink(){ return `<p style="text-align:center;"><a class="admin-back" href="index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"></path></svg>กลับหน้าลงทะเบียน</a></p>`; }
 
 function screenLogin(err=''){
-  app.innerHTML = `
-    <div class="card">
-      <h2>เข้าสู่ระบบทีมงาน</h2>
-      ${err? `<div class="error">${err}</div>`:''}
-      <input type="password" id="pw" placeholder="Admin password">
-      <button id="loginBtn">เข้าสู่ระบบ</button>
-      <p style="margin-top:14px;"><a class="admin-back" href="index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"></path></svg>กลับหน้าลงทะเบียน</a></p>
-    </div>`;
-  document.getElementById('loginBtn').onclick = doLogin;
-  document.getElementById('pw').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+  app.innerHTML=`<div class="card"><h2>เข้าสู่ระบบทีมงาน</h2>${err?`<div class="error">${err}</div>`:''}
+    <input type="password" id="pw" placeholder="Admin password"><button id="loginBtn">เข้าสู่ระบบ</button></div>${backLink()}`;
+  document.getElementById('loginBtn').onclick=doLogin;
+  document.getElementById('pw').addEventListener('keydown',e=>{ if(e.key==='Enter') doLogin(); });
 }
-async function doLogin(){
-  const pw = document.getElementById('pw').value;
-  const res = await callApi('adminLogin', {password: pw});
-  if(!res.success){ screenLogin('รหัสผ่านไม่ถูกต้อง'); return; }
-  PASSWORD = pw;
-  screenDashboard();
-}
+async function doLogin(){ const pw=document.getElementById('pw').value; const res=await callApi('adminLogin',{password:pw});
+  if(!res.success){ screenLogin('รหัสผ่านไม่ถูกต้อง'); return; } PASSWORD=pw; screenDashboard(); }
 
-const STAGES = [
-  {n:1, key:'stage1_open', label:'Stage 1 · Morning Registration'},
-  {n:2, key:'stage2_open', label:'Stage 2 · After-Lunch Question'},
-  {n:3, key:'stage3_open', label:'Stage 3 · AI NEXT Challenge Selfie'},
-  {n:4, key:'cert_open', label:'Stage 4 · Release Certificates'}
+const STAGES=[
+  {key:'checkin', label:'เช็คอิน (Check-in + OpenChat)'},
+  {key:'m1', label:'Mission 1 · Session แรก'},
+  {key:'m2', label:'Mission 2 · Session สอง'},
+  {key:'m3', label:'Mission 3 · Challenge + ปิดงาน'},
+  {key:'cert', label:'ปล่อย E-Certificate'}
 ];
-
-let questionsCache = [];
-let searchResultsCache = [];
-let lastSearchQuery = '';
+const STAGE_CFGKEY={checkin:'checkin_open', m1:'mission1_open', m2:'mission2_open', m3:'mission3_open', cert:'cert_open'};
+let searchCache=[], lastQuery='';
 
 async function screenDashboard(){
-  const res = await callApi('adminStats', {password: PASSWORD});
+  const res=await callApi('adminStats',{password:PASSWORD});
   if(!res.success){ screenLogin('เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่'); return; }
-  const s = res.stats;
-
-  const qres = await callApi('adminListQuestions', {password: PASSWORD});
-  questionsCache = qres.success ? qres.items : [];
-
-  app.innerHTML = `
+  const s=res.stats;
+  app.innerHTML=`
     <div class="card">
       <h2>ภาพรวม</h2>
       <div class="stats-grid">
-        <div class="stat"><div class="num">${s.confirmed}/${s.total}</div><div class="lbl">Confirmed</div></div>
-        <div class="stat"><div class="num">${s.stage1}</div><div class="lbl">Registered</div></div>
-        <div class="stat"><div class="num">${s.stage2}</div><div class="lbl">Answered</div></div>
-        <div class="stat"><div class="num">${s.stage3}</div><div class="lbl">Selfie</div></div>
+        <div class="stat"><div class="num">${s.total}</div><div class="lbl">รายชื่อทั้งหมด</div></div>
+        <div class="stat"><div class="num">${s.checkin}</div><div class="lbl">เช็คอินแล้ว</div></div>
+        <div class="stat"><div class="num">${s.openchat}</div><div class="lbl">เข้า OpenChat</div></div>
+        <div class="stat"><div class="num">${s.m1}</div><div class="lbl">Mission 1</div></div>
+        <div class="stat"><div class="num">${s.m2}</div><div class="lbl">Mission 2</div></div>
+        <div class="stat"><div class="num">${s.m3}</div><div class="lbl">Mission 3</div></div>
         <div class="stat"><div class="num">${s.cert}</div><div class="lbl">Cert Issued</div></div>
         <div class="stat"><div class="num">${s.galleryPosts||0}</div><div class="lbl">Gallery Posts</div></div>
       </div>
       <div class="refresh-hint">อัปเดตอัตโนมัติทุก 6 วินาที</div>
     </div>
-
     <div class="card">
-      <h2>ควบคุมด่าน (กดปลดล็อคให้ทุกคนพร้อมกัน)</h2>
-      ${STAGES.map(st=>{
-        const open = s[st.key];
-        return `<div class="stage-row">
-          <div><div class="stage-name">${st.label} <span class="badge ${open?'open':'closed'}">${open?'OPEN':'CLOSED'}</span></div></div>
-          <button class="toggle-btn" data-stage="${st.n}" data-open="${open?'0':'1'}">${open?'ปิด':'ปลดล็อค'}</button>
-        </div>`;
-      }).join('')}
+      <h2>ควบคุมกิจกรรม (กดปลดล็อกให้ทุกคนพร้อมกัน)</h2>
+      ${STAGES.map(st=>{ const open=s[STAGE_CFGKEY[st.key]];
+        return `<div class="stage-row"><div><div class="stage-name">${st.label} <span class="badge ${open?'open':'closed'}">${open?'OPEN':'CLOSED'}</span></div></div>
+          <button class="toggle-btn" data-key="${st.key}" data-open="${open?'0':'1'}">${open?'ปิด':'ปลดล็อก'}</button></div>`; }).join('')}
     </div>
-
-    <div class="card">
-      <h2>คำถามหมุนเวียน (Rotating Quiz)</h2>
-      <div id="questionsList">
-        ${questionsCache.length ? questionsCache.map(q=>`
-          <div class="q-row">
-            <div class="q-text">${q.active? '<span class="q-active-dot"></span>':''}${q.text}</div>
-            ${q.active? '' : `<button class="small" data-setactive="${q.id}">ตั้งเป็นคำถามปัจจุบัน</button>`}
-          </div>
-        `).join('') : '<p class="refresh-hint" style="text-align:left;">ยังไม่มีคำถาม เพิ่มด้านล่าง</p>'}
-      </div>
-      <div class="q-add-row" style="margin-top:12px;">
-        <input type="text" id="newQuestionInput" placeholder="พิมพ์คำถามใหม่...">
-        <button id="addQuestionBtn">เพิ่ม</button>
-      </div>
-    </div>
-
     <div class="card">
       <h2>ค้นหา / แก้ไขผู้เข้าร่วม</h2>
-      <div class="search-row">
-        <input type="text" id="searchInput" placeholder="ค้นหาด้วยชื่อ หรือ Attendee ID" value="${lastSearchQuery.replace(/"/g,'&quot;')}">
-        <button id="searchBtn">ค้นหา</button>
-      </div>
+      <div class="search-row"><input type="text" id="searchInput" placeholder="ค้นหาด้วยชื่อ / เลข No / ทีม" value="${lastQuery.replace(/"/g,'&quot;')}"><button id="searchBtn">ค้นหา</button></div>
       <div id="searchResults"></div>
     </div>
-
-    <p style="text-align:center;"><a class="admin-back" href="index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"></path></svg>กลับหน้าลงทะเบียน</a></p>
-  `;
-
-  document.querySelectorAll('.toggle-btn').forEach(btn=>{
-    btn.onclick = async ()=>{
-      btn.disabled = true;
-      await callApi('adminUnlock', {password: PASSWORD, stage: Number(btn.dataset.stage), open: btn.dataset.open==='1'});
-      screenDashboard();
-    };
-  });
-
-  document.getElementById('addQuestionBtn').onclick = async ()=>{
-    const text = document.getElementById('newQuestionInput').value.trim();
-    if(!text) return;
-    const btn = document.getElementById('addQuestionBtn');
-    btn.disabled = true;
-    await callApi('adminAddQuestion', {password: PASSWORD, text});
-    screenDashboard();
-  };
-  document.querySelectorAll('[data-setactive]').forEach(btn=>{
-    btn.onclick = async ()=>{
-      btn.disabled = true;
-      await callApi('adminSetActiveQuestion', {password: PASSWORD, questionId: btn.dataset.setactive});
-      screenDashboard();
-    };
-  });
-
-  document.getElementById('searchBtn').onclick = doSearch;
-  document.getElementById('searchInput').addEventListener('keydown', e=>{ if(e.key==='Enter') doSearch(); });
-
-  if(lastSearchQuery && searchResultsCache.length){ renderSearchResults(); }
-
-  clearInterval(pollTimer);
-  pollTimer = setInterval(screenDashboard, 6000);
+    ${backLink()}`;
+  document.querySelectorAll('.toggle-btn').forEach(btn=>{ btn.onclick=async ()=>{ btn.disabled=true;
+    await callApi('adminSetOpen',{password:PASSWORD, key:btn.dataset.key, open:btn.dataset.open==='1'}); screenDashboard(); }; });
+  document.getElementById('searchBtn').onclick=doSearch;
+  document.getElementById('searchInput').addEventListener('keydown',e=>{ if(e.key==='Enter') doSearch(); });
+  if(lastQuery&&searchCache.length) renderSearch();
+  clearInterval(pollTimer); pollTimer=setInterval(screenDashboard,6000);
 }
-
-async function doSearch(){
-  const query = document.getElementById('searchInput').value.trim();
-  lastSearchQuery = query;
-  const res = await callApi('adminSearchParticipants', {password: PASSWORD, query});
-  if(!res.success){ return; }
-  searchResultsCache = res.items;
-  renderSearchResults();
-}
-
-function renderSearchResults(){
-  const box = document.getElementById('searchResults');
-  if(!box) return;
-  if(!searchResultsCache.length){ box.innerHTML = '<p class="refresh-hint" style="text-align:left;">ไม่พบผู้เข้าร่วม</p>'; return; }
-  box.innerHTML = searchResultsCache.map(p => `
+async function doSearch(){ lastQuery=document.getElementById('searchInput').value.trim();
+  const res=await callApi('adminSearchParticipants',{password:PASSWORD, query:lastQuery}); if(!res.success) return; searchCache=res.items; renderSearch(); }
+function renderSearch(){
+  const box=document.getElementById('searchResults'); if(!box) return;
+  if(!searchCache.length){ box.innerHTML='<p class="refresh-hint" style="text-align:left;">ไม่พบผู้เข้าร่วม</p>'; return; }
+  const flags=[['checkin','เช็คอิน'],['openchat','OpenChat'],['m1','M1'],['m2','M2'],['m3','M3'],['cert','Cert']];
+  box.innerHTML=searchCache.map(p=>`
     <div class="p-row" data-id="${p.attendeeId}">
-      <div class="p-head">
-        <div>
-          <div class="p-name">${p.firstName} ${p.lastName}</div>
-          <div class="p-id">${p.attendeeId}</div>
-        </div>
-      </div>
-      <div class="p-flags">
-        <button class="flag-btn ${p.confirmed?'on':''}" data-field="confirmed">Confirmed</button>
-        <button class="flag-btn ${p.stage1?'on':''}" data-field="stage1">Stage 1</button>
-        <button class="flag-btn ${p.stage2?'on':''}" data-field="stage2">Stage 2</button>
-        <button class="flag-btn ${p.stage3?'on':''}" data-field="stage3">Stage 3</button>
-        <button class="flag-btn ${p.certIssued?'on':''}" data-field="certIssued">Cert Issued</button>
-      </div>
-      <div class="p-team-row">
-        <input type="text" value="${p.team||''}" data-team-input placeholder="ชื่อทีม">
-        <button class="small" data-save-team>บันทึกทีม</button>
-      </div>
-    </div>
-  `).join('');
-
-  box.querySelectorAll('.p-row').forEach(row=>{
-    const attendeeId = row.dataset.id;
-    row.querySelectorAll('.flag-btn').forEach(btn=>{
-      btn.onclick = async ()=>{
-        const field = btn.dataset.field;
-        const newVal = !btn.classList.contains('on');
-        btn.disabled = true;
-        const patch = {}; patch[field] = newVal;
-        await callApi('adminUpdateParticipant', {password: PASSWORD, attendeeId, patch});
-        btn.classList.toggle('on', newVal);
-        btn.disabled = false;
-      };
-    });
-    row.querySelector('[data-save-team]').onclick = async ()=>{
-      const team = row.querySelector('[data-team-input]').value.trim();
-      const btn = row.querySelector('[data-save-team]');
-      btn.disabled = true; btn.textContent = '...';
-      await callApi('adminUpdateParticipant', {password: PASSWORD, attendeeId, patch:{team}});
-      btn.disabled = false; btn.textContent = 'บันทึกทีม';
-    };
-  });
+      <div class="p-head"><div><div class="p-name">${p.name} <span style="font-weight:400;color:var(--muted)">(${p.nick||''})</span></div>
+        <div class="p-id">No ${p.attendeeId} · ${p.runNo||''} · ${p.team||''}</div></div></div>
+      <div class="p-flags">${flags.map(f=>`<button class="flag-btn ${p[f[0]]?'on':''}" data-field="${f[0]}">${f[1]}</button>`).join('')}</div>
+    </div>`).join('');
+  box.querySelectorAll('.p-row').forEach(row=>{ const id=row.dataset.id;
+    row.querySelectorAll('.flag-btn').forEach(btn=>{ btn.onclick=async ()=>{ const field=btn.dataset.field; const nv=!btn.classList.contains('on');
+      btn.disabled=true; const patch={}; patch[field]=nv; await callApi('adminUpdateParticipant',{password:PASSWORD, attendeeId:id, patch});
+      btn.classList.toggle('on',nv); btn.disabled=false; }; }); });
 }
-
-seedDemo();
 screenLogin();
 </script>
 </body>
