@@ -4,20 +4,21 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AI NEXT — Live Wall</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root{ --ink:#FFF3EC; --muted:#E8B396; --gold:#FFC24D; --orange:#FF5A1F; }
+  /* ===== Solar CI ===== */
+  :root{ --ink:#FFF3EC; --muted:rgba(255,236,227,.85); --gold:#FFD98A; --orange:#FF8A3C; }
   *{box-sizing:border-box;}
   body{
     margin:0; min-height:100vh; overflow:hidden; color:var(--ink);
-    font-family:"Sukhumvit Set","Noto Sans Thai","Thonburi",system-ui,sans-serif;
-    background:
-      radial-gradient(circle at 50% 42%, rgba(255,106,0,.65), rgba(255,60,0,.22) 42%, transparent 62%),
-      linear-gradient(180deg,#3A1204 0%, #1E0803 60%, #120409 100%);
+    font-family:'IBM Plex Sans Thai',sans-serif;
+    background:linear-gradient(158deg,#F37100 0%,#D92000 48%,#5A0006 100%); background-attachment:fixed;
     display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
   }
-  .brand-logo{ height:clamp(46px,7vw,86px); width:auto; margin-bottom:6px; filter:drop-shadow(0 0 30px rgba(255,120,30,.4)); }
-  .t2{font-size:clamp(14px,1.6vw,22px); letter-spacing:.6em; text-indent:.6em; color:var(--gold); font-weight:700; margin-top:6px;}
-  .count{font-size:clamp(90px,16vw,220px); font-weight:900; line-height:1; margin:24px 0 0; font-variant-numeric:tabular-nums;}
+  .brand-logo{ height:clamp(150px,21vw,320px); width:auto; max-width:86vw; margin-bottom:16px; filter:drop-shadow(0 0 46px rgba(255,120,30,.5)); }
+  .t2{font-family:'Chakra Petch',sans-serif; font-size:clamp(14px,1.6vw,22px); letter-spacing:.6em; text-indent:.6em; color:var(--gold); font-weight:700; margin-top:6px;}
+  .count{font-family:'Chakra Petch',sans-serif; font-size:clamp(90px,16vw,220px); font-weight:700; line-height:1; margin:24px 0 0; font-variant-numeric:tabular-nums;}
   .count small{font-size:.32em; color:var(--muted); font-weight:700;}
   .label{font-size:clamp(16px,2vw,26px); color:var(--muted); font-weight:700; margin-top:4px;}
   .bar{width:min(640px,72vw); height:14px; border-radius:8px; background:rgba(255,255,255,.08); margin:26px auto 0; overflow:hidden;}
