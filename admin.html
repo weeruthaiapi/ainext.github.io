@@ -127,7 +127,7 @@ async function callApi(action, params={}){
 
 /* ================= STATE ================= */
 const app=document.getElementById('app');
-let PASSWORD=null, TAB='overview', pollTimer=null;
+let PASSWORD=null, TAB='overview', pollTimer=null, renderId=0;
 let listCache=[], sortKey='runNo', sortDir=1, filterText='', filterMode='all';
 
 function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
@@ -172,7 +172,9 @@ async function render(){
 const STAGES=[['checkin','เช็คอิน'],['m1','Mission 1'],['m2','Mission 2'],['m3','Mission 3'],['cert','Certificate']];
 const OPENKEY={checkin:'checkin_open',m1:'mission1_open',m2:'mission2_open',m3:'mission3_open',cert:'cert_open'};
 async function renderOverview(){
+  clearInterval(pollTimer); const myId=++renderId;
   const r=await callApi('adminStats',{password:PASSWORD});
+  if(myId!==renderId) return;
   if(!r.success){ screenLogin('เซสชันหมดอายุ'); return; }
   const s=r.stats;
   function missionCard(k,label,count,openFlag){
@@ -213,8 +215,8 @@ async function renderOverview(){
   const qEl=document.getElementById('q'), fEl=document.getElementById('fmode'); fEl.value=filterMode;
   qEl.oninput=()=>{ filterText=qEl.value; drawTable(); };
   fEl.onchange=()=>{ filterMode=fEl.value; drawTable(); };
-  await loadList(); drawTable();
-  pollTimer=setInterval(async()=>{ await loadList(); drawTable(); const rs=await callApi('adminStats',{password:PASSWORD}); if(rs.success){ /* light refresh of cards */ } }, 8000);
+  await loadList(); if(myId!==renderId) return; drawTable();
+  pollTimer=setInterval(async()=>{ if(myId!==renderId){ clearInterval(pollTimer); return; } await loadList(); if(myId!==renderId) return; drawTable(); }, 8000);
 }
 async function loadList(){ const r=await callApi('adminList',{password:PASSWORD, query:''}); if(r.success) listCache=r.items; }
 function stagePill(ok, timeless){ return ok? `<span class="pill p-green">✓</span>` : `<span class="pill p-grey">–</span>`; }
@@ -256,32 +258,36 @@ function drawTable(){
 
 /* ================= VOTES ================= */
 async function renderVotes(){
+  clearInterval(pollTimer); const myId=++renderId;
   shell(`<div class="two"><div class="panel"><h3 class="sec">🏅 Group 1 · อันดับโหวต</h3><div id="g1"></div></div>
     <div class="panel"><h3 class="sec">🏅 Group 2 · อันดับโหวต</h3><div id="g2"></div></div></div>`);
-  const r=await callApi('adminVotes',{password:PASSWORD});
-  if(!r.success){ screenLogin('เซสชันหมดอายุ'); return; }
   function draw(list, el){
+    const box=document.getElementById(el); if(!box) return;
     const max=Math.max(1, ...list.map(x=>x.votes));
-    document.getElementById(el).innerHTML = list.length? list.map((x,i)=>`<div class="rank">
+    box.innerHTML = list.length? list.map((x,i)=>`<div class="rank">
       <span class="team">${i+1}. ${esc(x.team)}</span>
       <span class="barwrap"><i style="width:${Math.round(x.votes/max*100)}%"></i></span>
       <span class="num">${x.votes}</span></div>`).join('') : '<div class="empty">ยังไม่มีทีมในกลุ่มนี้</div>';
   }
-  draw(r.group1||[],'g1'); draw(r.group2||[],'g2');
-  pollTimer=setInterval(renderVotes, 8000);
+  async function pull(){ const r=await callApi('adminVotes',{password:PASSWORD}); if(myId!==renderId) return;
+    if(!r.success){ screenLogin('เซสชันหมดอายุ'); return; } draw(r.group1||[],'g1'); draw(r.group2||[],'g2'); }
+  await pull();
+  pollTimer=setInterval(pull, 8000);
 }
 
 /* ================= RESULTS ================= */
 let resultTab='m1';
 async function renderResults(){
+  clearInterval(pollTimer); const myId=++renderId;
   shell(`<div class="tabs" style="margin-bottom:14px">
       ${[['m1','Mission 1'],['m2','Mission 2'],['m3','Mission 3']].map(t=>`<button data-rt="${t[0]}" class="${resultTab===t[0]?'on':''}">${t[1]}</button>`).join('')}
     </div><div class="panel"><div class="scroll"><table id="resTable"></table></div></div>`);
   document.querySelectorAll('[data-rt]').forEach(b=>b.onclick=()=>{ resultTab=b.dataset.rt; renderResults(); });
   const r=await callApi('adminResults',{password:PASSWORD});
+  if(myId!==renderId) return;
   if(!r.success){ screenLogin('เซสชันหมดอายุ'); return; }
   const data=r[resultTab]||{headers:[],rows:[]};
-  const tb=document.getElementById('resTable');
+  const tb=document.getElementById('resTable'); if(!tb) return;
   if(!data.rows.length){ tb.innerHTML='<tbody><tr><td><div class="empty">ยังไม่มีคำตอบ (หรือกำลังอยู่ในโหมด DEMO)</div></td></tr></tbody>'; return; }
   let h='<thead><tr>'+data.headers.map(x=>`<th>${esc(x)}</th>`).join('')+'</tr></thead><tbody>';
   data.rows.forEach(row=>{ h+='<tr>'+row.map(c=>`<td>${esc(c)}</td>`).join('')+'</tr>'; });
@@ -290,15 +296,19 @@ async function renderResults(){
 
 /* ================= CERTIFIED ================= */
 async function renderCertified(){
+  clearInterval(pollTimer); const myId=++renderId;
   shell(`<div class="panel"><h3 class="sec">ผู้ได้รับ Certificate</h3><div class="scroll"><table id="certTable"></table></div></div>`);
-  const r=await callApi('adminCertified',{password:PASSWORD});
-  if(!r.success){ screenLogin('เซสชันหมดอายุ'); return; }
-  const tb=document.getElementById('certTable');
-  if(!r.items.length){ tb.innerHTML='<tbody><tr><td><div class="empty">ยังไม่มีผู้ได้รับ Certificate</div></td></tr></tbody>'; return; }
-  let h='<thead><tr><th>#</th><th>ชื่อเล่น / ชื่อ</th><th>ทีม</th><th>Group</th></tr></thead><tbody>';
-  r.items.forEach(p=>{ h+=`<tr><td class="name">${esc(p.runNo||p.attendeeId)}</td><td><div class="name">${esc(p.nick)}</div><div class="sub">${esc(p.name)}</div></td><td>${esc(p.team||'—')}</td><td><span class="grp grp${p.group}">G${p.group||'-'}</span></td></tr>`; });
-  h+='</tbody>'; tb.innerHTML=h;
-  pollTimer=setInterval(renderCertified, 12000);
+  async function pull(){
+    const r=await callApi('adminCertified',{password:PASSWORD}); if(myId!==renderId) return;
+    if(!r.success){ screenLogin('เซสชันหมดอายุ'); return; }
+    const tb=document.getElementById('certTable'); if(!tb) return;
+    if(!r.items.length){ tb.innerHTML='<tbody><tr><td><div class="empty">ยังไม่มีผู้ได้รับ Certificate</div></td></tr></tbody>'; return; }
+    let h='<thead><tr><th>#</th><th>ชื่อเล่น / ชื่อ</th><th>ทีม</th><th>Group</th></tr></thead><tbody>';
+    r.items.forEach(p=>{ h+=`<tr><td class="name">${esc(p.runNo||p.attendeeId)}</td><td><div class="name">${esc(p.nick)}</div><div class="sub">${esc(p.name)}</div></td><td>${esc(p.team||'—')}</td><td><span class="grp grp${p.group}">G${p.group||'-'}</span></td></tr>`; });
+    h+='</tbody>'; tb.innerHTML=h;
+  }
+  await pull();
+  pollTimer=setInterval(pull, 12000);
 }
 
 screenLogin();
