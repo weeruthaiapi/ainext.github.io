@@ -31,7 +31,7 @@
 
   .appbar{ flex-shrink:0; display:none; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid var(--surface-brd); background:var(--bar); }
   .appbar.show{ display:flex; }
-  .appbar .brand img{ height:42px; width:auto; display:block; }
+  .appbar .brand img{ height:74px; width:auto; display:block; }
   .appbar .cert-chip{ display:inline-flex; align-items:center; gap:7px; background:var(--chip); border:1px solid var(--surface-brd); border-radius:999px; padding:6px 12px; cursor:pointer; color:var(--text); font-family:'Chakra Petch'; font-weight:600; font-size:12px; letter-spacing:1px; }
 
   .screen-wrap{ flex:1; overflow-y:auto; padding:26px 22px 34px; }
@@ -127,16 +127,17 @@
 
   /* ===== Notebook / desktop: fit the screen (phone unchanged) ===== */
   @media (min-width:820px){
-    body{ display:flex; align-items:stretch; }
-    .app{ max-width:760px; box-shadow:0 0 120px rgba(0,0,0,.25); }
-    .screen-wrap{ padding:44px 64px 56px; }
+    html,body{ height:auto; }                 /* ให้เลื่อนหน้าตามเนื้อหาได้ (แก้บั๊กเลื่อนไม่ลง) */
+    body{ display:block; overflow-x:hidden; }
+    .app{ max-width:760px; min-height:100vh; overflow:visible; box-shadow:0 0 120px rgba(0,0,0,.25); }
+    .screen-wrap{ overflow:visible; padding:40px 64px 56px; }
     h1.title, h2.title{ font-size:32px; }
     .desc{ font-size:15px; }
     .cta-btn, .line-btn{ font-size:17px; padding:18px 24px; }
     .task-card .ttitle{ font-size:17px; }
     label.q{ font-size:15.5px; }
-    .appbar{ padding:18px 64px; }
-    .appbar .brand img{ height:50px; }
+    .appbar{ padding:16px 64px; }
+    .appbar .brand img{ height:96px; }
   }
   @media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important;}}
 </style>
