@@ -30,9 +30,8 @@
   h1{ font-family:'Chakra Petch'; font-weight:600; font-size:clamp(24px,5vw,40px); margin:0 0 12px; line-height:1.25; text-wrap:balance; }
   h1 .em{ color:var(--gold); }
   ul.big{ list-style:none; padding:0; margin:8px 0 0; text-align:left; max-width:580px; width:100%; }
-  ul.big li{ background:var(--surface); border:1px solid var(--surface-brd); border-radius:14px; padding:14px 16px; margin:10px 0; font-size:clamp(14.5px,2.5vw,17px); line-height:1.55; display:flex; gap:13px; align-items:flex-start; }
+  ul.big li{ background:var(--surface); border:1px solid var(--surface-brd); border-radius:14px; padding:14px 16px; margin:10px 0; font-size:clamp(14.5px,2.5vw,17px); line-height:1.55; display:flex; gap:13px; align-items:center; text-align:left; }
   ul.big li b{ color:var(--gold); font-weight:600; }
-  ul.big li.one-line{ justify-content:center; text-align:center; }
   .ic{ flex:0 0 auto; width:34px; height:34px; border-radius:10px; background:var(--accent-soft); border:1px solid var(--surface-brd); display:flex; align-items:center; justify-content:center; color:#fff; }
   .stamps{ display:flex; gap:16px; margin-top:22px; }
   .stamp{ width:82px; height:82px; border-radius:50%; border:3px solid var(--gold); color:var(--gold); display:flex; align-items:center; justify-content:center; background:rgba(255,217,138,.14); transform:rotate(-8deg); box-shadow:0 0 18px rgba(255,217,138,.3); }
@@ -132,25 +131,13 @@ var els=[].slice.call(document.querySelectorAll('.slide')), cur=0;
 var dots=document.getElementById('dots');
 els.forEach(function(_,i){ var d=document.createElement('i'); if(i===0)d.className='on'; dots.appendChild(d); });
 els[0].classList.add('on');
-// จัดกึ่งกลาง bullet ที่มีข้อความบรรทัดเดียว (บรรทัดยาว/หลายบรรทัด = ชิดซ้าย)
-function centerBullets(slide){
-  if(!slide) return;
-  [].slice.call(slide.querySelectorAll('ul.big li')).forEach(function(li){
-    var span=li.children[li.children.length-1];
-    if(!span) return;
-    var lh=parseFloat(getComputedStyle(span).lineHeight)||24;
-    li.classList.toggle('one-line', span.offsetHeight <= lh*1.6);
-  });
-}
 function go(n){
   cur=Math.max(0,Math.min(els.length-1,n));
   els.forEach(function(s,i){ s.classList.toggle('on',i===cur); });
   [].slice.call(dots.children).forEach(function(d,i){ d.className=i===cur?'on':''; });
   document.getElementById('next').textContent = cur===els.length-1 ? 'จบคู่มือ ✓' : 'ถัดไป →';
-  centerBullets(els[cur]);
   if(cur===els.length-1) confetti();
 }
-window.addEventListener('resize', function(){ centerBullets(els[cur]); });
 document.getElementById('next').onclick=function(){ if(cur<els.length-1) go(cur+1); };
 document.getElementById('prev').onclick=function(){ go(cur-1); };
 document.addEventListener('keydown',function(e){ if(e.key==='ArrowRight'||e.key===' ')go(cur+1); if(e.key==='ArrowLeft')go(cur-1); });
