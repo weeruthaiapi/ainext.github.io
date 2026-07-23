@@ -3,188 +3,304 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI NEXT — Staff Admin</title>
+<title>AI NEXT — Admin Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
+  /* ===== Solar CI ===== */
   :root{
-    --accent:#fff; --accent-soft:rgba(255,255,255,.18); --glow:rgba(255,120,40,.55);
-    --surface:rgba(20,0,2,.30); --surface-brd:rgba(255,255,255,.32); --line:rgba(255,255,255,.26);
-    --muted:rgba(255,236,227,.85); --chip:rgba(0,0,0,.26); --bar:rgba(90,10,4,.35);
-    --text:#fff; --cta-bg:#fff; --cta-text:#b3160a;
+    --bg:#5A0006; --card:rgba(20,0,2,.32); --card2:rgba(0,0,0,.26); --brd:rgba(255,255,255,.16); --brd2:rgba(255,255,255,.30);
+    --txt:#FFF3EC; --muted:rgba(255,236,227,.82); --green:#4CD98B; --greenbg:rgba(76,217,139,.16);
+    --red:#ff9a90; --redbg:rgba(255,120,80,.18); --gold:#FFD98A; --goldbg:rgba(255,217,138,.16); --grey:rgba(255,255,255,.20);
   }
   *{box-sizing:border-box;}
-  body{ margin:0; min-height:100vh; color:var(--text); font-family:'IBM Plex Sans Thai',sans-serif;
-    background: linear-gradient(158deg,#F37100 0%,#D92000 48%,#5A0006 100%); background-attachment:fixed; }
-  .header{ background:var(--bar); border-bottom:1px solid var(--surface-brd); padding:18px 20px; display:flex; align-items:center; justify-content:center; gap:10px; }
-  .header img{ height:24px; width:auto; display:block; }
-  .header h1{ font-family:'Chakra Petch',sans-serif; font-weight:700; margin:0; font-size:20px; }
-  .wrap{ max-width:680px; margin:0 auto; padding:24px 18px 60px; }
-  .card{ background:var(--surface); border:1px solid var(--surface-brd); border-radius:16px; padding:22px 20px; margin-bottom:16px; }
-  h2{ font-family:'Chakra Petch',sans-serif; font-weight:600; font-size:15px; color:var(--accent); margin-top:0; }
-  input[type=password], input[type=text]{ width:100%; padding:12px 14px; border-radius:10px; border:1px solid var(--surface-brd);
-    background:var(--chip); color:var(--text); font-family:'IBM Plex Sans Thai'; font-size:15px; margin-bottom:12px; }
-  button{ cursor:pointer; background:var(--cta-bg); color:var(--cta-text); border:none; border-radius:10px;
-    padding:12px 16px; font-family:'Chakra Petch',sans-serif; font-weight:600; font-size:14px; }
-  button.small{ padding:8px 12px; font-size:12px; }
-  button:disabled{ opacity:.5; }
-  .error{ color:#fff; background:rgba(0,0,0,.3); border:1px solid var(--surface-brd); padding:10px 12px; border-radius:10px; font-size:13px; margin-bottom:12px;}
-  .stage-row{ display:flex; align-items:center; justify-content:space-between; padding:14px 0; border-bottom:1px solid var(--line); }
-  .stage-row:last-child{ border-bottom:none; }
-  .stage-name{ font-weight:600; font-size:14px; font-family:'Chakra Petch'; }
-  .badge{ font-size:11px; padding:4px 10px; border-radius:20px; margin-left:8px; font-family:'Chakra Petch'; }
-  .badge.open{ background:var(--cta-bg); color:var(--cta-text); }
-  .badge.closed{ background:rgba(255,255,255,.08); color:var(--muted); border:1px solid var(--surface-brd); }
-  .toggle-btn{ min-width:100px; }
-  .stats-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; text-align:center; }
-  .stat{ background:var(--chip); border:1px solid var(--surface-brd); border-radius:12px; padding:14px 6px; }
-  .stat .num{ font-family:'Chakra Petch'; font-weight:700; font-size:22px; color:var(--accent); }
-  .stat .lbl{ font-size:11px; color:var(--muted); margin-top:4px;}
-  .refresh-hint{ text-align:center; font-size:11px; color:var(--muted); margin-top:6px;}
-  .p-row{ border:1px solid var(--surface-brd); border-radius:12px; padding:12px 14px; margin-bottom:10px; }
-  .p-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
-  .p-name{ font-weight:600; font-size:14px; font-family:'Chakra Petch'; }
-  .p-id{ font-size:11px; color:var(--muted); }
-  .p-flags{ display:flex; flex-wrap:wrap; gap:8px; }
-  .flag-btn{ width:auto; font-size:11px; padding:6px 10px; background:rgba(255,255,255,.08); border:1px solid var(--surface-brd); color:var(--text); }
-  .flag-btn.on{ background:var(--cta-bg); color:var(--cta-text); border-color:transparent; }
-  .search-row{ display:flex; gap:8px; }
-  .search-row input{ margin-bottom:0; }
-  .search-row button{ width:auto; white-space:nowrap; }
-  a.admin-back{ color:var(--muted); font-family:'Chakra Petch'; font-size:12px; display:inline-flex; align-items:center; gap:6px; }
+  body{ margin:0; color:var(--txt); font-family:'IBM Plex Sans Thai',sans-serif; min-height:100vh;
+    background:linear-gradient(158deg,#F37100 0%,#D92000 48%,#5A0006 100%); background-attachment:fixed; }
+  .wrap{ max-width:1280px; margin:0 auto; padding:22px 20px 60px; }
+  .head{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:20px; }
+  .head .title{ font-family:'Chakra Petch'; font-weight:700; letter-spacing:.14em; font-size:15px; color:var(--txt); text-transform:uppercase; }
+  .head .title span{ color:var(--muted); }
+  .head .live{ font-size:12.5px; color:var(--muted); display:flex; align-items:center; gap:8px; }
+  .dot{ width:8px; height:8px; border-radius:50%; background:var(--green); box-shadow:0 0 0 0 rgba(55,211,154,.6); animation:pulse 1.6s infinite; }
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(55,211,154,.5);}70%{box-shadow:0 0 0 9px rgba(55,211,154,0);}100%{box-shadow:0 0 0 0 rgba(55,211,154,0);}}
+  .tabs{ display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; }
+  .tabs button{ font-family:'Chakra Petch'; font-weight:600; font-size:13px; border:1px solid var(--brd); background:var(--card); color:var(--muted); padding:10px 16px; border-radius:11px; cursor:pointer; }
+  .tabs button.on{ background:#fff; color:#10131a; border-color:transparent; }
+  .cards{ display:grid; grid-template-columns:repeat(6,1fr); gap:14px; margin-bottom:20px; }
+  @media (max-width:1100px){ .cards{ grid-template-columns:repeat(3,1fr);} }
+  @media (max-width:640px){ .cards{ grid-template-columns:repeat(2,1fr);} }
+  .card{ background:var(--card); border:1px solid var(--brd); border-radius:18px; padding:18px 20px; }
+  .card .k{ font-size:13px; color:var(--muted); margin-bottom:10px; }
+  .card .v{ font-family:'Chakra Petch'; font-weight:700; font-size:34px; line-height:1; }
+  .card .v small{ font-size:15px; color:var(--muted); font-weight:600; margin-left:8px; }
+  .switches{ display:flex; flex-wrap:wrap; gap:12px; margin-bottom:22px; }
+  .sw{ display:flex; align-items:center; gap:12px; background:var(--card); border:1px solid var(--brd); border-radius:14px; padding:12px 18px; }
+  .sw .lbl{ font-family:'Chakra Petch'; font-weight:600; font-size:14px; }
+  .toggle{ width:52px; height:30px; border-radius:99px; background:var(--grey); position:relative; cursor:pointer; transition:background .2s; flex-shrink:0; }
+  .toggle i{ position:absolute; top:3px; left:3px; width:24px; height:24px; border-radius:50%; background:#fff; transition:left .2s; }
+  .toggle.on{ background:var(--green); } .toggle.on i{ left:25px; }
+  .panel{ background:var(--card); border:1px solid var(--brd); border-radius:18px; padding:8px 4px; overflow:hidden; }
+  .toolbar{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; padding:12px 16px; }
+  .toolbar input, .toolbar select{ background:var(--card2); border:1px solid var(--brd); color:var(--txt); border-radius:10px; padding:10px 12px; font-family:inherit; font-size:13.5px; outline:none; }
+  .toolbar input{ flex:1; min-width:180px; }
+  table{ width:100%; border-collapse:collapse; font-size:13.5px; }
+  th,td{ text-align:left; padding:13px 16px; border-bottom:1px solid var(--brd); white-space:nowrap; }
+  th{ color:var(--muted); font-family:'Chakra Petch'; font-weight:600; font-size:12px; letter-spacing:.06em; text-transform:uppercase; cursor:pointer; user-select:none; }
+  th:hover{ color:var(--txt); }
+  tbody tr:hover{ background:rgba(255,255,255,.03); }
+  td.name{ font-weight:600; }
+  .sub{ color:var(--muted); font-size:11.5px; }
+  .pill{ display:inline-flex; align-items:center; gap:5px; padding:5px 11px; border-radius:99px; font-family:'Chakra Petch'; font-weight:600; font-size:12px; }
+  .p-green{ background:var(--greenbg); color:var(--green); } .p-red{ background:var(--redbg); color:var(--red); }
+  .p-gold{ background:var(--goldbg); color:var(--gold); } .p-grey{ background:rgba(255,255,255,.05); color:var(--muted); }
+  .grp{ font-family:'Chakra Petch'; font-weight:700; font-size:12px; padding:3px 9px; border-radius:8px; }
+  .grp1{ background:rgba(96,165,250,.16); color:#8ec1ff; } .grp2{ background:rgba(244,114,182,.16); color:#f6a5d8; } .grp0{ color:var(--muted); }
+  .mini{ border:1px solid var(--brd2); background:transparent; color:var(--txt); border-radius:8px; padding:6px 10px; font-family:'Chakra Petch'; font-weight:600; font-size:11.5px; cursor:pointer; }
+  .mini.danger{ color:var(--red); border-color:rgba(255,122,122,.4); }
+  .mini.on{ background:var(--red); color:#fff; border-color:transparent; }
+  .rank{ display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-bottom:1px solid var(--brd); }
+  .rank .team{ font-family:'Chakra Petch'; font-weight:600; }
+  .rank .barwrap{ flex:1; margin:0 16px; height:10px; background:var(--card2); border-radius:99px; overflow:hidden; }
+  .rank .barwrap i{ display:block; height:100%; background:linear-gradient(90deg,#FF8A3C,#f2c14e); }
+  .rank .num{ font-family:'Chakra Petch'; font-weight:700; min-width:34px; text-align:right; }
+  .two{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media (max-width:860px){ .two{ grid-template-columns:1fr; } }
+  h3.sec{ font-family:'Chakra Petch'; font-weight:600; font-size:14px; margin:2px 0 12px; padding:14px 16px 0; color:var(--txt); }
+  .login{ max-width:360px; margin:12vh auto 0; background:var(--card); border:1px solid var(--brd); border-radius:18px; padding:28px 24px; }
+  .login h2{ font-family:'Chakra Petch'; margin:0 0 14px; }
+  .login input{ width:100%; background:var(--card2); border:1px solid var(--brd); color:var(--txt); border-radius:11px; padding:13px 14px; font-size:15px; margin-bottom:12px; outline:none; }
+  .login button{ width:100%; background:#fff; color:#10131a; border:none; border-radius:11px; padding:13px; font-family:'Chakra Petch'; font-weight:700; font-size:15px; cursor:pointer; }
+  .err{ background:var(--redbg); color:var(--red); border-radius:10px; padding:10px 12px; font-size:13px; margin-bottom:12px; }
+  .empty{ text-align:center; color:var(--muted); padding:26px; font-size:13.5px; }
+  .scroll{ overflow-x:auto; }
 </style>
 </head>
 <body>
-<div class="header"><img src="ainext-logo-bizcore.png" alt="AI NEXT"><h1>Staff Admin</h1></div>
-<div class="wrap" id="app"></div>
+<div id="app"></div>
 
 <script>
-/* ตั้ง DEMO_MODE=false และวาง URL เว็บแอปที่ API_BASE_URL หลัง Deploy (ให้ตรงกับ index.html) */
+/* ตั้ง DEMO_MODE=false + วาง URL เดียวกับ index.html หลัง Deploy */
 const DEMO_MODE = false;
 const API_BASE_URL = "https://script.google.com/macros/s/AKfycbwBjLK0dyM7RsVtwoPoPCVuCA9GngcXbJXVlLlDjIzJIUaq5_zXOneEdFDDNaAuK8WZAg/exec";
 
+/* ===== group mapping (สำหรับ demo) ===== */
+const G1=['A','B','C','D','G','I','K'], G2=['E','F','H','J','L','M','N'];
+function teamLetter(t){ const m=String(t).toUpperCase().match(/TEAM\s*([A-Z])/); return m?m[1]:''; }
+function groupOf(t){ const L=teamLetter(t); return G1.indexOf(L)>=0?1:(G2.indexOf(L)>=0?2:0); }
+
 /* ===== DEMO mock (ใช้ localStorage ชุดเดียวกับ index.html) ===== */
-const LS_ROSTER='ainext_m_roster', LS_CONFIG='ainext_m_config', LS_GALLERY='ainext_m_gallery';
+const LS_ROSTER='ainext_m_roster', LS_CONFIG='ainext_m_config';
 function readLS(k){ return JSON.parse(localStorage.getItem(k)||'null'); }
 function writeLS(k,v){ localStorage.setItem(k, JSON.stringify(v)); }
 function normalizeName(s){ return String(s||'').trim().toLowerCase().replace(/\s+/g,' '); }
 function mockApi(action, params){
   return new Promise(resolve=>{ setTimeout(()=>{
     const cfg=readLS(LS_CONFIG)||{}; let roster=readLS(LS_ROSTER)||[];
-    const bad = ()=> String(params.password)!==String(cfg.admin_password||'ainext2026');
-    if(action==='adminLogin') return resolve({success: String(params.password)===String(cfg.admin_password||'ainext2026')});
-    if(bad()) return resolve({success:false, reason:'bad_password'});
-    if(action==='adminStats'){
-      const s={total:roster.length, confirmed:roster.length, checkin:0, m1:0,m2:0,m3:0,cert:0,openchat:0,
-        checkin_open:!!cfg.checkin_open, mission1_open:!!cfg.mission1_open, mission2_open:!!cfg.mission2_open, mission3_open:!!cfg.mission3_open, cert_open:!!cfg.cert_open,
-        galleryPosts:(readLS(LS_GALLERY)||[]).length};
-      roster.forEach(p=>{ if(p.checkedIn)s.checkin++; if(p.m1)s.m1++; if(p.m2)s.m2++; if(p.m3)s.m3++; if(p.cert)s.cert++; if(p.joinedOpenChat)s.openchat++; });
-      return resolve({success:true, stats:s});
-    }
-    if(action==='adminSetOpen'){
-      const map={checkin:'checkin_open',m1:'mission1_open',m2:'mission2_open',m3:'mission3_open',cert:'cert_open'};
-      const k=map[params.key]; if(k){ cfg[k]=!!params.open; if(params.key==='cert'&&params.open){ roster.forEach(p=>{ if(p.m1&&p.m2&&p.m3) p.cert=true; }); writeLS(LS_ROSTER,roster);} writeLS(LS_CONFIG,cfg); }
-      return resolve({success:true, stats:(function(){ const s={total:roster.length,confirmed:roster.length,checkin:0,m1:0,m2:0,m3:0,cert:0,openchat:0,checkin_open:!!cfg.checkin_open,mission1_open:!!cfg.mission1_open,mission2_open:!!cfg.mission2_open,mission3_open:!!cfg.mission3_open,cert_open:!!cfg.cert_open,galleryPosts:(readLS(LS_GALLERY)||[]).length}; roster.forEach(p=>{ if(p.checkedIn)s.checkin++; if(p.m1)s.m1++; if(p.m2)s.m2++; if(p.m3)s.m3++; if(p.cert)s.cert++; if(p.joinedOpenChat)s.openchat++; }); return s; })()});
-    }
-    if(action==='adminSearchParticipants'){
-      const q=normalizeName(params.query||''); let rows=roster;
+    if(action==='adminLogin') return resolve({success:String(params.password)===String(cfg.admin_password||'ainext2026')});
+    if(String(params.password)!==String(cfg.admin_password||'ainext2026')) return resolve({success:false,reason:'bad_password'});
+    const real=roster.filter(p=>!p.isTest && !p.cannotAttend);
+    const statsObj=()=>{ const s={total:real.length,testers:roster.filter(p=>p.isTest).length,cannotAttend:roster.filter(p=>p.cannotAttend).length,checkin:0,m1:0,m2:0,m3:0,cert:0,openchat:0,votes:0,
+      checkin_open:!!cfg.checkin_open,mission1_open:!!cfg.mission1_open,mission2_open:!!cfg.mission2_open,mission3_open:!!cfg.mission3_open,cert_open:!!cfg.cert_open};
+      real.forEach(p=>{ if(p.checkedIn)s.checkin++; if(p.m1)s.m1++; if(p.m2)s.m2++; if(p.m3)s.m3++; if(p.cert)s.cert++; if(p.joinedOpenChat)s.openchat++; if(p.vote)s.votes++; }); return s; };
+    if(action==='adminStats') return resolve({success:true, stats:statsObj()});
+    if(action==='adminSetOpen'){ const map={checkin:'checkin_open',m1:'mission1_open',m2:'mission2_open',m3:'mission3_open',cert:'cert_open'}; const k=map[params.key];
+      if(k){ cfg[k]=!!params.open; if(params.key==='cert'&&params.open){ roster.forEach(p=>{ if(p.m1&&p.m2&&p.m3) p.cert=true; }); writeLS(LS_ROSTER,roster);} writeLS(LS_CONFIG,cfg); } return resolve({success:true,stats:statsObj()}); }
+    if(action==='adminList'||action==='adminSearchParticipants'){ const q=normalizeName(params.query||''); let rows=roster;
       if(q) rows=rows.filter(p=>normalizeName(p.no+' '+p.runNo+' '+p.name+' '+p.nick+' '+p.team).includes(q));
-      return resolve({success:true, items:rows.slice(0,50).map(p=>({attendeeId:p.no,runNo:p.runNo,name:p.name,nick:p.nick,team:p.team,checkin:!!p.checkedIn,openchat:!!p.joinedOpenChat,m1:!!p.m1,m2:!!p.m2,m3:!!p.m3,cert:!!p.cert}))});
-    }
-    if(action==='adminUpdateParticipant'){
-      const p=roster.find(x=>String(x.no)===String(params.attendeeId)); if(!p) return resolve({success:false});
-      const patch=params.patch||{};
-      if(typeof patch.checkin==='boolean') p.checkedIn=patch.checkin;
-      if(typeof patch.openchat==='boolean') p.joinedOpenChat=patch.openchat;
-      ['m1','m2','m3','cert'].forEach(k=>{ if(typeof patch[k]==='boolean') p[k]=patch[k]; });
-      writeLS(LS_ROSTER,roster); return resolve({success:true});
-    }
-    resolve({success:false, error:'unknown_action'});
+      return resolve({success:true, items:rows.map(p=>({attendeeId:p.no,runNo:p.runNo,name:p.name,nick:p.nick,team:p.team,group:groupOf(p.team),
+        checkin:!!p.checkedIn,openchat:!!p.joinedOpenChat,m1:!!p.m1,m2:!!p.m2,m3:!!p.m3,cert:!!p.cert,vote:p.vote||'',cannotAttend:!!p.cannotAttend,isTest:!!p.isTest}))}); }
+    if(action==='adminUpdateParticipant'){ const p=roster.find(x=>String(x.no)===String(params.attendeeId)); if(!p) return resolve({success:false});
+      const patch=params.patch||{}; ['checkin','openchat','m1','m2','m3','cert','cannotAttend'].forEach(kk=>{ if(typeof patch[kk]==='boolean'){ if(kk==='checkin')p.checkedIn=patch[kk]; else p[kk]=patch[kk]; } }); writeLS(LS_ROSTER,roster); return resolve({success:true}); }
+    if(action==='adminVotes'){ const tally={}; roster.forEach(p=>{ if(!p.isTest&&p.vote) tally[p.vote]=(tally[p.vote]||0)+1; });
+      const rank=g=>{ const teams={}; roster.forEach(p=>{ if(!p.isTest&&groupOf(p.team)===g&&p.team) teams[p.team]=true; }); return Object.keys(teams).map(t=>({team:t,votes:tally[t]||0})).sort((a,b)=>b.votes-a.votes||a.team.localeCompare(b.team)); };
+      return resolve({success:true, group1:rank(1), group2:rank(2), totalVotes:Object.keys(tally).reduce((s,k)=>s+tally[k],0)}); }
+    if(action==='adminResults') return resolve({success:true, m1:{headers:['(demo)'],rows:[]}, m2:{headers:['(demo)'],rows:[]}, m3:{headers:['(demo)'],rows:[]}});
+    if(action==='adminCertified') return resolve({success:true, items:roster.filter(p=>p.cert&&!p.isTest).map(p=>({attendeeId:p.no,runNo:p.runNo,name:p.name,nick:p.nick,team:p.team,group:groupOf(p.team)}))});
+    resolve({success:false,error:'unknown_action'});
   },140); });
 }
 async function callApi(action, params={}){
   if(DEMO_MODE) return mockApi(action, params);
-  const res=await fetch(API_BASE_URL,{method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({action,...params})});
+  const res=await fetch(API_BASE_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action,...params})});
   return res.json();
 }
 
-const app=document.getElementById('app'); let PASSWORD=null, pollTimer=null;
-function backLink(){ return `<p style="text-align:center;"><a class="admin-back" href="index.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"></path></svg>กลับหน้าลงทะเบียน</a></p>`; }
+/* ================= STATE ================= */
+const app=document.getElementById('app');
+let PASSWORD=null, TAB='overview', pollTimer=null;
+let listCache=[], sortKey='runNo', sortDir=1, filterText='', filterMode='all';
 
-function screenLogin(err=''){
-  app.innerHTML=`<div class="card"><h2>เข้าสู่ระบบทีมงาน</h2>${err?`<div class="error">${err}</div>`:''}
-    <input type="password" id="pw" placeholder="Admin password"><button id="loginBtn">เข้าสู่ระบบ</button></div>${backLink()}`;
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* ================= LOGIN ================= */
+function screenLogin(err){
+  clearInterval(pollTimer);
+  app.innerHTML=`<div class="login"><h2>AI NEXT · Admin</h2>${err?`<div class="err">${err}</div>`:''}
+    <input type="password" id="pw" placeholder="Admin password" autofocus>
+    <button id="loginBtn">เข้าสู่ระบบ</button>
+    <p style="text-align:center;margin-top:14px"><a href="index.html" style="color:var(--muted);font-size:12px;text-decoration:none">← กลับหน้าลงทะเบียน</a></p></div>`;
   document.getElementById('loginBtn').onclick=doLogin;
   document.getElementById('pw').addEventListener('keydown',e=>{ if(e.key==='Enter') doLogin(); });
 }
-async function doLogin(){ const pw=document.getElementById('pw').value; const res=await callApi('adminLogin',{password:pw});
-  if(!res.success){ screenLogin('รหัสผ่านไม่ถูกต้อง'); return; } PASSWORD=pw; screenDashboard(); }
+async function doLogin(){ const pw=document.getElementById('pw').value; const r=await callApi('adminLogin',{password:pw});
+  if(!r.success){ screenLogin('รหัสผ่านไม่ถูกต้อง'); return; } PASSWORD=pw; TAB='overview'; render(); }
 
-const STAGES=[
-  {key:'checkin', label:'เช็คอิน (Check-in + OpenChat)'},
-  {key:'m1', label:'Mission 1 · Session แรก'},
-  {key:'m2', label:'Mission 2 · Session สอง'},
-  {key:'m3', label:'Mission 3 · Challenge + ปิดงาน'},
-  {key:'cert', label:'ปล่อย E-Certificate'}
-];
-const STAGE_CFGKEY={checkin:'checkin_open', m1:'mission1_open', m2:'mission2_open', m3:'mission3_open', cert:'cert_open'};
-let searchCache=[], lastQuery='';
+/* ================= SHELL ================= */
+function shell(body){
+  app.innerHTML=`<div class="wrap">
+    <div class="head">
+      <div class="title">AI NEXT <span>· Admin Dashboard</span></div>
+      <div class="live"><span class="dot"></span>อัปเดตสด ๆ ทุกครั้งที่รีเฟรช</div>
+    </div>
+    <div class="tabs">
+      ${[['overview','ภาพรวม'],['votes','ผลโหวต'],['results','คำตอบ Mission'],['certified','ผู้ได้รับ Cert']].map(t=>`<button data-tab="${t[0]}" class="${TAB===t[0]?'on':''}">${t[1]}</button>`).join('')}
+    </div>
+    <div id="body">${body}</div>
+  </div>`;
+  document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{ TAB=b.dataset.tab; render(); });
+}
 
-async function screenDashboard(){
-  const res=await callApi('adminStats',{password:PASSWORD});
-  if(!res.success){ screenLogin('เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่'); return; }
-  const s=res.stats;
-  app.innerHTML=`
-    <div class="card">
-      <h2>ภาพรวม</h2>
-      <div class="stats-grid">
-        <div class="stat"><div class="num">${s.total}</div><div class="lbl">รายชื่อทั้งหมด</div></div>
-        <div class="stat"><div class="num">${s.checkin}</div><div class="lbl">เช็คอินแล้ว</div></div>
-        <div class="stat"><div class="num">${s.openchat}</div><div class="lbl">เข้า OpenChat</div></div>
-        <div class="stat"><div class="num">${s.m1}</div><div class="lbl">Mission 1</div></div>
-        <div class="stat"><div class="num">${s.m2}</div><div class="lbl">Mission 2</div></div>
-        <div class="stat"><div class="num">${s.m3}</div><div class="lbl">Mission 3</div></div>
-        <div class="stat"><div class="num">${s.cert}</div><div class="lbl">Cert Issued</div></div>
-        <div class="stat"><div class="num">${s.galleryPosts||0}</div><div class="lbl">Gallery Posts</div></div>
+async function render(){
+  clearInterval(pollTimer);
+  if(TAB==='overview') return renderOverview();
+  if(TAB==='votes') return renderVotes();
+  if(TAB==='results') return renderResults();
+  if(TAB==='certified') return renderCertified();
+}
+
+/* ================= OVERVIEW ================= */
+const STAGES=[['checkin','เช็คอิน'],['m1','Mission 1'],['m2','Mission 2'],['m3','Mission 3'],['cert','Certificate']];
+const OPENKEY={checkin:'checkin_open',m1:'mission1_open',m2:'mission2_open',m3:'mission3_open',cert:'cert_open'};
+async function renderOverview(){
+  const r=await callApi('adminStats',{password:PASSWORD});
+  if(!r.success){ screenLogin('เซสชันหมดอายุ'); return; }
+  const s=r.stats;
+  function missionCard(k,label,count,openFlag){
+    let big, note;
+    if(!openFlag && count===0){ big='—'; note='ยังไม่เปิด'; }
+    else { big=count+' <small>/ '+s.total+'</small>'; const miss=s.checkin-count; note = miss>0? ('ขาด '+miss) : 'ครบแล้ว'; }
+    return `<div class="card"><div class="k">${label}</div><div class="v">${big}</div><div class="sub" style="margin-top:8px">${note}</div></div>`;
+  }
+  const certNote = s.cert_open ? 'ออกแล้ว' : 'รอ M3';
+  const cards=`
+    <div class="card"><div class="k">เช็คอินแล้ว</div><div class="v">${s.checkin} <small>/ ${s.total}</small></div><div class="sub" style="margin-top:8px">Check-out ${s.cannotAttend} คน</div></div>
+    <div class="card"><div class="k">เข้า OpenChat</div><div class="v">${s.openchat} <small>/ ${s.total}</small></div><div class="sub" style="margin-top:8px">เข้ากลุ่มแล้ว</div></div>
+    ${missionCard('m1','Mission 1',s.m1,s.mission1_open)}
+    ${missionCard('m2','Mission 2',s.m2,s.mission2_open)}
+    ${missionCard('m3','Mission 3',s.m3,s.mission3_open)}
+    <div class="card"><div class="k">ครบสิทธิ์ Cert</div><div class="v">${s.cert} <small>/ ${s.total}</small></div><div class="sub" style="margin-top:8px">${certNote}</div></div>`;
+  const switches=STAGES.map(st=>{ const on=s[OPENKEY[st[0]]];
+    return `<div class="sw"><div class="toggle ${on?'on':''}" data-key="${st[0]}" data-open="${on?0:1}"><i></i></div><div class="lbl">${st[1]} ${on?'เปิดอยู่':'ปิดอยู่'}</div></div>`; }).join('');
+  shell(`
+    <div class="cards">${cards}</div>
+    <div class="switches">${switches}</div>
+    <div class="panel">
+      <div class="toolbar">
+        <input id="q" placeholder="ค้นหา ชื่อ / เลข / ทีม" value="${esc(filterText)}">
+        <select id="fmode">
+          <option value="all">ทั้งหมด</option>
+          <option value="checkin">เช็คอินแล้ว</option>
+          <option value="nocheckin">ยังไม่เช็คอิน</option>
+          <option value="cert">ได้ Cert</option>
+          <option value="cannot">มาไม่ได้ (checked-out)</option>
+          <option value="test">ผู้ทดสอบ</option>
+        </select>
       </div>
-      <div class="refresh-hint">อัปเดตอัตโนมัติทุก 6 วินาที</div>
+      <div class="scroll"><table id="statusTable"></table></div>
     </div>
-    <div class="card">
-      <h2>ควบคุมกิจกรรม (กดปลดล็อกให้ทุกคนพร้อมกัน)</h2>
-      ${STAGES.map(st=>{ const open=s[STAGE_CFGKEY[st.key]];
-        return `<div class="stage-row"><div><div class="stage-name">${st.label} <span class="badge ${open?'open':'closed'}">${open?'OPEN':'CLOSED'}</span></div></div>
-          <button class="toggle-btn" data-key="${st.key}" data-open="${open?'0':'1'}">${open?'ปิด':'ปลดล็อก'}</button></div>`; }).join('')}
-    </div>
-    <div class="card">
-      <h2>ค้นหา / แก้ไขผู้เข้าร่วม</h2>
-      <div class="search-row"><input type="text" id="searchInput" placeholder="ค้นหาด้วยชื่อ / เลข No / ทีม" value="${lastQuery.replace(/"/g,'&quot;')}"><button id="searchBtn">ค้นหา</button></div>
-      <div id="searchResults"></div>
-    </div>
-    ${backLink()}`;
-  document.querySelectorAll('.toggle-btn').forEach(btn=>{ btn.onclick=async ()=>{ btn.disabled=true;
-    await callApi('adminSetOpen',{password:PASSWORD, key:btn.dataset.key, open:btn.dataset.open==='1'}); screenDashboard(); }; });
-  document.getElementById('searchBtn').onclick=doSearch;
-  document.getElementById('searchInput').addEventListener('keydown',e=>{ if(e.key==='Enter') doSearch(); });
-  if(lastQuery&&searchCache.length) renderSearch();
-  clearInterval(pollTimer); pollTimer=setInterval(screenDashboard,6000);
+  `);
+  document.querySelectorAll('.toggle').forEach(t=>t.onclick=async()=>{ await callApi('adminSetOpen',{password:PASSWORD,key:t.dataset.key,open:t.dataset.open==='1'}); renderOverview(); });
+  const qEl=document.getElementById('q'), fEl=document.getElementById('fmode'); fEl.value=filterMode;
+  qEl.oninput=()=>{ filterText=qEl.value; drawTable(); };
+  fEl.onchange=()=>{ filterMode=fEl.value; drawTable(); };
+  await loadList(); drawTable();
+  pollTimer=setInterval(async()=>{ await loadList(); drawTable(); const rs=await callApi('adminStats',{password:PASSWORD}); if(rs.success){ /* light refresh of cards */ } }, 8000);
 }
-async function doSearch(){ lastQuery=document.getElementById('searchInput').value.trim();
-  const res=await callApi('adminSearchParticipants',{password:PASSWORD, query:lastQuery}); if(!res.success) return; searchCache=res.items; renderSearch(); }
-function renderSearch(){
-  const box=document.getElementById('searchResults'); if(!box) return;
-  if(!searchCache.length){ box.innerHTML='<p class="refresh-hint" style="text-align:left;">ไม่พบผู้เข้าร่วม</p>'; return; }
-  const flags=[['checkin','เช็คอิน'],['openchat','OpenChat'],['m1','M1'],['m2','M2'],['m3','M3'],['cert','Cert']];
-  box.innerHTML=searchCache.map(p=>`
-    <div class="p-row" data-id="${p.attendeeId}">
-      <div class="p-head"><div><div class="p-name">${p.name} <span style="font-weight:400;color:var(--muted)">(${p.nick||''})</span></div>
-        <div class="p-id">No ${p.attendeeId} · ${p.runNo||''} · ${p.team||''}</div></div></div>
-      <div class="p-flags">${flags.map(f=>`<button class="flag-btn ${p[f[0]]?'on':''}" data-field="${f[0]}">${f[1]}</button>`).join('')}</div>
-    </div>`).join('');
-  box.querySelectorAll('.p-row').forEach(row=>{ const id=row.dataset.id;
-    row.querySelectorAll('.flag-btn').forEach(btn=>{ btn.onclick=async ()=>{ const field=btn.dataset.field; const nv=!btn.classList.contains('on');
-      btn.disabled=true; const patch={}; patch[field]=nv; await callApi('adminUpdateParticipant',{password:PASSWORD, attendeeId:id, patch});
-      btn.classList.toggle('on',nv); btn.disabled=false; }; }); });
+async function loadList(){ const r=await callApi('adminList',{password:PASSWORD, query:''}); if(r.success) listCache=r.items; }
+function stagePill(ok, timeless){ return ok? `<span class="pill p-green">✓</span>` : `<span class="pill p-grey">–</span>`; }
+function drawTable(){
+  const tb=document.getElementById('statusTable'); if(!tb) return;
+  let rows=listCache.slice();
+  const q=filterText.trim().toLowerCase();
+  if(q) rows=rows.filter(p=>(p.no+' '+p.runNo+' '+p.name+' '+p.nick+' '+p.team).toLowerCase().includes(q));
+  if(filterMode==='checkin') rows=rows.filter(p=>p.checkin);
+  else if(filterMode==='nocheckin') rows=rows.filter(p=>!p.checkin && !p.cannotAttend && !p.isTest);
+  else if(filterMode==='cert') rows=rows.filter(p=>p.cert);
+  else if(filterMode==='cannot') rows=rows.filter(p=>p.cannotAttend);
+  else if(filterMode==='test') rows=rows.filter(p=>p.isTest);
+  else rows=rows.filter(p=>!p.isTest);
+  rows.sort((a,b)=>{ let x=a[sortKey], y=b[sortKey]; if(typeof x==='boolean'){x=x?1:0;y=y?1:0;} x=String(x); y=String(y); return (x>y?1:x<y?-1:0)*sortDir; });
+  const cols=[['runNo','#'],['nick','ชื่อเล่น / ชื่อ'],['team','ทีม'],['group','Group'],['checkin','เช็คอิน'],['m1','M1'],['m2','M2'],['m3','M3'],['cert','สิทธิ์ CERT'],['x','จัดการ']];
+  let h='<thead><tr>'+cols.map(c=>`<th data-sk="${c[0]}">${c[1]}</th>`).join('')+'</tr></thead><tbody>';
+  if(!rows.length) h+='<tr><td colspan="10"><div class="empty">ไม่พบผู้เข้าร่วม</div></td></tr>';
+  rows.forEach(p=>{
+    const grp = p.group?`<span class="grp grp${p.group}">G${p.group}</span>`:`<span class="grp grp0">–</span>`;
+    const ci = p.cannotAttend? `<span class="pill p-red">ไม่มา</span>` : (p.checkin? `<span class="pill p-green">เช็คอิน</span>` : `<span class="pill p-red">ยังไม่มา</span>`);
+    const cert = p.cert? `<span class="pill p-green">ได้ Cert</span>` : (p.m1&&p.m2&&p.m3? `<span class="pill p-gold">รอปล่อย</span>` : `<span class="pill p-gold">รอ ${!p.m1?'M1':!p.m2?'M2':'M3'}</span>`);
+    h+=`<tr>
+      <td class="name">${esc(p.runNo||p.no)}</td>
+      <td><div class="name">${esc(p.nick)}${p.isTest?' <span class="sub">(TEST)</span>':''}</div><div class="sub">${esc(p.name)}</div></td>
+      <td>${esc(p.team||'—')}</td><td>${grp}</td>
+      <td>${ci}</td>
+      <td>${stagePill(p.m1)}</td><td>${stagePill(p.m2)}</td><td>${stagePill(p.m3)}</td>
+      <td>${cert}</td>
+      <td><button class="mini ${p.cannotAttend?'on':'danger'}" data-checkout="${p.attendeeId}">${p.cannotAttend?'ยกเลิก':'Check-out'}</button></td>
+    </tr>`;
+  });
+  h+='</tbody>';
+  tb.innerHTML=h;
+  tb.querySelectorAll('th[data-sk]').forEach(th=>th.onclick=()=>{ const k=th.dataset.sk; if(k==='x')return; if(sortKey===k) sortDir=-sortDir; else {sortKey=k;sortDir=1;} drawTable(); });
+  tb.querySelectorAll('[data-checkout]').forEach(btn=>btn.onclick=async()=>{ const id=btn.dataset.checkout; const p=listCache.find(x=>String(x.attendeeId)===String(id)); const nv=!(p&&p.cannotAttend);
+    btn.disabled=true; await callApi('adminUpdateParticipant',{password:PASSWORD,attendeeId:id,patch:{cannotAttend:nv}}); await loadList(); drawTable(); });
 }
+
+/* ================= VOTES ================= */
+async function renderVotes(){
+  shell(`<div class="two"><div class="panel"><h3 class="sec">🏅 Group 1 · อันดับโหวต</h3><div id="g1"></div></div>
+    <div class="panel"><h3 class="sec">🏅 Group 2 · อันดับโหวต</h3><div id="g2"></div></div></div>`);
+  const r=await callApi('adminVotes',{password:PASSWORD});
+  if(!r.success){ screenLogin('เซสชันหมดอายุ'); return; }
+  function draw(list, el){
+    const max=Math.max(1, ...list.map(x=>x.votes));
+    document.getElementById(el).innerHTML = list.length? list.map((x,i)=>`<div class="rank">
+      <span class="team">${i+1}. ${esc(x.team)}</span>
+      <span class="barwrap"><i style="width:${Math.round(x.votes/max*100)}%"></i></span>
+      <span class="num">${x.votes}</span></div>`).join('') : '<div class="empty">ยังไม่มีทีมในกลุ่มนี้</div>';
+  }
+  draw(r.group1||[],'g1'); draw(r.group2||[],'g2');
+  pollTimer=setInterval(renderVotes, 8000);
+}
+
+/* ================= RESULTS ================= */
+let resultTab='m1';
+async function renderResults(){
+  shell(`<div class="tabs" style="margin-bottom:14px">
+      ${[['m1','Mission 1'],['m2','Mission 2'],['m3','Mission 3']].map(t=>`<button data-rt="${t[0]}" class="${resultTab===t[0]?'on':''}">${t[1]}</button>`).join('')}
+    </div><div class="panel"><div class="scroll"><table id="resTable"></table></div></div>`);
+  document.querySelectorAll('[data-rt]').forEach(b=>b.onclick=()=>{ resultTab=b.dataset.rt; renderResults(); });
+  const r=await callApi('adminResults',{password:PASSWORD});
+  if(!r.success){ screenLogin('เซสชันหมดอายุ'); return; }
+  const data=r[resultTab]||{headers:[],rows:[]};
+  const tb=document.getElementById('resTable');
+  if(!data.rows.length){ tb.innerHTML='<tbody><tr><td><div class="empty">ยังไม่มีคำตอบ (หรือกำลังอยู่ในโหมด DEMO)</div></td></tr></tbody>'; return; }
+  let h='<thead><tr>'+data.headers.map(x=>`<th>${esc(x)}</th>`).join('')+'</tr></thead><tbody>';
+  data.rows.forEach(row=>{ h+='<tr>'+row.map(c=>`<td>${esc(c)}</td>`).join('')+'</tr>'; });
+  h+='</tbody>'; tb.innerHTML=h;
+}
+
+/* ================= CERTIFIED ================= */
+async function renderCertified(){
+  shell(`<div class="panel"><h3 class="sec">ผู้ได้รับ Certificate</h3><div class="scroll"><table id="certTable"></table></div></div>`);
+  const r=await callApi('adminCertified',{password:PASSWORD});
+  if(!r.success){ screenLogin('เซสชันหมดอายุ'); return; }
+  const tb=document.getElementById('certTable');
+  if(!r.items.length){ tb.innerHTML='<tbody><tr><td><div class="empty">ยังไม่มีผู้ได้รับ Certificate</div></td></tr></tbody>'; return; }
+  let h='<thead><tr><th>#</th><th>ชื่อเล่น / ชื่อ</th><th>ทีม</th><th>Group</th></tr></thead><tbody>';
+  r.items.forEach(p=>{ h+=`<tr><td class="name">${esc(p.runNo||p.attendeeId)}</td><td><div class="name">${esc(p.nick)}</div><div class="sub">${esc(p.name)}</div></td><td>${esc(p.team||'—')}</td><td><span class="grp grp${p.group}">G${p.group||'-'}</span></td></tr>`; });
+  h+='</tbody>'; tb.innerHTML=h;
+  pollTimer=setInterval(renderCertified, 12000);
+}
+
 screenLogin();
 </script>
 </body>
